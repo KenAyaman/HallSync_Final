@@ -198,65 +198,9 @@
             </div>
         </div>
 
-        <div class="panel">
-            <div class="panel-header">
-                <div>
-                    <h2 class="panel-title">Upcoming Bookings</h2>
-                    <p class="panel-sub">Confirmed resident reservations</p>
-                </div>
-                <a href="{{ route('admin.bookings.calendar') }}" class="panel-link">Manage -></a>
-            </div>
-            <div class="item-list">
-                @forelse($pendingBookingsList ?? [] as $booking)
-                <div class="list-item">
-                    <div class="list-item-left">
-                        <div class="list-item-title">{{ $booking->facility_name ?? $booking->space_name ?? 'Facility' }}</div>
-                        <div class="list-item-meta">
-                            <span>{{ $booking->user->name ?? 'Resident' }}</span>
-                            <span class="meta-sep">|</span>
-                            <span>{{ \Carbon\Carbon::parse($booking->booking_date ?? now())->format('M d, Y') }}</span>
-                        </div>
-                    </div>
-                    <div class="list-item-right">
-                        <a href="{{ route('admin.bookings.calendar') }}" class="mini-action-link">View</a>
-                    </div>
-                </div>
-                @empty
-                <div class="empty-state">No upcoming bookings</div>
-                @endforelse
-            </div>
-            <div class="quick-actions">
-                <a href="{{ route('announcements.create') }}" class="qa-btn qa-primary">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m3 11 19-9-9 19-2-8-8-2z"/></svg>
-                    Post Announcement
-                </a>
-                <a href="{{ route('tickets.index') }}?status=open" class="qa-btn qa-secondary">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg>
-                    Assign Tickets
-                </a>
-            </div>
-        </div>
     </div>
 
     <div class="bottom-grid">
-        <div class="panel">
-            <div class="panel-header">
-                <h2 class="panel-title">Community Announcements</h2>
-                <p class="panel-sub">Keep residents informed</p>
-            </div>
-            <div class="item-list">
-                @forelse(($announcements ?? collect())->take(3) as $announcement)
-                    <div class="list-item announce-item">
-                        <div class="list-item-title">{{ $announcement->title }}</div>
-                        <p class="announce-body">{{ Str::limit($announcement->content ?? '', 80) }}</p>
-                        <div class="list-item-time">{{ $announcement->created_at->diffForHumans() ?? 'Recently' }}</div>
-                    </div>
-                @empty
-                    <div class="empty-state">No announcements yet</div>
-                @endforelse
-            </div>
-        </div>
-
         <div class="panel summary-panel">
             <h2 class="panel-title" style="margin-bottom: 16px;">Activity Summary</h2>
             <div class="summary-row">
@@ -553,7 +497,7 @@
 
 .two-col-grid, .bottom-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
@@ -638,38 +582,6 @@
 
 .mini-action-link:hover { color: #f0c97a; }
 
-.quick-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-.qa-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 10px 12px;
-    border-radius: 40px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.qa-primary { background: linear-gradient(135deg, #C79745, #D6A85B); color: white; }
-.qa-primary:hover { transform: translateY(-1px); }
-
-.qa-secondary {
-    background: rgba(255,255,255,0.04);
-    color: var(--text-head);
-    border: 1px solid var(--border);
-}
-
-.announce-body { font-size: 0.95rem; color: var(--text-muted); margin-top: 4px; line-height: 1.6; }
-
 .empty-state {
     text-align: center;
     padding: 32px;
@@ -753,7 +665,6 @@ body { overflow-x: hidden; }
     .two-col-grid, .bottom-grid { grid-template-columns: 1fr; }
     .metric-sub { margin-left: 0; }
     .metric-card { align-items: flex-start; flex-direction: column; }
-    .quick-actions { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
@@ -788,8 +699,8 @@ document.addEventListener('DOMContentLoaded', function() {
         $trendData = $ticketTrendData ?? array_fill(0, 30, 0);
         $catLabels = $categoryLabels ?? ['Plumbing', 'Electrical', 'Furniture', 'HVAC', 'Other'];
         $catData = $categoryData ?? [0, 0, 0, 0, 0];
-        $spaceLabelsData = $spaceLabels ?? ['Function Hall', 'Gym', 'Study Room', 'Game Room', 'Laundry'];
-        $spaceDataValues = $spaceData ?? [0, 0, 0, 0, 0];
+        $spaceLabelsData = $spaceLabels ?? ['Study Room 1', 'Study Room 2', 'Conference Room', 'Gym'];
+        $spaceDataValues = $spaceData ?? [0, 0, 0, 0];
     @endphp
 
     new Chart(document.getElementById('ticketTrendChart'), {

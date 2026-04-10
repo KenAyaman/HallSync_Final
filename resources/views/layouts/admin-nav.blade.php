@@ -64,7 +64,7 @@
                 <span class="nav-label">Oversight</span>
             </a>
 
-            {{-- Tickets --}}
+            {{-- Maintenance --}}
             <a href="{{ route('tickets.index') }}" class="nav-item {{ request()->routeIs('tickets.*') ? 'nav-active' : '' }}">
                 <div class="nav-icon-wrap">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -72,7 +72,7 @@
                         <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
                     </svg>
                 </div>
-                <span class="nav-label">Tickets</span>
+                <span class="nav-label">Maintenance</span>
                 @if(isset($openTicketsCount) && $openTicketsCount > 0)
                     <span class="nav-badge">{{ $openTicketsCount }}</span>
                 @endif
@@ -115,6 +115,17 @@
                     </svg>
                 </div>
                 <span class="nav-label">Community</span>
+            </a>
+
+            {{-- Concerns --}}
+            <a href="{{ route('admin.concerns.index') }}" class="nav-item {{ request()->routeIs('admin.concerns.*') ? 'nav-active' : '' }}">
+                <div class="nav-icon-wrap">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        <path d="M8 9h8"/><path d="M8 13h5"/>
+                    </svg>
+                </div>
+                <span class="nav-label">Concerns</span>
             </a>
         </nav>
 

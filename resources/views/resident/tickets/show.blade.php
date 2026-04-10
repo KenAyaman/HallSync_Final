@@ -15,7 +15,7 @@
                     </div>
                     <div class="resident-ticket-hero-stat">
                         <span>Priority</span>
-                        <strong>{{ ucfirst($ticket->priority) }}</strong>
+                        <strong>{{ $ticket->priority_label }}</strong>
                     </div>
                     <div class="resident-ticket-hero-stat">
                         <span>Ticket ID</span>
@@ -28,6 +28,17 @@
                 <a href="{{ route('tickets.index') }}" class="resident-ticket-btn resident-ticket-btn-secondary">Back to Tickets</a>
                 @if(in_array($ticket->status, ['received', 'assigned']))
                     <a href="{{ route('tickets.edit', $ticket) }}" class="resident-ticket-btn resident-ticket-btn-primary">Edit Ticket</a>
+                @endif
+                @if($ticket->status !== 'in_progress')
+                    <form method="POST"
+                          action="{{ route('tickets.destroy', $ticket) }}"
+                          onsubmit="return confirm('Are you sure you want to delete this ticket? This action cannot be undone.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="resident-ticket-btn resident-ticket-btn-danger">
+                            {{ in_array($ticket->status, ['completed', 'rejected']) ? 'Remove from History' : 'Delete Ticket' }}
+                        </button>
+                    </form>
                 @endif
             </div>
         </section>
@@ -44,8 +55,8 @@
                         <span class="resident-ticket-badge resident-ticket-badge-status-{{ $ticket->status }}">
                             {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
                         </span>
-                        <span class="resident-ticket-badge resident-ticket-badge-priority-{{ $ticket->priority }}">
-                            {{ ucfirst($ticket->priority) }} Priority
+                        <span class="resident-ticket-badge resident-ticket-badge-priority-{{ $ticket->normalized_priority }}">
+                            {{ $ticket->priority_label }}
                         </span>
                     </div>
                 </div>
@@ -98,18 +109,12 @@
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <aside class="resident-ticket-sidebar">
-                <section class="resident-ticket-panel">
-                    <div class="resident-ticket-panel-head">
-                        <div>
-                            <h2>Status Guide</h2>
-                            <p>What each stage means as your ticket moves forward.</p>
-                        </div>
+                <div class="resident-ticket-inline-guide">
+                    <div class="resident-ticket-inline-guide-head">
+                        <h3>Status Guide</h3>
+                        <p>What each stage means as your ticket moves forward.</p>
                     </div>
-
-                    <div class="resident-ticket-divider"></div>
 
                     <div class="resident-ticket-guide-list">
                         <div class="resident-ticket-guide-item">
@@ -129,39 +134,8 @@
                             <p>The concern has been resolved and marked finished.</p>
                         </div>
                     </div>
-                </section>
-
-                <section class="resident-ticket-panel">
-                    <div class="resident-ticket-panel-head">
-                        <div>
-                            <h2>Quick Actions</h2>
-                            <p>Manage this ticket or return to your ticket history.</p>
-                        </div>
-                    </div>
-
-                    <div class="resident-ticket-divider"></div>
-
-                    <div class="resident-ticket-action-list">
-                        <a href="{{ route('tickets.index') }}" class="resident-ticket-text-link">Back to all tickets</a>
-                        <a href="{{ route('tickets.create') }}" class="resident-ticket-text-link">Submit another ticket</a>
-
-                        @if(in_array($ticket->status, ['received', 'assigned']))
-                            <a href="{{ route('tickets.edit', $ticket) }}" class="resident-ticket-text-link">Edit this ticket</a>
-
-                            <form method="POST" action="{{ route('tickets.destroy', $ticket) }}"
-                                  onsubmit="return confirm('Are you sure you want to delete this ticket? This action cannot be undone.');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="resident-ticket-delete-btn">Delete Ticket</button>
-                            </form>
-
-                            <p class="resident-ticket-note">
-                                Only tickets marked as Received or Assigned can still be edited or removed.
-                            </p>
-                        @endif
-                    </div>
-                </section>
-            </aside>
+                </div>
+            </section>
         </div>
     </div>
 
@@ -257,7 +231,12 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-end;
+            align-items: center;
             gap: 12px;
+        }
+
+        .resident-ticket-hero-actions form {
+            margin: 0;
         }
 
         .resident-ticket-btn {
@@ -287,17 +266,20 @@
             color: #F0E9DF;
         }
 
-        .resident-ticket-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-            gap: 24px;
-            align-items: start;
+        .resident-ticket-btn-danger {
+            border: 1px solid rgba(224,112,96,0.24);
+            background: linear-gradient(180deg, rgba(53, 38, 35, 0.92) 0%, rgba(42, 31, 29, 0.92) 100%);
+            color: #F0B3A9;
+            cursor: pointer;
         }
 
-        .resident-ticket-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+        .resident-ticket-btn-danger:hover {
+            transform: translateY(-1px);
+            border-color: rgba(224,112,96,0.38);
+        }
+
+        .resident-ticket-grid {
+            display: block;
         }
 
         .resident-ticket-panel {
@@ -378,8 +360,7 @@
             color: #d7b07a;
         }
 
-        .resident-ticket-badge-priority-high,
-        .resident-ticket-badge-priority-urgent {
+        .resident-ticket-badge-priority-critical {
             background: rgba(185, 106, 93, 0.16);
             color: #dc9a86;
         }
@@ -388,6 +369,26 @@
             display: flex;
             flex-direction: column;
             gap: 14px;
+        }
+
+        .resident-ticket-inline-guide {
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(214,168,91,0.10);
+        }
+
+        .resident-ticket-inline-guide-head h3 {
+            margin: 0;
+            color: #F0E9DF;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .resident-ticket-inline-guide-head p {
+            margin: 6px 0 0;
+            color: #8A7A66;
+            font-size: 0.92rem;
+            line-height: 1.6;
         }
 
         .resident-ticket-detail-box,
@@ -446,8 +447,7 @@
             gap: 14px;
         }
 
-        .resident-ticket-guide-list,
-        .resident-ticket-action-list {
+        .resident-ticket-guide-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -455,45 +455,6 @@
 
         .resident-ticket-guide-item strong {
             color: #D6A85B;
-        }
-
-        .resident-ticket-text-link {
-            color: #d7b07a;
-            text-decoration: none;
-            font-size: 0.86rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-
-        .resident-ticket-delete-btn {
-            width: 100%;
-            padding: 12px 18px;
-            border: 1px solid rgba(224,112,96,0.24);
-            border-radius: 999px;
-            background: linear-gradient(180deg, rgba(53, 38, 35, 0.92) 0%, rgba(42, 31, 29, 0.92) 100%);
-            color: #F0B3A9;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .resident-ticket-delete-btn:hover {
-            transform: translateY(-1px);
-            border-color: rgba(224,112,96,0.38);
-        }
-
-        .resident-ticket-note {
-            margin: 2px 0 0;
-            color: #8A7A66;
-            font-size: 0.8rem;
-            line-height: 1.7;
-        }
-
-        @media (max-width: 1024px) {
-            .resident-ticket-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 768px) {

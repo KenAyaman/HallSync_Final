@@ -56,7 +56,7 @@
                         "
                        onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 20px 40px rgba(199,150,69,0.4)';"
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 12px 28px rgba(199,150,69,0.3)';">
-                        + New Announcement
+                        New Announcement
                     </a>
                 </div>
             </div>
@@ -117,17 +117,30 @@
                     Resident-facing updates, maintenance notices, and community advisories.
                 </p>
             </div>
-            <a href="{{ route('announcements.create') }}" style="
-                background: rgba(214,168,91,0.12);
-                color: #D6A85B;
-                padding: 12px 20px;
-                border-radius: 999px;
-                font-weight: 700;
-                text-decoration: none;
-                border: 1px solid rgba(214,168,91,0.22);
-            ">
-                Create Notice
-            </a>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <span style="
+                    background: rgba(90,138,90,0.12);
+                    color: #B9D9B9;
+                    padding: 12px 18px;
+                    border-radius: 999px;
+                    font-weight: 700;
+                    border: 1px solid rgba(90,138,90,0.22);
+                    font-size: 13px;
+                ">
+                    {{ $activeCount ?? 0 }} Active
+                </span>
+                <span style="
+                    background: rgba(168,159,145,0.12);
+                    color: #D4C8B8;
+                    padding: 12px 18px;
+                    border-radius: 999px;
+                    font-weight: 700;
+                    border: 1px solid rgba(168,159,145,0.22);
+                    font-size: 13px;
+                ">
+                    {{ $draftCount ?? 0 }} Hidden
+                </span>
+            </div>
         </div>
 
         <div style="height: 1px; background: linear-gradient(to right, rgba(214,168,91,0.4), transparent); margin-bottom: 32px;"></div>
@@ -184,7 +197,20 @@
                             <div style="font-size: 11px; color: #8F877C; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-bottom: 14px;">
                                 Actions
                             </div>
-                            <div style="display: flex; gap: 10px; flex-direction: column;">
+                            <div style="display: flex; gap: 10px; flex-direction: column; align-items: stretch; text-align:center;">
+                            <a href="{{ route('announcements.show', $announcement) }}" style="
+                                background: rgba(255,255,255,0.04);
+                                color: #F0E9DF;
+                                padding: 12px 24px;
+                                border-radius: 999px;
+                                font-weight: 600;
+                                text-decoration: none;
+                                border: 1px solid rgba(255,255,255,0.08);
+                                transition: all 0.2s;
+                                display:block;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
+                                View Details
+                            </a>
                             <a href="{{ route('announcements.edit', $announcement) }}" style="
                                 background: rgba(214,168,91,0.12);
                                 color: #D6A85B;
@@ -194,10 +220,11 @@
                                 text-decoration: none;
                                 border: 1px solid rgba(214,168,91,0.22);
                                 transition: all 0.2s;
+                                display:block;
                             " onmouseover="this.style.background='rgba(214,168,91,0.18)'" onmouseout="this.style.background='rgba(214,168,91,0.12)'">
                                 Edit
                             </a>
-                            <form action="{{ route('announcements.destroy', $announcement) }}" method="POST" style="display: contents;" onsubmit="return confirm('Delete this announcement?')">
+                            <form action="{{ route('announcements.destroy', $announcement) }}" method="POST" style="display: block;" onsubmit="return confirm('Delete this announcement?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" style="
@@ -209,6 +236,7 @@
                                     border: 1px solid rgba(224,112,96,0.22);
                                     cursor: pointer;
                                     transition: all 0.2s;
+                                    width:100%;
                                 " onmouseover="this.style.background='rgba(224,112,96,0.18)'" onmouseout="this.style.background='rgba(224,112,96,0.12)'">
                                     Delete
                                 </button>

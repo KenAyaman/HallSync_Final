@@ -13,7 +13,10 @@
 
             <div class="rex-auth-field">
                 <label for="password" class="rex-auth-label">Password</label>
-                <input id="password" class="rex-auth-input" type="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
+                <div class="rex-auth-password-wrap">
+                    <input id="password" class="rex-auth-input rex-auth-input-password" type="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
+                    <button type="button" class="rex-auth-password-toggle" data-toggle-password="password">Show</button>
+                </div>
                 <x-input-error :messages="$errors->get('password')" class="rex-auth-error" />
             </div>
 
@@ -33,8 +36,22 @@
         .rex-auth-input { width: 100%; min-height: 54px; padding: 0 16px; border-radius: 16px; border: 1px solid rgba(214, 168, 91, 0.14); background: rgba(37, 39, 42, 0.9); color: #f8f3ea; outline: none; transition: 0.18s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
         .rex-auth-input::placeholder { color: #87765f; }
         .rex-auth-input:focus { border-color: rgba(214, 168, 91, 0.38); box-shadow: 0 0 0 4px rgba(214, 168, 91, 0.08); }
+        .rex-auth-password-wrap { position: relative; }
+        .rex-auth-input-password { padding-right: 76px; }
+        .rex-auth-password-toggle { position: absolute; top: 50%; right: 14px; transform: translateY(-50%); border: none; background: none; color: #d6a85b; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
         .rex-auth-btn { min-height: 54px; border: 0; border-radius: 999px; background: linear-gradient(90deg, #b8842f 0%, #d6a85b 100%); color: #ffffff; font-size: 0.96rem; font-weight: 800; cursor: pointer; box-shadow: 0 14px 30px rgba(199, 150, 69, 0.28); transition: 0.2s ease; }
         .rex-auth-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 34px rgba(199, 150, 69, 0.32); }
         .rex-auth-error { color: #f0bbb3; font-size: 0.88rem; }
     </style>
+
+    <script>
+        document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const field = document.getElementById(button.dataset.togglePassword);
+                const isPassword = field.type === 'password';
+                field.type = isPassword ? 'text' : 'password';
+                button.textContent = isPassword ? 'Hide' : 'Show';
+            });
+        });
+    </script>
 </x-guest-layout>

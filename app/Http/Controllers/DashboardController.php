@@ -28,7 +28,7 @@ class DashboardController extends Controller
             return view('dashboard.manager', [
                 // Existing metrics
                 'openTickets' => MaintenanceTicket::where('status', '!=', 'completed')->count(),
-                'urgentTickets' => MaintenanceTicket::where('priority', 'urgent')
+                'urgentTickets' => MaintenanceTicket::whereIn('priority', ['high', 'urgent', 'critical'])
                     ->where('status', '!=', 'completed')
                     ->count(),
                 'pendingBookings' => Booking::where('status', 'approved')
@@ -69,28 +69,7 @@ class DashboardController extends Controller
         }
 
         if ($user->role === 'handyman') {
-            // Get tickets assigned to handyman
-            $myTickets = MaintenanceTicket::where('assigned_to', $user->id)
-                ->whereNotIn('status', ['completed', 'rejected'])
-                ->orderByRaw("FIELD(priority, 'urgent', 'high', 'medium', 'low')")
-                ->orderBy('created_at', 'desc')
-                ->get();
-            
-            $assignedTickets = $myTickets->where('status', 'assigned')->count();
-            $inProgressTickets = $myTickets->where('status', 'in_progress')->count();
-            $urgentTickets = $myTickets->where('priority', 'urgent')->count();
-            $completedTickets = MaintenanceTicket::where('assigned_to', $user->id)
-                ->where('status', 'completed')
-                ->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()])
-                ->get();
-            
-            $completedToday = $completedTickets->count();
-            $urgentTicketsList = $myTickets->where('priority', 'urgent');
-            
-            return view('dashboard.handyman', compact(
-                'myTickets', 'assignedTickets', 'inProgressTickets', 
-                'completedToday', 'urgentTickets', 'urgentTicketsList', 'completedTickets'
-            ));
+            return redirect()->route('staff.overview');
         }
 
         // RESIDENT DASHBOARD
@@ -118,9 +97,18 @@ class DashboardController extends Controller
             'pendingPostsCount' => CommunityPost::where('user_id', $user->id)
                 ->where('status', 'pending')
                 ->count(),
+            'recentTickets' => MaintenanceTicket::where('user_id', $user->id)
+                ->latest()
+                ->take(5)
+                ->get(),
             'announcements' => Announcement::where('is_active', true)
                 ->latest()
                 ->take(5)
+                ->get(),
+            'communityPosts' => CommunityPost::where('status', 'approved')
+                ->with('user')
+                ->latest()
+                ->take(4)
                 ->get(),
         ]);
     }
@@ -194,11 +182,30 @@ class DashboardController extends Controller
      */
     private function getSpaceStats()
     {
-        // If space_name column exists, use it
+        if (Schema::hasColumn('bookings', 'facility_name')) {
+            $spaces = Booking::select('facility_name', DB::raw('count(*) as total'))
+                ->whereNotNull('facility_name')
+                ->groupBy('facility_name')
+                ->orderByDesc('total')
+                ->get();
+
+            if ($spaces->isNotEmpty()) {
+                $labels = [];
+                $data = [];
+                foreach ($spaces as $space) {
+                    $labels[] = $space->facility_name;
+                    $data[] = $space->total;
+                }
+                return ['labels' => $labels, 'data' => $data];
+            }
+        }
+
+        // Legacy fallback if space_name exists
         if (Schema::hasColumn('bookings', 'space_name')) {
             $spaces = Booking::select('space_name', DB::raw('count(*) as total'))
                 ->whereNotNull('space_name')
                 ->groupBy('space_name')
+                ->orderByDesc('total')
                 ->get();
             
             if ($spaces->isNotEmpty()) {
@@ -214,8 +221,56 @@ class DashboardController extends Controller
         
         // Fallback to default
         return [
-            'labels' => ['Function Hall', 'Gym', 'Study Room', 'Game Room', 'Laundry'],
-            'data' => [0, 0, 0, 0, 0]
+            'labels' => ['Study Room 1', 'Study Room 2', 'Conference Room', 'Gym'],
+            'data' => [0, 0, 0, 0]
+        ];
+    }
+
+    public function staffOverview()
+    {
+        $user = Auth::user();
+        abort_unless($user->role === 'handyman', 403);
+
+        return view('dashboard.handyman', $this->getStaffWorkspaceData($user));
+    }
+
+    public function staffQueue()
+    {
+        $user = Auth::user();
+        abort_unless($user->role === 'handyman', 403);
+
+        return view('handyman.queue', $this->getStaffWorkspaceData($user));
+    }
+
+    public function staffCompleted()
+    {
+        $user = Auth::user();
+        abort_unless($user->role === 'handyman', 403);
+
+        return view('handyman.completed', $this->getStaffWorkspaceData($user));
+    }
+
+    private function getStaffWorkspaceData(User $user): array
+    {
+        $myTickets = MaintenanceTicket::where('assigned_to', $user->id)
+            ->whereNotIn('status', ['completed', 'rejected'])
+            ->orderByRaw("FIELD(priority, 'critical', 'urgent', 'high', 'medium', 'low')")
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $completedTickets = MaintenanceTicket::where('assigned_to', $user->id)
+            ->where('status', 'completed')
+            ->latest('updated_at')
+            ->get();
+
+        return [
+            'myTickets' => $myTickets,
+            'assignedTickets' => $myTickets->where('status', 'assigned')->count(),
+            'inProgressTickets' => $myTickets->where('status', 'in_progress')->count(),
+            'completedToday' => $completedTickets->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
+            'urgentTickets' => $myTickets->filter(fn ($ticket) => $ticket->normalized_priority === 'critical')->count(),
+            'urgentTicketsList' => $myTickets->filter(fn ($ticket) => $ticket->normalized_priority === 'critical'),
+            'completedTickets' => $completedTickets,
         ];
     }
 }

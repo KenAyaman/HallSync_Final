@@ -65,8 +65,6 @@
                             <option value="Study Room 2" {{ old('facility_name', $booking->facility_name) == 'Study Room 2' ? 'selected' : '' }}>Study Room 2</option>
                             <option value="Conference Room" {{ old('facility_name', $booking->facility_name) == 'Conference Room' ? 'selected' : '' }}>Conference Room</option>
                             <option value="Gym" {{ old('facility_name', $booking->facility_name) == 'Gym' ? 'selected' : '' }}>Gym</option>
-                            <option value="Game Room" {{ old('facility_name', $booking->facility_name) == 'Game Room' ? 'selected' : '' }}>Game Room</option>
-                            <option value="Laundry Room" {{ old('facility_name', $booking->facility_name) == 'Laundry Room' ? 'selected' : '' }}>Laundry Room</option>
                         </select>
                         <p class="resident-booking-edit-help">Select the facility you want to reserve.</p>
                     </div>
@@ -82,11 +80,6 @@
                         <input type="hidden" name="booking_time" id="booking_time" value="{{ old('booking_time', $selectedTime) }}">
                         <div id="slot-grid" class="resident-booking-slot-grid"></div>
                         <p class="resident-booking-edit-help">Choose one available time slot. Reserved slots are locked and cannot be selected.</p>
-                    </div>
-
-                    <div>
-                        <label for="notes" class="resident-booking-edit-label">Notes</label>
-                        <textarea name="notes" id="notes" rows="4" placeholder="Any special requests or additional information?" class="resident-booking-edit-input resident-booking-edit-textarea">{{ old('notes', $booking->notes) }}</textarea>
                     </div>
 
                     <div class="resident-booking-edit-form-actions">

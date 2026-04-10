@@ -6,15 +6,15 @@
 
         <div class="handyman-ticket-hero-inner">
             <div class="handyman-ticket-hero-copy">
-                <span class="handyman-ticket-kicker">Maintenance Operations</span>
+                <span class="handyman-ticket-kicker">Staff Operations Desk</span>
                 <h1 class="handyman-ticket-title">Ticket <span>#{{ $ticket->ticket_id ?? $ticket->id }}</span></h1>
                 <p class="handyman-ticket-subtitle">
-                    Review the request details, track priority, and update progress as work moves from assignment to completion.
+                    Review the request details, track priority, and move assigned work through a clearer staff workflow.
                 </p>
             </div>
 
             <div class="handyman-ticket-hero-actions">
-                <a href="{{ route('dashboard') }}" class="handyman-ticket-btn handyman-ticket-btn-secondary">Back to Work Queue</a>
+                <a href="{{ route('staff.queue') }}" class="handyman-ticket-btn handyman-ticket-btn-secondary">Back to Work Queue</a>
                 @if($ticket->status === 'assigned')
                     <form method="POST" action="{{ route('tickets.update-status', $ticket) }}">
                         @csrf
@@ -44,7 +44,7 @@
 
                 <div class="handyman-ticket-badge-row">
                     <span class="handyman-status-badge status-{{ $ticket->status }}">{{ str_replace('_', ' ', ucfirst($ticket->status)) }}</span>
-                    <span class="handyman-priority-badge priority-{{ $ticket->priority }}">{{ ucfirst($ticket->priority) }} Priority</span>
+                    <span class="handyman-priority-badge priority-{{ $ticket->normalized_priority }}">{{ $ticket->priority_label }}</span>
                 </div>
             </div>
 
@@ -138,10 +138,10 @@
 
 <style>
 .handyman-ticket-show-shell { display: flex; flex-direction: column; gap: 28px; }
-.handyman-ticket-hero { position: relative; overflow: hidden; border-radius: 36px; border: 1px solid rgba(214, 168, 91, 0.16); background: linear-gradient(115deg, #1f2023 0%, #24262b 38%, #2c2c2f 62%, #3b3023 100%); box-shadow: 0 22px 56px rgba(0, 0, 0, 0.2); }
+.handyman-ticket-hero { position: relative; overflow: hidden; border-radius: 36px; border: 1px solid rgba(214, 168, 91, 0.16); background: radial-gradient(circle at top right, rgba(214,168,91,0.16), transparent 30%), linear-gradient(135deg, #15191d 0%, #1d2329 42%, #22313a 72%, #152129 100%); box-shadow: 0 22px 56px rgba(0, 0, 0, 0.2); }
 .handyman-ticket-glow { position: absolute; border-radius: 999px; filter: blur(55px); pointer-events: none; }
-.handyman-ticket-glow-primary { top: -90px; right: 8%; width: 300px; height: 300px; background: rgba(199, 151, 69, 0.28); }
-.handyman-ticket-glow-soft { bottom: -110px; left: 12%; width: 230px; height: 230px; background: rgba(255, 255, 255, 0.08); }
+.handyman-ticket-glow-primary { top: -90px; right: 8%; width: 300px; height: 300px; background: rgba(214, 168, 91, 0.20); }
+.handyman-ticket-glow-soft { bottom: -110px; left: 12%; width: 230px; height: 230px; background: rgba(88, 135, 165, 0.16); }
 .handyman-ticket-hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; padding: 34px 36px; }
 .handyman-ticket-kicker { display: inline-block; margin-bottom: 12px; color: #d6a85b; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; }
 .handyman-ticket-title { margin: 0; color: #f8f3ea; font-size: clamp(2.2rem, 4vw, 3.6rem); line-height: 1.04; font-family: 'Playfair Display', serif; }
@@ -154,7 +154,7 @@
 .handyman-ticket-btn-secondary { background: rgba(255, 255, 255, 0.05); color: #e8dfd1; border-color: rgba(214, 168, 91, 0.16); }
 .handyman-ticket-btn-secondary:hover { background: rgba(255, 255, 255, 0.08); color: #fff6e7; }
 .handyman-ticket-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr); gap: 28px; align-items: start; }
-.handyman-ticket-panel { border-radius: 24px; padding: 26px; background: rgba(42, 44, 48, 0.8); border: 1px solid rgba(214, 168, 91, 0.14); backdrop-filter: blur(10px); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14); }
+.handyman-ticket-panel { border-radius: 24px; padding: 26px; background: linear-gradient(180deg, rgba(25, 31, 36, 0.96) 0%, rgba(17, 22, 27, 0.98) 100%); border: 1px solid rgba(214, 168, 91, 0.14); backdrop-filter: blur(10px); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14); }
 .handyman-ticket-panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
 .handyman-ticket-panel-title { margin: 0; color: #f0e9df; font-size: 1.55rem; font-family: 'Playfair Display', serif; }
 .handyman-ticket-panel-title-side { font-size: 1.35rem; }
@@ -164,8 +164,7 @@
 .status-assigned { background: rgba(214, 168, 91, 0.12); border: 1px solid rgba(214, 168, 91, 0.18); color: #d6a85b; }
 .status-in_progress { background: rgba(90, 138, 90, 0.12); border: 1px solid rgba(90, 138, 90, 0.2); color: #78b17f; }
 .status-completed { background: rgba(103, 176, 216, 0.12); border: 1px solid rgba(103, 176, 216, 0.18); color: #87c9ef; }
-.priority-urgent { background: rgba(224, 112, 96, 0.14); border: 1px solid rgba(224, 112, 96, 0.2); color: #f0a195; }
-.priority-high { background: rgba(240, 165, 80, 0.14); border: 1px solid rgba(240, 165, 80, 0.2); color: #efb066; }
+.priority-critical { background: rgba(224, 112, 96, 0.14); border: 1px solid rgba(224, 112, 96, 0.2); color: #f0a195; }
 .priority-medium, .priority-low { background: rgba(190, 147, 96, 0.14); border: 1px solid rgba(190, 147, 96, 0.2); color: #d3ac78; }
 .handyman-ticket-divider { height: 1px; margin: 22px 0; background: linear-gradient(to right, rgba(214, 168, 91, 0.28), rgba(214, 168, 91, 0.05), transparent); }
 .handyman-ticket-section + .handyman-ticket-section { margin-top: 24px; }

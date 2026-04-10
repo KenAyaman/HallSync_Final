@@ -36,6 +36,28 @@
             overflow-x: hidden;
         }
 
+        body.role-resident {
+            background: var(--app-bg);
+        }
+
+        body.role-guest {
+            background: var(--app-bg);
+        }
+
+        body.role-handyman {
+            background:
+                radial-gradient(circle at top right, rgba(88, 135, 165, 0.14), transparent 26%),
+                radial-gradient(circle at bottom left, rgba(214, 168, 91, 0.08), transparent 30%),
+                linear-gradient(180deg, #1a242b 0%, #1f2b33 42%, #24323a 100%);
+        }
+
+        body.role-manager {
+            background:
+                radial-gradient(circle at top right, rgba(214, 168, 91, 0.12), transparent 24%),
+                radial-gradient(circle at bottom left, rgba(151, 111, 70, 0.11), transparent 30%),
+                linear-gradient(180deg, #16120f 0%, #1d1712 28%, #241d17 60%, #18130f 100%);
+        }
+
 
         * {
             box-sizing: border-box;
@@ -50,6 +72,26 @@
             background:
                 radial-gradient(circle at 85% 5%, rgba(214, 168, 91, 0.10), transparent 30%),
                 radial-gradient(circle at 10% 90%, rgba(196, 154, 108, 0.08), transparent 32%);
+        }
+
+        body.role-resident .global-bg-glow,
+        body.role-guest .global-bg-glow {
+            background:
+                radial-gradient(circle at 85% 5%, rgba(214, 168, 91, 0.10), transparent 30%),
+                radial-gradient(circle at 10% 90%, rgba(196, 154, 108, 0.08), transparent 32%);
+        }
+
+        body.role-handyman .global-bg-glow {
+            background:
+                radial-gradient(circle at 84% 8%, rgba(88, 135, 165, 0.14), transparent 28%),
+                radial-gradient(circle at 14% 88%, rgba(214, 168, 91, 0.08), transparent 30%);
+        }
+
+        body.role-manager .global-bg-glow {
+            background:
+                radial-gradient(circle at 86% 10%, rgba(214, 168, 91, 0.12), transparent 28%),
+                radial-gradient(circle at 12% 88%, rgba(151, 111, 70, 0.12), transparent 32%),
+                radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03), transparent 26%);
         }
 
         /* TOP HERO IMAGE */
@@ -81,6 +123,67 @@
                 linear-gradient(90deg, rgba(19, 16, 13, 0.76) 0%, rgba(19, 16, 13, 0.54) 32%, rgba(19, 16, 13, 0.18) 62%, rgba(19, 16, 13, 0) 100%);
         }
 
+        body.role-resident .top-bg-image-layer {
+            background-image: url('{{ asset('1.1.png') }}');
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: 100% auto;
+            opacity: 0.9;
+        }
+
+        body.role-resident .top-bg-image-layer::after {
+            background:
+                linear-gradient(90deg, rgba(19, 16, 13, 0.76) 0%, rgba(19, 16, 13, 0.54) 32%, rgba(19, 16, 13, 0.18) 62%, rgba(19, 16, 13, 0) 100%);
+        }
+
+        body.role-guest .top-bg-image-layer {
+            background-image: url('{{ asset('1.1.png') }}');
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: 100% auto;
+            opacity: 0.9;
+        }
+
+        body.role-guest .top-bg-image-layer::after {
+            background:
+                linear-gradient(90deg, rgba(19, 16, 13, 0.76) 0%, rgba(19, 16, 13, 0.54) 32%, rgba(19, 16, 13, 0.18) 62%, rgba(19, 16, 13, 0) 100%);
+        }
+
+        body.role-handyman .top-bg-image-layer {
+            height: 420px;
+            background-image:
+                radial-gradient(circle at top right, rgba(214,168,91,0.12), transparent 24%),
+                linear-gradient(135deg, rgba(31,42,49,0.82) 0%, rgba(36,49,57,0.78) 38%, rgba(42,57,66,0.70) 68%, rgba(33,46,54,0.84) 100%);
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: cover;
+            opacity: 1;
+            mask-image: linear-gradient(to bottom, black 42%, transparent 100%);
+        }
+
+        body.role-handyman .top-bg-image-layer::after {
+            background:
+                linear-gradient(90deg, rgba(28, 38, 45, 0.62) 0%, rgba(28, 38, 45, 0.34) 36%, rgba(28, 38, 45, 0.10) 64%, rgba(28, 38, 45, 0) 100%);
+        }
+
+        body.role-manager .top-bg-image-layer {
+            height: 430px;
+            background-image:
+                radial-gradient(circle at 78% 20%, rgba(214,168,91,0.12), transparent 22%),
+                radial-gradient(circle at 16% 8%, rgba(151,111,70,0.14), transparent 24%),
+                linear-gradient(135deg, rgba(22,17,13,0.95) 0%, rgba(29,22,17,0.88) 34%, rgba(40,31,24,0.78) 64%, rgba(20,15,12,0.95) 100%);
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: cover;
+            opacity: 1;
+            mask-image: linear-gradient(to bottom, black 44%, transparent 100%);
+        }
+
+        body.role-manager .top-bg-image-layer::after {
+            background:
+                linear-gradient(90deg, rgba(16, 12, 10, 0.50) 0%, rgba(24, 18, 14, 0.28) 38%, rgba(24, 18, 14, 0.06) 66%, rgba(24, 18, 14, 0) 100%);
+        }
+
         main {
             position: relative;
             z-index: 2;
@@ -100,8 +203,12 @@
         }
 
         .app-main.app-main-handyman {
-            max-width: 1600px;
+            max-width: 1580px;
             padding-top: 18px;
+        }
+
+        .app-main.app-main-handyman.full-bleed {
+            max-width: 1580px;
         }
 
         /* ================= ADMIN (FIXED) ================= */
@@ -111,16 +218,33 @@
             padding: 24px 24px 48px;
 
             /* 🔥 FIX: SAME AS RESIDENT */
-            background: var(--app-bg);
+            background: transparent;
 
             position: relative;
             z-index: 2;
+        }
+
+        body.role-manager .admin-main-content::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                linear-gradient(rgba(214,168,91,0.030) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(214,168,91,0.022) 1px, transparent 1px),
+                radial-gradient(circle at 22% 26%, rgba(214,168,91,0.07), transparent 18%),
+                radial-gradient(circle at 78% 72%, rgba(151,111,70,0.10), transparent 22%);
+            background-size: 72px 72px, 72px 72px, auto, auto;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.92), rgba(0,0,0,0.65));
         }
 
         .admin-content-shell {
             width: 100%;
             max-width: 1580px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .admin-content-shell.dashboard-shell {
@@ -176,6 +300,10 @@
             padding: 18px 24px 10px;
             position: relative;
             z-index: 55;
+        }
+
+        .role-topbar-wrap.staff-topbar-wrap {
+            max-width: 1580px;
         }
 
         .role-topbar {
@@ -440,7 +568,7 @@
 
     @elseif(Auth::user()->role === 'handyman')
         @include('layouts.handyman-nav')
-        <main class="app-main app-main-handyman {{ $isDashboard ? 'full-bleed' : '' }}">
+        <main class="app-main app-main-handyman">
             {{ $slot }}
         </main>
 

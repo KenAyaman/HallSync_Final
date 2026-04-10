@@ -23,8 +23,8 @@
                         <span class="admin-ticket-badge admin-ticket-badge-status-{{ $ticket->status }}">
                             {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
                         </span>
-                        <span class="admin-ticket-badge admin-ticket-badge-priority-{{ $ticket->priority }}">
-                            {{ ucfirst($ticket->priority) }} Priority
+                        <span class="admin-ticket-badge admin-ticket-badge-priority-{{ $ticket->normalized_priority }}">
+                            {{ $ticket->priority_label }}
                         </span>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                         </div>
                     </div>
 
-                    @if($ticket->status === 'approved')
+                    @if(in_array($ticket->status, ['pending_approval', 'approved', 'assigned']))
                         <form method="POST" action="{{ route('tickets.assign', $ticket) }}" class="admin-ticket-form">
                             @csrf
                             <label for="assigned_to">Select Staff</label>
@@ -104,19 +104,9 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <button type="submit" class="admin-ticket-action admin-ticket-action-primary">Assign Ticket</button>
-                        </form>
-                    @elseif($ticket->status === 'pending_approval')
-                        <form method="POST" action="{{ route('tickets.approve', $ticket) }}" class="admin-ticket-form">
-                            @csrf
-                            <label for="approve_assigned_to">Approve and assign</label>
-                            <select name="assigned_to" id="approve_assigned_to">
-                                <option value="">Approve without assigning</option>
-                                @foreach($handymen as $handyman)
-                                    <option value="{{ $handyman->id }}">{{ $handyman->name }}</option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="admin-ticket-action admin-ticket-action-primary">Approve Ticket</button>
+                            <button type="submit" class="admin-ticket-action admin-ticket-action-primary">
+                                {{ $ticket->assigned_to ? 'Reassign Ticket' : 'Assign Ticket' }}
+                            </button>
                         </form>
                     @else
                         <div class="admin-ticket-note">
@@ -172,7 +162,7 @@
                         </div>
                         <div class="admin-ticket-summary-row">
                             <span>Priority</span>
-                            <strong>{{ ucfirst($ticket->priority) }}</strong>
+                            <strong>{{ $ticket->priority_label }}</strong>
                         </div>
                         <div class="admin-ticket-summary-row">
                             <span>Assigned To</span>
@@ -371,8 +361,7 @@
             color: #d6a85b;
         }
 
-        .admin-ticket-badge-priority-high,
-        .admin-ticket-badge-priority-urgent {
+        .admin-ticket-badge-priority-critical {
             background: rgba(224,112,96,0.16);
             color: #e07060;
         }

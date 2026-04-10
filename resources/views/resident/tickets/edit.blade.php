@@ -19,7 +19,7 @@
                     </div>
                     <div class="resident-ticket-edit-stat">
                         <span>Priority</span>
-                        <strong>{{ ucfirst(old('priority', $ticket->priority)) }}</strong>
+                        <strong>{{ old('priority', $ticket->priority_label) === 'low' ? 'Low Priority' : (old('priority') === 'critical' ? 'Critical' : $ticket->priority_label) }}</strong>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                         <div class="resident-ticket-priority-grid">
                             <label class="resident-ticket-priority-card" data-priority="low">
                                 <input type="radio" name="priority" value="low" {{ old('priority', $ticket->priority) === 'low' ? 'checked' : '' }}>
-                                <span class="resident-ticket-priority-name">Low</span>
+                                <span class="resident-ticket-priority-name">Low Priority</span>
                                 <span class="resident-ticket-priority-copy">For minor concerns that do not disrupt your stay.</span>
                             </label>
 
@@ -92,16 +92,10 @@
                                 <span class="resident-ticket-priority-copy">For concerns that should be addressed soon.</span>
                             </label>
 
-                            <label class="resident-ticket-priority-card" data-priority="high">
-                                <input type="radio" name="priority" value="high" {{ old('priority', $ticket->priority) === 'high' ? 'checked' : '' }}>
-                                <span class="resident-ticket-priority-name">High</span>
-                                <span class="resident-ticket-priority-copy">For urgent disruptions that need fast attention.</span>
-                            </label>
-
-                            <label class="resident-ticket-priority-card" data-priority="urgent">
-                                <input type="radio" name="priority" value="urgent" {{ old('priority', $ticket->priority) === 'urgent' ? 'checked' : '' }}>
-                                <span class="resident-ticket-priority-name">Urgent</span>
-                                <span class="resident-ticket-priority-copy">Use only for critical or safety-related issues.</span>
+                            <label class="resident-ticket-priority-card" data-priority="critical">
+                                <input type="radio" name="priority" value="critical" {{ old('priority', $ticket->normalized_priority) === 'critical' ? 'checked' : '' }}>
+                                <span class="resident-ticket-priority-name">Critical</span>
+                                <span class="resident-ticket-priority-copy">Use only for issues that need immediate action.</span>
                             </label>
                         </div>
                     </div>
@@ -186,53 +180,23 @@
                             Cancel
                         </a>
                     </div>
-                </form>
-            </section>
 
-            <aside class="resident-ticket-edit-sidebar">
-                <section class="resident-ticket-edit-panel">
-                    <div class="resident-ticket-edit-head resident-ticket-edit-head-simple">
-                        <div>
-                            <h2>Editing Notes</h2>
-                            <p>Keep your request clear so the maintenance team can act quickly.</p>
-                        </div>
-                    </div>
-
-                    <div class="resident-ticket-edit-divider"></div>
-
-                    <div class="resident-ticket-edit-note-list">
-                        <div class="resident-ticket-edit-note-item">Use the description to mention exact location, symptoms, and when the issue started.</div>
-                        <div class="resident-ticket-edit-note-item">Only mark a ticket as urgent when it affects safety or immediate habitability.</div>
-                        <div class="resident-ticket-edit-note-item">Fresh photos or videos help the team compare the old report with the current condition.</div>
-                    </div>
-                </section>
-
-                <section class="resident-ticket-edit-panel">
-                    <div class="resident-ticket-edit-head resident-ticket-edit-head-simple">
-                        <div>
-                            <h2>Current Status</h2>
-                            <p>A quick snapshot of this request while you update it.</p>
-                        </div>
-                    </div>
-
-                    <div class="resident-ticket-edit-divider"></div>
-
-                    <div class="resident-ticket-edit-meta-list">
+                    <div class="resident-ticket-edit-inline-meta">
                         <div class="resident-ticket-edit-meta-item">
                             <span>Status</span>
                             <strong>{{ ucfirst(str_replace('_', ' ', $ticket->status)) }}</strong>
                         </div>
                         <div class="resident-ticket-edit-meta-item">
                             <span>Original Priority</span>
-                            <strong>{{ ucfirst($ticket->priority) }}</strong>
+                            <strong>{{ $ticket->priority_label }}</strong>
                         </div>
                         <div class="resident-ticket-edit-meta-item">
                             <span>Last Updated</span>
                             <strong>{{ $ticket->updated_at->format('M d, Y h:i A') }}</strong>
                         </div>
                     </div>
-                </section>
-            </aside>
+                </form>
+            </section>
         </div>
     </div>
     <script>
@@ -456,16 +420,7 @@
         }
 
         .resident-ticket-edit-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
-            gap: 24px;
-            align-items: start;
-        }
-
-        .resident-ticket-edit-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+            display: block;
         }
 
         .resident-ticket-edit-panel {
@@ -610,8 +565,7 @@
             border-color: rgba(214,168,91,0.32);
         }
 
-        .resident-ticket-priority-card.is-active[data-priority="high"],
-        .resident-ticket-priority-card.is-active[data-priority="urgent"] {
+        .resident-ticket-priority-card.is-active[data-priority="critical"] {
             background: rgba(185, 106, 93, 0.10);
             border-color: rgba(185, 106, 93, 0.32);
         }
@@ -629,7 +583,6 @@
         }
 
         .resident-ticket-edit-subpanel,
-        .resident-ticket-edit-note-item,
         .resident-ticket-edit-meta-item,
         .resident-ticket-edit-attachment-card {
             background: rgba(255,255,255,0.03);
@@ -642,10 +595,13 @@
         }
 
         .resident-ticket-edit-attachment-stack,
-        .resident-ticket-edit-note-list,
-        .resident-ticket-edit-meta-list {
+        .resident-ticket-edit-inline-meta {
             display: grid;
             gap: 12px;
+        }
+
+        .resident-ticket-edit-inline-meta {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
         .resident-ticket-edit-attachment-card {
@@ -794,15 +750,8 @@
             border: 1px solid rgba(214,168,91,0.14);
         }
 
-        .resident-ticket-edit-note-item,
         .resident-ticket-edit-meta-item {
             padding: 14px 16px;
-        }
-
-        .resident-ticket-edit-note-item {
-            color: #B8AB98;
-            font-size: 0.88rem;
-            line-height: 1.75;
         }
 
         .resident-ticket-edit-meta-item span {
@@ -813,12 +762,6 @@
             text-transform: uppercase;
             letter-spacing: 0.12em;
             margin-bottom: 8px;
-        }
-
-        @media (max-width: 1024px) {
-            .resident-ticket-edit-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 768px) {
@@ -837,7 +780,8 @@
             }
 
             .resident-ticket-priority-grid,
-            .resident-ticket-preview-area {
+            .resident-ticket-preview-area,
+            .resident-ticket-edit-inline-meta {
                 grid-template-columns: 1fr;
             }
 

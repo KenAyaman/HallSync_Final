@@ -5,7 +5,7 @@
                 <p class="resident-booking-kicker">Reservation Overview</p>
                 <h1 class="resident-booking-title">Booking Details</h1>
                 <p class="resident-booking-subtitle">
-                    Review your selected facility, reservation schedule, booking status, and extra notes in one polished summary.
+                    Review your selected facility and exact schedule in one simple, easy-to-scan summary.
                 </p>
 
                 <div class="resident-booking-hero-stats">
@@ -14,12 +14,12 @@
                         <strong>{{ $booking->facility_name }}</strong>
                     </div>
                     <div class="resident-booking-hero-stat">
-                        <span>Status</span>
-                        <strong>{{ ucfirst($booking->status) }}</strong>
-                    </div>
-                    <div class="resident-booking-hero-stat">
                         <span>Date</span>
                         <strong>{{ $booking->booking_date->format('M d, Y') }}</strong>
+                    </div>
+                    <div class="resident-booking-hero-stat">
+                        <span>Time Slot</span>
+                        <strong>{{ $booking->booking_date->format('h:i A') }} - {{ $booking->end_time->format('h:i A') }}</strong>
                     </div>
                 </div>
             </div>
@@ -30,93 +30,44 @@
             </div>
         </section>
 
-        <div class="resident-booking-grid">
-            <section class="resident-booking-panel">
-                <div class="resident-booking-panel-head">
-                    <div>
-                        <h2>Reservation Information</h2>
-                        <p>The complete details of your facility reservation.</p>
-                    </div>
-
-                    <span class="resident-booking-badge resident-booking-badge-status-{{ $booking->status }}">
-                        {{ ucfirst($booking->status) }}
-                    </span>
+        <section class="resident-booking-panel">
+            <div class="resident-booking-panel-head">
+                <div>
+                    <h2>Reservation Information</h2>
+                    <p>Your facility schedule in one main view without extra side panels.</p>
                 </div>
 
-                <div class="resident-booking-divider"></div>
+                <span class="resident-booking-badge resident-booking-badge-status-{{ $booking->status }}">
+                    Reserved
+                </span>
+            </div>
 
-                <div class="resident-booking-detail-list">
+            <div class="resident-booking-divider"></div>
+
+            <div class="resident-booking-detail-list">
+                <div class="resident-booking-detail-box">
+                    <span>Facility</span>
+                    <strong>{{ $booking->facility_name }}</strong>
+                </div>
+
+                <div class="resident-booking-meta-grid">
                     <div class="resident-booking-detail-box">
-                        <span>Facility</span>
-                        <strong>{{ $booking->facility_name }}</strong>
+                        <span>Booking Date</span>
+                        <strong>{{ $booking->booking_date->format('F d, Y') }}</strong>
                     </div>
 
-                    <div class="resident-booking-meta-grid">
-                        <div class="resident-booking-detail-box">
-                            <span>Booking Date</span>
-                            <strong>{{ $booking->booking_date->format('F d, Y') }}</strong>
-                        </div>
-
-                        <div class="resident-booking-detail-box">
-                            <span>Reserved Slot</span>
-                            <strong>{{ $booking->booking_date->format('h:i A') }} - {{ $booking->end_time->format('h:i A') }}</strong>
-                        </div>
-                    </div>
-
-                    @if($booking->notes)
-                        <div class="resident-booking-detail-box">
-                            <span>Notes</span>
-                            <p>{{ $booking->notes }}</p>
-                        </div>
-                    @endif
-
                     <div class="resident-booking-detail-box">
-                        <span>Booked On</span>
-                        <strong>{{ $booking->created_at->format('F d, Y h:i A') }}</strong>
+                        <span>Reserved Slot</span>
+                        <strong>{{ $booking->booking_date->format('h:i A') }} - {{ $booking->end_time->format('h:i A') }}</strong>
                     </div>
                 </div>
-            </section>
 
-            <aside class="resident-booking-sidebar">
-                <section class="resident-booking-panel">
-                    <div class="resident-booking-panel-head">
-                        <div>
-                            <h2>Booking Guide</h2>
-                            <p>Status meaning for your current reservation.</p>
-                        </div>
-                    </div>
-
-                    <div class="resident-booking-divider"></div>
-
-                    <div class="resident-booking-guide-list">
-                        <div class="resident-booking-guide-item">
-                            <strong>Confirmed</strong>
-                            <p>Your reservation is already secured for the selected slot.</p>
-                        </div>
-                        <div class="resident-booking-guide-item">
-                            <strong>Cancelled</strong>
-                            <p>The reservation is no longer active and will not block the time slot.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="resident-booking-panel">
-                    <div class="resident-booking-panel-head">
-                        <div>
-                            <h2>Quick Actions</h2>
-                            <p>Jump back to your reservations or create another booking.</p>
-                        </div>
-                    </div>
-
-                    <div class="resident-booking-divider"></div>
-
-                    <div class="resident-booking-action-list">
-                        <a href="{{ route('bookings.index') }}" class="resident-booking-text-link">View all bookings</a>
-                        <a href="{{ route('bookings.create') }}" class="resident-booking-text-link">Create a new booking</a>
-                    </div>
-                </section>
-            </aside>
-        </div>
+                <div class="resident-booking-detail-box">
+                    <span>Booked On</span>
+                    <strong>{{ $booking->created_at->format('F d, Y h:i A') }}</strong>
+                </div>
+            </div>
+        </section>
     </div>
 
     <style>
@@ -146,7 +97,10 @@
             box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
         }
 
-        .resident-booking-hero-copy { max-width: 860px; }
+        .resident-booking-hero-copy {
+            max-width: 860px;
+        }
+
         .resident-booking-kicker {
             margin: 0 0 10px;
             color: #D2A04C;
@@ -188,8 +142,7 @@
         }
 
         .resident-booking-hero-stat span,
-        .resident-booking-detail-box span,
-        .resident-booking-guide-item strong {
+        .resident-booking-detail-box span {
             display: block;
             color: #8A7A66;
             font-size: 0.72rem;
@@ -198,7 +151,9 @@
             letter-spacing: 0.12em;
         }
 
-        .resident-booking-hero-stat span { color: #A89376; }
+        .resident-booking-hero-stat span {
+            color: #A89376;
+        }
 
         .resident-booking-hero-stat strong {
             display: block;
@@ -227,21 +182,19 @@
             transition: transform 0.2s ease;
         }
 
-        .resident-booking-btn:hover { transform: translateY(-1px); }
-        .resident-booking-btn-primary { background: linear-gradient(95deg, #b8842f, #d6a85b); color: #17120d; }
-        .resident-booking-btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(214,168,91,0.22); color: #F0E9DF; }
-
-        .resident-booking-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-            gap: 24px;
-            align-items: start;
+        .resident-booking-btn:hover {
+            transform: translateY(-1px);
         }
 
-        .resident-booking-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+        .resident-booking-btn-primary {
+            background: linear-gradient(95deg, #b8842f, #d6a85b);
+            color: #17120d;
+        }
+
+        .resident-booking-btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(214,168,91,0.22);
+            color: #F0E9DF;
         }
 
         .resident-booking-panel {
@@ -300,16 +253,13 @@
             color: #dc9a86;
         }
 
-        .resident-booking-detail-list,
-        .resident-booking-guide-list,
-        .resident-booking-action-list {
+        .resident-booking-detail-list {
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
 
-        .resident-booking-detail-box,
-        .resident-booking-guide-item {
+        .resident-booking-detail-box {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -325,46 +275,30 @@
             font-weight: 600;
         }
 
-        .resident-booking-detail-box p,
-        .resident-booking-guide-item p {
-            margin: 10px 0 0;
-            color: #B8AB98;
-            font-size: 0.93rem;
-            line-height: 1.75;
-        }
-
-        .resident-booking-guide-item strong { color: #D6A85B; }
-
         .resident-booking-meta-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 14px;
         }
 
-        .resident-booking-text-link {
-            color: #d7b07a;
-            text-decoration: none;
-            font-size: 0.86rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-
-        @media (max-width: 1024px) {
-            .resident-booking-grid { grid-template-columns: 1fr; }
-        }
-
         @media (max-width: 768px) {
-            .resident-booking-page { padding: 18px 0 28px; }
-            .resident-booking-hero,
-            .resident-booking-panel { padding: 22px; }
-            .resident-booking-hero { flex-direction: column; align-items: flex-start; }
-            .resident-booking-hero-actions { width: 100%; justify-content: flex-start; }
-            .resident-booking-meta-grid { grid-template-columns: 1fr; }
-        }
+            .resident-booking-page {
+                padding: 18px 0 28px;
+            }
 
-        @media (max-width: 560px) {
-            .resident-booking-btn { width: 100%; }
+            .resident-booking-hero,
+            .resident-booking-panel {
+                padding: 22px;
+            }
+
+            .resident-booking-hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .resident-booking-meta-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </x-app-layout>

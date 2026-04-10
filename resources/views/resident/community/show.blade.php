@@ -1,94 +1,570 @@
 <x-app-layout>
-<div style="max-width: 800px; margin: 0 auto;">
+    <div class="community-show-page">
+        @if (session('success'))
+            <div class="community-show-feedback-banner" data-auto-dismiss>
+                {{ session('success') }}
+            </div>
+        @endif
 
-    <div style="margin-bottom: 24px;">
-        <a href="{{ route('community.index') }}" style="color: #7B746B; text-decoration: none;">← Back to Community</a>
-    </div>
-
-    {{-- Post --}}
-    <div style="background: white; border-radius: 24px; padding: 28px; margin-bottom: 24px; border: 1px solid #F0F0F0;">
-        
-        {{-- User Info --}}
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-            <div style="width: 48px; height: 48px; background: #F5F0E8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #C79745;">
-                {{ strtoupper(substr($post->user->name, 0, 1)) }}
-            </div>
-            <div>
-                <div style="font-weight: 600; color: #2F2A27;">{{ $post->user->name }}</div>
-                <div style="font-size: 12px; color: #B39A78;">{{ $post->created_at->format('M d, Y') }}</div>
-            </div>
-            <div style="margin-left: auto;">
-                <span style="background: #FEF8F0; color: #C79745; padding: 4px 12px; border-radius: 20px; font-size: 11px;">
-                    {{ str_replace('_', ' ', ucfirst($post->type)) }}
-                </span>
-            </div>
+        <div class="community-show-topbar">
+            <a href="{{ route('community.index') }}" class="community-show-back">Back to Community</a>
         </div>
 
-        {{-- Title & Content --}}
-        <h1 style="font-size: 26px; font-weight: 600; color: #2F2A27; margin-bottom: 16px;">
-            {{ $post->title }}
-        </h1>
-        <p style="color: #5C5348; line-height: 1.7; font-size: 16px; margin-bottom: 20px;">
-            {{ $post->content }}
-        </p>
-
-        {{-- Image --}}
-        @if($post->image_path)
-            <img src="{{ Storage::url($post->image_path) }}" 
-                 style="max-width: 100%; border-radius: 16px; margin-bottom: 20px;">
-        @endif
-
-        {{-- Video --}}
-        @if($post->video_path)
-            <video controls style="max-width: 100%; border-radius: 16px; margin-bottom: 20px;">
-                <source src="{{ Storage::url($post->video_path) }}">
-            </video>
-        @endif
-
-        {{-- Rejection Reason (if rejected) --}}
-        @if($post->status === 'rejected' && $post->rejection_reason)
-            <div style="background: #FEF5E8; padding: 12px; border-radius: 12px; margin-top: 16px;">
-                <p style="color: #C79745; font-size: 12px; margin: 0;">❌ Rejected: {{ $post->rejection_reason }}</p>
-            </div>
-        @endif
-    </div>
-
-    {{-- Comments Section --}}
-    <div style="background: white; border-radius: 24px; padding: 28px; border: 1px solid #F0F0F0;">
-        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Comments ({{ $post->comments->count() }})</h3>
-
-        {{-- Comment Form --}}
-        @auth
-        <form method="POST" action="{{ route('community.comment', $post) }}" style="margin-bottom: 28px;">
-            @csrf
-            <textarea name="content" rows="3" 
-                      style="width: 100%; padding: 12px; border: 1px solid #E5E0D8; border-radius: 16px; margin-bottom: 12px;"
-                      placeholder="Write a comment..."></textarea>
-            <button type="submit" 
-                    style="background: #C79745; color: white; padding: 10px 20px; border-radius: 30px; border: none; cursor: pointer;">
-                Post Comment
-            </button>
-        </form>
-        @endauth
-
-        {{-- Comments List --}}
-        @forelse($post->comments as $comment)
-            <div style="padding: 16px 0; border-bottom: 1px solid #F5F0E8;">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                    <div style="width: 32px; height: 32px; background: #F5F0E8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">
-                        {{ strtoupper(substr($comment->user->name, 0, 1)) }}
+        <section class="community-show-panel">
+            <div class="community-post-card">
+                <div class="community-post-head">
+                    <div class="community-post-author">
+                        <div class="community-post-avatar">
+                            @if($post->user->profile_photo_url)
+                                <img src="{{ $post->user->profile_photo_url }}" alt="{{ $post->user->name }}">
+                            @else
+                                {{ $post->user->profile_initials }}
+                            @endif
+                        </div>
+                        <div>
+                            <strong>{{ $post->user->name }}</strong>
+                            <span>{{ $post->created_at->format('M d, Y') }}</span>
+                        </div>
                     </div>
-                    <div>
-                        <span style="font-weight: 600; color: #2F2A27;">{{ $comment->user->name }}</span>
-                        <span style="font-size: 11px; color: #B39A78; margin-left: 8px;">{{ $comment->created_at->diffForHumans() }}</span>
+
+                    <div class="community-post-badges">
+                        @if(auth()->check() && auth()->id() === $post->user_id && $post->status !== 'approved')
+                            <span class="community-post-status community-post-status-{{ $post->status }}">
+                                {{ ucfirst($post->status) }}
+                            </span>
+                        @endif
+                        <span class="community-post-type">{{ str_replace('_', ' ', ucfirst($post->type)) }}</span>
                     </div>
                 </div>
-                <p style="color: #5C5348; margin-left: 42px;">{{ $comment->content }}</p>
+
+                <div class="community-post-copy">
+                    <h2>{{ $post->title }}</h2>
+                    <p>{{ $post->content }}</p>
+                </div>
+
+                @if($post->image_path)
+                    <div class="community-post-media">
+                        <img src="{{ Storage::url($post->image_path) }}" alt="{{ $post->title }}">
+                    </div>
+                @endif
+
+                @if($post->video_path)
+                    <div class="community-post-media">
+                        <video controls>
+                            <source src="{{ Storage::url($post->video_path) }}">
+                        </video>
+                    </div>
+                @endif
+
+                @if($post->status === 'rejected' && $post->rejection_reason)
+                    <div class="community-post-rejection">
+                        Rejected: {{ $post->rejection_reason }}
+                    </div>
+                @endif
+
+                @if(auth()->check() && auth()->id() === $post->user_id)
+                    <div class="community-post-owner-actions">
+                        <a href="{{ route('community.edit', $post) }}" class="community-post-owner-btn">Edit Post</a>
+                        <form method="POST" action="{{ route('community.destroy', $post) }}" onsubmit="return confirm('Delete this post? This action cannot be undone.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="community-post-owner-btn community-post-owner-btn-delete">Delete Post</button>
+                        </form>
+                    </div>
+                @endif
+
+                <div class="community-thread-summary-grid">
+                    <div class="community-show-meta-item">
+                        <span>Comments</span>
+                        <strong>{{ $post->comments->count() }}</strong>
+                    </div>
+                    <div class="community-show-meta-item">
+                        <span>Category</span>
+                        <strong>{{ str_replace('_', ' ', ucfirst($post->type)) }}</strong>
+                    </div>
+                    <div class="community-show-meta-item">
+                        <span>Posted</span>
+                        <strong>{{ $post->created_at->diffForHumans() }}</strong>
+                    </div>
+                    <div class="community-show-meta-item">
+                        <span>Status</span>
+                        <strong>{{ ucfirst($post->status) }}</strong>
+                    </div>
+                </div>
             </div>
-        @empty
-            <p style="text-align: center; color: #B39A78; padding: 32px;">No comments yet. Be the first to comment!</p>
-        @endforelse
+        </section>
+
+        <section class="community-show-panel">
+            <div class="community-show-panel-head">
+                <div>
+                    <h2>Comments</h2>
+                    <p>{{ $post->comments->count() }} replies in this discussion.</p>
+                </div>
+            </div>
+
+            <div class="community-show-divider"></div>
+
+            @auth
+                <form method="POST" action="{{ route('community.comment', $post) }}" class="community-comment-form">
+                    @csrf
+                    <div class="community-comment-composer">
+                        <div class="community-comment-avatar">
+                            @if(auth()->user()->profile_photo_url)
+                                <img src="{{ auth()->user()->profile_photo_url }}" alt="{{ auth()->user()->name }}">
+                            @else
+                                {{ auth()->user()->profile_initials }}
+                            @endif
+                        </div>
+                        <div class="community-comment-compose-body">
+                            <div class="community-comment-compose-meta">
+                                <strong>{{ auth()->user()->name }}</strong>
+                                <span>Join the discussion</span>
+                            </div>
+                            <textarea name="content" rows="3" class="community-comment-input" placeholder="Write a comment..."></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="community-comment-btn">Post Comment</button>
+                </form>
+            @endauth
+
+            <div class="community-comment-list">
+                @forelse($post->comments as $comment)
+                    <div class="community-comment-item">
+                        <div class="community-comment-avatar">
+                            @if($comment->user->profile_photo_url)
+                                <img src="{{ $comment->user->profile_photo_url }}" alt="{{ $comment->user->name }}">
+                            @else
+                                {{ $comment->user->profile_initials }}
+                            @endif
+                        </div>
+                        <div class="community-comment-body">
+                            <div class="community-comment-meta">
+                                <strong>{{ $comment->user->name }}</strong>
+                                <span>{{ $comment->created_at->diffForHumans() }}</span>
+                            </div>
+                            <p>{{ $comment->content }}</p>
+                        </div>
+                    </div>
+                @empty
+                    <div class="community-empty-state">No comments yet. Be the first to reply.</div>
+                @endforelse
+            </div>
+        </section>
     </div>
 
-</div>
+    <script>
+        document.querySelectorAll('[data-auto-dismiss]').forEach((flash) => {
+            setTimeout(() => {
+                flash.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+                flash.style.opacity = '0';
+                flash.style.transform = 'translateY(-6px)';
+                setTimeout(() => flash.remove(), 360);
+            }, 3200);
+        });
+    </script>
+
+    <style>
+        .community-show-page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 24px 16px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .community-show-feedback-banner {
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(46, 58, 41, 0.92) 0%, rgba(34, 46, 31, 0.92) 100%);
+            border: 1px solid rgba(157, 195, 117, 0.18);
+            color: #D5E3BE;
+            font-size: 0.92rem;
+            font-weight: 600;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.14);
+        }
+
+        .community-show-panel {
+            border: 1px solid rgba(214,168,91,0.14);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.14);
+        }
+
+        .community-show-topbar {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .community-show-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(214,168,91,0.18);
+            background: rgba(214,168,91,0.10);
+            color: #D6A85B;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+        }
+
+        .community-show-panel {
+            padding: 26px 28px;
+            border-radius: 20px;
+            background: rgba(42,44,48,0.78);
+            backdrop-filter: blur(10px);
+        }
+
+        .community-show-panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .community-show-panel-head h2 {
+            margin: 0;
+            color: #F0E9DF;
+            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .community-show-panel-head p {
+            margin: 4px 0 0;
+            color: #8A7A66;
+            font-size: 0.95rem;
+        }
+
+        .community-show-divider {
+            height: 1px;
+            background: linear-gradient(to right, rgba(214,168,91,0.3), rgba(214,168,91,0.05), transparent);
+            margin-bottom: 18px;
+        }
+
+        .community-post-card,
+        .community-show-meta-item,
+        .community-comment-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 18px;
+        }
+
+        .community-post-card {
+            padding: 22px;
+        }
+
+        .community-post-head,
+        .community-comment-item {
+            display: flex;
+            gap: 14px;
+        }
+
+        .community-post-head {
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .community-post-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .community-post-avatar,
+        .community-comment-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(214, 168, 91, 0.26), rgba(190,147,96,0.08));
+            color: #F4DEB5;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .community-post-avatar img,
+        .community-comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .community-post-author strong,
+        .community-comment-meta strong {
+            display: block;
+            color: #F0E9DF;
+            font-size: 0.98rem;
+        }
+
+        .community-post-author span,
+        .community-comment-meta span {
+            color: #8A7A66;
+            font-size: 0.86rem;
+        }
+
+        .community-post-type,
+        .community-post-status {
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .community-post-type {
+            background: rgba(214,168,91,0.12);
+            border: 1px solid rgba(214,168,91,0.18);
+            color: #D6A85B;
+        }
+
+        .community-post-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .community-post-status-pending {
+            background: rgba(214,168,91,0.12);
+            border: 1px solid rgba(214,168,91,0.18);
+            color: #E9D8BD;
+        }
+
+        .community-post-status-rejected {
+            background: rgba(224,112,96,0.12);
+            border: 1px solid rgba(224,112,96,0.18);
+            color: #F0B3A9;
+        }
+
+        .community-post-copy h2 {
+            margin: 0 0 12px;
+            color: #F0E9DF;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+        }
+
+        .community-post-copy p,
+        .community-comment-body p {
+            margin: 0;
+            color: #B8AB98;
+            line-height: 1.8;
+            font-size: 0.96rem;
+        }
+
+        .community-post-media {
+            margin-top: 18px;
+        }
+
+        .community-post-media img,
+        .community-post-media video {
+            width: 100%;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(18,20,23,0.55);
+        }
+
+        .community-post-rejection {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(224,112,96,0.10);
+            border: 1px solid rgba(224,112,96,0.18);
+            color: #F0B3A9;
+            line-height: 1.7;
+        }
+
+        .community-post-owner-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .community-post-owner-actions form {
+            margin: 0;
+        }
+
+        .community-post-owner-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(214,168,91,0.18);
+            background: rgba(255,255,255,0.03);
+            color: #D6A85B;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.84rem;
+            cursor: pointer;
+        }
+
+        .community-post-owner-btn-delete {
+            border-color: rgba(224,112,96,0.20);
+            color: #F0B3A9;
+            background: rgba(224,112,96,0.06);
+        }
+
+        .community-thread-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .community-show-meta-item {
+            padding: 16px 18px;
+        }
+
+        .community-show-meta-item span {
+            display: block;
+            color: #8A7A66;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+        }
+
+        .community-show-meta-item strong {
+            display: block;
+            margin-top: 8px;
+            color: #F0E9DF;
+            font-size: 0.94rem;
+            font-weight: 600;
+        }
+
+        .community-comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .community-comment-composer {
+            display: flex;
+            gap: 14px;
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .community-comment-compose-body {
+            flex: 1;
+        }
+
+        .community-comment-compose-meta strong {
+            display: block;
+            color: #F0E9DF;
+        }
+
+        .community-comment-compose-meta span {
+            display: block;
+            margin-top: 2px;
+            color: #8A7A66;
+            font-size: 0.86rem;
+        }
+
+        .community-comment-input {
+            width: 100%;
+            margin-top: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(214,168,91,0.14);
+            background: rgba(32,34,37,0.82);
+            color: #F0E9DF;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .community-comment-btn {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(95deg, #b8842f, #d6a85b);
+            color: #17120d;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .community-comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .community-comment-item {
+            padding: 18px;
+        }
+
+        .community-comment-body {
+            flex: 1;
+        }
+
+        .community-comment-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .community-empty-state {
+            padding: 20px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed rgba(214,168,91,0.18);
+            text-align: center;
+            color: #B8AB98;
+        }
+
+        @media (max-width: 900px) {
+            .community-thread-summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .community-show-page {
+                padding: 18px 0 28px;
+            }
+
+            .community-show-panel {
+                padding: 22px;
+            }
+
+            .community-post-head {
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .community-thread-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .community-post-owner-actions {
+                flex-direction: column;
+            }
+
+            .community-comment-composer {
+                flex-direction: column;
+            }
+        }
+    </style>
 </x-app-layout>

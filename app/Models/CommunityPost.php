@@ -41,6 +41,11 @@ class CommunityPost extends Model
         return $this->hasMany(CommunityComment::class);
     }
 
+    public function likes()
+    {
+        return $this->hasMany(CommunityPostLike::class);
+    }
+
     public function isApproved()
     {
         return $this->status === 'approved';
@@ -49,5 +54,18 @@ class CommunityPost extends Model
     public function isPending()
     {
         return $this->status === 'pending';
+    }
+
+    public function isLikedBy(?User $user): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        if (isset($this->liked_by_user)) {
+            return (bool) $this->liked_by_user;
+        }
+
+        return $this->likes()->where('user_id', $user->id)->exists();
     }
 }

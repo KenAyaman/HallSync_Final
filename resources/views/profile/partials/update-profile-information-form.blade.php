@@ -22,9 +22,10 @@
         <div class="profile-avatar-panel">
             <div class="profile-avatar-shell">
                 @if ($user->profile_photo_url)
-                    <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="profile-avatar-image">
+                    <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="profile-avatar-image" id="profileAvatarPreview">
                 @else
-                    <span class="profile-avatar-fallback">{{ $user->profile_initials }}</span>
+                    <img src="" alt="{{ $user->name }}" class="profile-avatar-image" id="profileAvatarPreview" style="display:none;">
+                    <span class="profile-avatar-fallback" id="profileAvatarFallback">{{ $user->profile_initials }}</span>
                 @endif
             </div>
 
@@ -316,4 +317,31 @@
             }
         }
     </style>
+
+    <script>
+        (() => {
+            const input = document.getElementById('profile_photo');
+            const preview = document.getElementById('profileAvatarPreview');
+            const fallback = document.getElementById('profileAvatarFallback');
+
+            if (!input || !preview) {
+                return;
+            }
+
+            input.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+
+                if (!file) {
+                    return;
+                }
+
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+
+                if (fallback) {
+                    fallback.style.display = 'none';
+                }
+            });
+        })();
+    </script>
 </section>

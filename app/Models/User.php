@@ -71,7 +71,7 @@ class User extends Authenticatable
     public function getProfilePhotoUrlAttribute(): ?string
     {
         return $this->profile_photo_path
-            ? Storage::url($this->profile_photo_path)
+            ? Storage::url($this->profile_photo_path) . '?v=' . optional($this->updated_at)->timestamp
             : null;
     }
 
@@ -82,5 +82,10 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($part) => strtoupper(substr($part, 0, 1)))
             ->implode('');
+    }
+
+    public function concerns()
+    {
+        return $this->hasMany(Concern::class);
     }
 }

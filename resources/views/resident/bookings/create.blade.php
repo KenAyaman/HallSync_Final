@@ -1,82 +1,38 @@
 <x-app-layout>
-    <div class="space-y-8">
+    <div class="resident-booking-create-page">
+        <section class="resident-booking-create-hero">
+            <div class="resident-booking-create-copy">
+                <p class="resident-booking-create-kicker">Resident Booking Hub</p>
+                <h1 class="resident-booking-create-title">Book a Facility</h1>
+                <p class="resident-booking-create-subtitle">
+                    Reserve a shared Rexhall space with a cleaner booking flow that matches the rest of your resident dashboard experience.
+                </p>
 
-        {{-- PAGE HEADER --}}
-        <div class="relative overflow-hidden rounded-[36px] border border-[#3A342D]"
-             style="
-                background:
-                    linear-gradient(115deg,
-                        #1F2023 0%,
-                        #24262B 38%,
-                        #2C2C2F 62%,
-                        #3B3023 100%);
-                box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
-             ">
-
-            <div class="absolute top-[-90px] right-[10%] w-[320px] h-[320px] rounded-full blur-3xl opacity-20"
-                 style="background: rgba(199, 151, 69, 0.35);"></div>
-
-            <div class="absolute bottom-[-120px] left-[18%] w-[260px] h-[260px] rounded-full blur-3xl opacity-10"
-                 style="background: rgba(255,255,255,0.18);"></div>
-
-            <div class="relative z-10 px-8 py-10 md:px-14 md:py-12">
-                <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-                    <div class="max-w-2xl">
-                        <div class="mb-3">
-                            <span class="inline-block text-[11px] tracking-[0.30em] uppercase"
-                                  style="color: #D2A04C; font-weight: 700;">
-                                Reserve Shared Facilities
-                            </span>
-                        </div>
-
-                        <h1 class="text-4xl md:text-5xl font-bold leading-[1.05] mb-4"
-                            style="font-family: 'Playfair Display', serif; color: #F8F3EA;">
-                            Book a<br>
-                            <span style="color: #F3E5CF;">Facility</span>
-                        </h1>
-
-                        <p class="text-base md:text-lg leading-relaxed max-w-xl"
-                           style="color: rgba(255,255,255,0.82);">
-                            Pick a facility, choose a valid date, and reserve one available time slot.
-                        </p>
+                <div class="resident-booking-create-stats">
+                    <div class="resident-booking-create-stat">
+                        <span>Facilities</span>
+                        <strong>4 spaces</strong>
                     </div>
-
-                    <div class="shrink-0">
-                        <a href="{{ route('bookings.index') }}"
-                           style="
-                                background: rgba(255,255,255,0.05);
-                                border: 1px solid rgba(214,168,91,0.28);
-                                color: #F2DEC0;
-                                padding: 13px 26px;
-                                border-radius: 999px;
-                                font-weight: 600;
-                                text-decoration: none;
-                                backdrop-filter: blur(8px);
-                                transition: all 0.3s ease;
-                                display: inline-block;
-                           "
-                           onmouseover="this.style.transform='translateY(-2px)'; this.style.background='rgba(255,255,255,0.09)';"
-                           onmouseout="this.style.transform='translateY(0)'; this.style.background='rgba(255,255,255,0.05)';">
-                            ← Back to My Bookings
-                        </a>
+                    <div class="resident-booking-create-stat">
+                        <span>Booking Type</span>
+                        <strong>Single slot</strong>
+                    </div>
+                    <div class="resident-booking-create-stat">
+                        <span>Availability</span>
+                        <strong>Live check</strong>
                     </div>
                 </div>
             </div>
-        </div>
 
-        {{-- ERROR LIST --}}
+            <div class="resident-booking-create-actions">
+                <a href="{{ route('bookings.index') }}" class="resident-booking-create-btn resident-booking-create-btn-secondary">Back to My Bookings</a>
+            </div>
+        </section>
+
         @if($errors->any())
-            <div style="
-                background: linear-gradient(180deg, #FFF6F4 0%, #FDF0ED 100%);
-                border: 1px solid #C98B7F;
-                border-radius: 24px;
-                padding: 18px 22px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-            ">
-                <div style="font-weight: 700; color: #8F4538; margin-bottom: 10px;">
-                    Please fix the following errors:
-                </div>
-                <ul style="margin-left: 18px; color: #8F4538; line-height: 1.8;">
+            <div class="resident-booking-create-error">
+                <div class="resident-booking-create-error-title">Please fix the following:</div>
+                <ul class="resident-booking-create-error-list">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -84,369 +40,549 @@
             </div>
         @endif
 
-        <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-8">
+        <div class="resident-booking-create-grid">
+            <section class="resident-booking-create-panel">
+                <div class="resident-booking-create-head">
+                    <div>
+                        <h2>Booking Details</h2>
+                        <p>Select your facility, date, and one available slot.</p>
+                    </div>
 
-            {{-- BOOKING FORM --}}
-            <div style="
-                background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF8 100%);
-                border-radius: 32px;
-                padding: 28px 32px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-                border: 1px solid #3A342D;
-            ">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom: 20px; flex-wrap: wrap;">
-                    <h2 style="
-                        font-size: 24px;
-                        font-weight: 600;
-                        color: #2F2A27;
-                        font-family: 'Playfair Display', serif;
-                        margin: 0;
-                    ">
-                        Booking Request
-                    </h2>
-
-                    <span style="
-                        font-size: 12px;
-                        letter-spacing: 0.18em;
-                        text-transform: uppercase;
-                        color: #BE9360;
-                        font-weight: 700;
-                    ">
-                        Time Slot Picker
-                    </span>
+                    <span class="resident-booking-create-eyebrow">Time Slot Picker</span>
                 </div>
 
-                <div style="height:1px; background: linear-gradient(to right, #E8D9C5, #F3ECE2, transparent); margin-bottom: 24px;"></div>
+                <div class="resident-booking-create-divider"></div>
 
-                <form method="POST" action="{{ route('bookings.store') }}" class="space-y-6">
+                <form method="POST" action="{{ route('bookings.store') }}" class="resident-booking-create-form">
                     @csrf
 
                     <div>
-                        <label for="facility_name" style="
-                            display:block;
-                            font-weight: 700;
-                            margin-bottom: 10px;
-                            color: #2F2A27;
-                            font-size: 14px;
-                        ">
-                            Facility Name
-                            <span style="color:#B96A5D;">*</span>
-                        </label>
-
-                        <select name="facility_name" id="facility_name" required
-                                style="
-                                    width:100%;
-                                    padding: 14px 16px;
-                                    border: 1px solid #D9CCBA;
-                                    border-radius: 16px;
-                                    font-size: 15px;
-                                    color: #2F2A27;
-                                    background: #FFFEFC;
-                                    outline: none;
-                                ">
+                        <label for="facility_name" class="resident-booking-create-label">Facility Name</label>
+                        <select name="facility_name" id="facility_name" required class="resident-booking-create-input">
                             <option value="">Select a facility</option>
-                            <option value="Study Room 1" {{ old('facility_name') == 'Study Room 1' ? 'selected' : '' }}>Study Room 1</option>
-                            <option value="Study Room 2" {{ old('facility_name') == 'Study Room 2' ? 'selected' : '' }}>Study Room 2</option>
-                            <option value="Conference Room" {{ old('facility_name') == 'Conference Room' ? 'selected' : '' }}>Conference Room</option>
-                            <option value="Gym" {{ old('facility_name') == 'Gym' ? 'selected' : '' }}>Gym</option>
-                            <option value="Game Room" {{ old('facility_name') == 'Game Room' ? 'selected' : '' }}>Game Room</option>
-                            <option value="Laundry Room" {{ old('facility_name') == 'Laundry Room' ? 'selected' : '' }}>Laundry Room</option>
+                            <option value="Study Room 1" @selected(old('facility_name') === 'Study Room 1')>Study Room 1</option>
+                            <option value="Study Room 2" @selected(old('facility_name') === 'Study Room 2')>Study Room 2</option>
+                            <option value="Conference Room" @selected(old('facility_name') === 'Conference Room')>Conference Room</option>
+                            <option value="Gym" @selected(old('facility_name') === 'Gym')>Gym</option>
                         </select>
-
-                        <p style="font-size: 12px; color: #9A8D7B; margin-top: 8px;">
-                            Select the facility you want to reserve.
-                        </p>
+                        <p class="resident-booking-create-help">Select the shared facility you want to reserve.</p>
                     </div>
 
                     <div>
-                        <label for="booking_date" style="
-                            display:block;
-                            font-weight: 700;
-                            margin-bottom: 10px;
-                            color: #2F2A27;
-                            font-size: 14px;
-                        ">
-                            Booking Date
-                            <span style="color:#B96A5D;">*</span>
-                        </label>
-
+                        <label for="booking_date" class="resident-booking-create-label">Booking Date</label>
                         <input type="date"
                                name="booking_date"
                                id="booking_date"
                                value="{{ old('booking_date') }}"
                                required
-                               style="
-                                    width:100%;
-                                    padding: 14px 16px;
-                                    border: 1px solid #D9CCBA;
-                                    border-radius: 16px;
-                                    font-size: 15px;
-                                    color: #2F2A27;
-                                    background: #FFFEFC;
-                                    outline: none;
-                               ">
-
-                        <p style="font-size: 12px; color: #9A8D7B; margin-top: 8px;">
-                            Past dates are not allowed.
-                        </p>
+                               class="resident-booking-create-input">
+                        <p class="resident-booking-create-help">Past dates are not allowed.</p>
                     </div>
 
                     <div>
-                        <label style="
-                            display:block;
-                            font-weight: 700;
-                            margin-bottom: 12px;
-                            color: #2F2A27;
-                            font-size: 14px;
-                        ">
-                            Select Time Slot
-                            <span style="color:#B96A5D;">*</span>
-                        </label>
-
+                        <label class="resident-booking-create-label">Select Time Slot</label>
                         <input type="hidden" name="booking_time" id="booking_time" value="{{ old('booking_time') }}">
-
-                        <div id="slot-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
-
-                        <p style="font-size: 12px; color: #9A8D7B; margin-top: 10px;">
-                            Choose one available time slot.
-                        </p>
+                        <div id="slot-grid" class="resident-booking-slot-grid"></div>
+                        <p class="resident-booking-create-help">Choose one available time slot. Reserved slots are automatically locked.</p>
                     </div>
 
-                    <div>
-                        <label for="notes" style="
-                            display:block;
-                            font-weight: 700;
-                            margin-bottom: 10px;
-                            color: #2F2A27;
-                            font-size: 14px;
-                        ">
-                            Notes <span style="font-weight:500; color:#9A8D7B;">(Optional)</span>
-                        </label>
-
-                        <textarea name="notes" id="notes" rows="4"
-                                  placeholder="Any special requests or additional information?"
-                                  style="
-                                        width:100%;
-                                        padding: 14px 16px;
-                                        border: 1px solid #D9CCBA;
-                                        border-radius: 16px;
-                                        font-size: 15px;
-                                        color: #2F2A27;
-                                        background: #FFFEFC;
-                                        outline: none;
-                                        resize: vertical;
-                                  ">{{ old('notes') }}</textarea>
-                    </div>
-
-                    <div style="
-                        padding-top: 8px;
-                        border-top: 1px solid #EFE6DA;
-                    ">
-                        <button type="submit"
-                                style="
-                                    background: linear-gradient(90deg, #B8842F 0%, #D6A85B 100%);
-                                    color: #FFFFFF;
-                                    padding: 14px 28px;
-                                    border-radius: 999px;
-                                    font-weight: 700;
-                                    border: none;
-                                    cursor: pointer;
-                                    box-shadow: 0 10px 24px rgba(199, 150, 69, 0.28);
-                                    transition: all 0.3s ease;
-                                    font-size: 14px;
-                                "
-                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 16px 30px rgba(199,150,69,0.34)';"
-                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 24px rgba(199,150,69,0.28)';">
-                            Submit Booking Request
-                        </button>
+                    <div class="resident-booking-create-form-actions">
+                        <button type="submit" class="resident-booking-create-btn resident-booking-create-btn-primary">Confirm Booking</button>
+                        <a href="{{ route('bookings.index') }}" class="resident-booking-create-btn resident-booking-create-btn-secondary">Cancel</a>
                     </div>
                 </form>
-            </div>
+            </section>
 
-            {{-- BOOKING GUIDE --}}
-            <div class="space-y-6">
-                <div style="
-                    background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF8 100%);
-                    border-radius: 32px;
-                    padding: 28px 28px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-                    border: 1px solid #3A342D;
-                ">
-                    <h2 style="
-                        font-size: 24px;
-                        font-weight: 600;
-                        color: #2F2A27;
-                        font-family: 'Playfair Display', serif;
-                        margin-bottom: 16px;
-                    ">
-                        Booking Rules
-                    </h2>
-
-                    <div style="height:1px; background: linear-gradient(to right, #E8D9C5, #F3ECE2, transparent); margin-bottom: 18px;"></div>
-
-                    <div style="display:grid; gap:14px;">
-                        <div style="display:flex; gap:12px; align-items:flex-start;">
-                            <span style="font-size:18px;">📅</span>
-                            <div style="color:#6E665C; font-size:14px; line-height:1.6;">
-                                Only <strong style="color:#8A6A3C;">today and future dates</strong> are allowed.
-                            </div>
-                        </div>
-
-                        <div style="display:flex; gap:12px; align-items:flex-start;">
-                            <span style="font-size:18px;">⏰</span>
-                            <div style="color:#6E665C; font-size:14px; line-height:1.6;">
-                                Each request is limited to <strong style="color:#8A6A3C;">one time slot</strong>.
-                            </div>
-                        </div>
-
-                        <div style="display:flex; gap:12px; align-items:flex-start;">
-                            <span style="font-size:18px;">🔒</span>
-                            <div style="color:#6E665C; font-size:14px; line-height:1.6;">
-                                Reserved slots cannot be selected again.
-                            </div>
+            <aside class="resident-booking-create-sidebar">
+                <section class="resident-booking-create-panel">
+                    <div class="resident-booking-create-head resident-booking-create-head-simple">
+                        <div>
+                            <h2>Booking Rules</h2>
+                            <p>Quick reminders before you confirm your reservation.</p>
                         </div>
                     </div>
-                </div>
 
-                <div style="
-                    background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF8 100%);
-                    border-radius: 32px;
-                    padding: 28px 28px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-                    border: 1px solid #3A342D;
-                ">
-                    <h2 style="
-                        font-size: 24px;
-                        font-weight: 600;
-                        color: #2F2A27;
-                        font-family: 'Playfair Display', serif;
-                        margin-bottom: 16px;
-                    ">
-                        Time Slot Guide
-                    </h2>
+                    <div class="resident-booking-create-divider"></div>
 
-                    <div style="height:1px; background: linear-gradient(to right, #E8D9C5, #F3ECE2, transparent); margin-bottom: 18px;"></div>
-
-                    <div style="color:#6E665C; font-size:14px; line-height:1.8;">
-                        <div>• Green means available.</div>
-                        <div>• Gray means reserved.</div>
-                        <div>• Gold means your selected slot.</div>
-                        <div>• Pick a date first to load the time slots.</div>
+                    <div class="resident-booking-create-note-list">
+                        <div class="resident-booking-create-note-item">Only today and future dates are allowed.</div>
+                        <div class="resident-booking-create-note-item">Each booking is limited to one time slot.</div>
+                        <div class="resident-booking-create-note-item">Reserved slots cannot be selected again.</div>
                     </div>
-                </div>
-            </div>
+                </section>
+
+                <section class="resident-booking-create-panel">
+                    <div class="resident-booking-create-head resident-booking-create-head-simple">
+                        <div>
+                            <h2>Time Slot Guide</h2>
+                            <p>How the slot states work during selection.</p>
+                        </div>
+                    </div>
+
+                    <div class="resident-booking-create-divider"></div>
+
+                    <div class="resident-booking-create-meta-list">
+                        <div class="resident-booking-create-meta-item">
+                            <span>Available</span>
+                            <strong>Green cards can be selected.</strong>
+                        </div>
+                        <div class="resident-booking-create-meta-item">
+                            <span>Reserved</span>
+                            <strong>Gray cards are already blocked.</strong>
+                        </div>
+                        <div class="resident-booking-create-meta-item">
+                            <span>Selected</span>
+                            <strong>Gold highlights your chosen slot.</strong>
+                        </div>
+                    </div>
+                </section>
+            </aside>
         </div>
-
     </div>
 
     <script>
-    const bookingDateInput = document.getElementById('booking_date');
-    const facilityInput = document.getElementById('facility_name');
-    const slotGrid = document.getElementById('slot-grid');
-    const bookingTimeInput = document.getElementById('booking_time');
+        const bookingDateInput = document.getElementById('booking_date');
+        const facilityInput = document.getElementById('facility_name');
+        const slotGrid = document.getElementById('slot-grid');
+        const bookingTimeInput = document.getElementById('booking_time');
 
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    bookingDateInput.min = `${yyyy}-${mm}-${dd}`;
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        bookingDateInput.min = `${yyyy}-${mm}-${dd}`;
 
-    function formatTime(time24) {
-        const [hour, minute] = time24.split(':');
-        let h = parseInt(hour);
-        const suffix = h >= 12 ? 'PM' : 'AM';
-        h = h % 12 || 12;
-        return `${h}:${minute} ${suffix}`;
-    }
-
-    function clearSlots() {
-        slotGrid.innerHTML = '';
-        bookingTimeInput.value = '';
-    }
-
-    async function loadSlots() {
-        const facility = facilityInput.value;
-        const date = bookingDateInput.value;
-
-        if (!facility || !date) {
-            clearSlots();
-            return;
+        function formatTime(time24) {
+            const [hour, minute] = time24.split(':');
+            let h = parseInt(hour);
+            const suffix = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${minute} ${suffix}`;
         }
 
-        try {
-            const url = `{{ route('bookings.reserved-slots') }}?facility_name=${encodeURIComponent(facility)}&booking_date=${encodeURIComponent(date)}`;
-            const response = await fetch(url);
-            const data = await response.json();
-
-            renderSlots(data.available_slots || [], data.reserved_slots || []);
-        } catch (error) {
-            clearSlots();
-            console.error('Failed to load slots:', error);
+        function clearSlots() {
+            slotGrid.innerHTML = '';
         }
-    }
 
-    function renderSlots(timeSlots, reservedSlots) {
-        slotGrid.innerHTML = '';
-        bookingTimeInput.value = '';
+        async function loadSlots() {
+            const facility = facilityInput.value;
+            const date = bookingDateInput.value;
 
-        timeSlots.forEach(slot => {
-            const isReserved = reservedSlots.includes(slot);
-
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.dataset.slot = slot;
-            btn.dataset.available = isReserved ? 'false' : 'true';
-            btn.innerHTML = `
-                <div style="font-weight:700; font-size:15px;">${formatTime(slot)}</div>
-                <div style="font-size:12px; margin-top:4px;">${isReserved ? 'Reserved' : 'Available'}</div>
-            `;
-
-            btn.style.width = '100%';
-            btn.style.padding = '14px 12px';
-            btn.style.borderRadius = '18px';
-            btn.style.transition = 'all 0.2s ease';
-
-            if (isReserved) {
-                btn.style.border = '1px solid #D8D1C7';
-                btn.style.background = '#F3F0EB';
-                btn.style.color = '#9A8D7B';
-                btn.style.cursor = 'not-allowed';
-            } else {
-                btn.style.border = '1px solid #BFD9C3';
-                btn.style.background = '#EEF8F0';
-                btn.style.color = '#3E7A4A';
-                btn.style.cursor = 'pointer';
-
-                btn.addEventListener('click', function () {
-                    document.querySelectorAll('#slot-grid button').forEach(other => {
-                        if (other.dataset.available === 'true') {
-                            other.style.background = '#EEF8F0';
-                            other.style.border = '1px solid #BFD9C3';
-                            other.style.color = '#3E7A4A';
-                        }
-                    });
-
-                    btn.style.background = '#F7E7C9';
-                    btn.style.border = '1px solid #D6A85B';
-                    btn.style.color = '#8A6A3C';
-                    bookingTimeInput.value = slot;
-                });
+            if (!facility || !date) {
+                clearSlots();
+                return;
             }
 
-            slotGrid.appendChild(btn);
-        });
-
-        if (bookingTimeInput.value) {
-            const selected = document.querySelector(`#slot-grid button[data-slot="${bookingTimeInput.value}"][data-available="true"]`);
-            if (selected) selected.click();
+            try {
+                const url = `{{ route('bookings.reserved-slots') }}?facility_name=${encodeURIComponent(facility)}&booking_date=${encodeURIComponent(date)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                renderSlots(data.available_slots || [], data.reserved_slots || []);
+            } catch (error) {
+                clearSlots();
+                console.error('Failed to load slots:', error);
+            }
         }
-    }
 
-    facilityInput.addEventListener('change', loadSlots);
-    bookingDateInput.addEventListener('change', loadSlots);
+        function renderSlots(timeSlots, reservedSlots) {
+            slotGrid.innerHTML = '';
 
-    if (facilityInput.value && bookingDateInput.value) {
-        loadSlots();
-    }
-</script>
+            timeSlots.forEach(slot => {
+                const isReserved = reservedSlots.includes(slot);
+                const isSelected = bookingTimeInput.value === slot;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'resident-booking-slot';
+                btn.dataset.slot = slot;
+                btn.dataset.available = isReserved ? 'false' : 'true';
+                btn.innerHTML = `
+                    <div class="resident-booking-slot-time">${formatTime(slot)}</div>
+                    <div class="resident-booking-slot-state">${isReserved ? 'Reserved' : 'Available'}</div>
+                `;
+
+                if (isReserved) {
+                    btn.classList.add('is-reserved');
+                } else if (isSelected) {
+                    btn.classList.add('is-selected');
+                } else {
+                    btn.classList.add('is-available');
+                    btn.addEventListener('click', function () {
+                        document.querySelectorAll('#slot-grid .resident-booking-slot').forEach(other => {
+                            if (other.dataset.available === 'true') {
+                                other.classList.remove('is-selected');
+                                other.classList.add('is-available');
+                            }
+                        });
+
+                        btn.classList.remove('is-available');
+                        btn.classList.add('is-selected');
+                        bookingTimeInput.value = slot;
+                    });
+                }
+
+                slotGrid.appendChild(btn);
+            });
+        }
+
+        facilityInput.addEventListener('change', loadSlots);
+        bookingDateInput.addEventListener('change', loadSlots);
+
+        if (facilityInput.value && bookingDateInput.value) {
+            loadSlots();
+        }
+    </script>
+
+    <style>
+        .resident-booking-create-page {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px 16px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .resident-booking-create-hero,
+        .resident-booking-create-panel,
+        .resident-booking-create-error {
+            border: 1px solid rgba(214,168,91,0.14);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.14);
+        }
+
+        .resident-booking-create-hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            padding: 28px 30px;
+            border-radius: 36px;
+            background: linear-gradient(115deg, #1F2023 0%, #24262B 38%, #2C2C2F 62%, #3B3023 100%);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+        }
+
+        .resident-booking-create-copy {
+            max-width: 860px;
+        }
+
+        .resident-booking-create-kicker {
+            margin: 0 0 10px;
+            color: #D2A04C;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.30em;
+        }
+
+        .resident-booking-create-title {
+            margin: 0;
+            color: #F8F3EA;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.4rem, 4.6vw, 3.8rem);
+            line-height: 1.05;
+        }
+
+        .resident-booking-create-subtitle {
+            margin: 12px 0 0;
+            color: rgba(255,255,255,0.82);
+            font-size: 1.02rem;
+            line-height: 1.7;
+            max-width: 760px;
+        }
+
+        .resident-booking-create-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+        .resident-booking-create-stat {
+            min-width: 130px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .resident-booking-create-stat span {
+            display: block;
+            color: #A89376;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+        }
+
+        .resident-booking-create-stat strong {
+            display: block;
+            margin-top: 6px;
+            color: #F0E9DF;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .resident-booking-create-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .resident-booking-create-error {
+            padding: 16px 20px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: linear-gradient(180deg, rgba(53, 38, 35, 0.92) 0%, rgba(42, 31, 29, 0.92) 100%);
+            color: #F0B3A9;
+            border-color: rgba(224,112,96,0.22);
+            backdrop-filter: blur(10px);
+        }
+
+        .resident-booking-create-error-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .resident-booking-create-error-list {
+            margin: 0;
+            padding-left: 18px;
+            line-height: 1.7;
+        }
+
+        .resident-booking-create-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+            gap: 22px;
+        }
+
+        .resident-booking-create-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .resident-booking-create-panel {
+            padding: 26px 28px;
+            border-radius: 20px;
+            background: rgba(42,44,48,0.78);
+            backdrop-filter: blur(10px);
+        }
+
+        .resident-booking-create-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .resident-booking-create-head h2 {
+            margin: 0;
+            color: #F0E9DF;
+            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .resident-booking-create-head p {
+            margin: 4px 0 0;
+            color: #8A7A66;
+            font-size: 0.95rem;
+        }
+
+        .resident-booking-create-eyebrow {
+            color: #D6A85B;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+        }
+
+        .resident-booking-create-divider {
+            height: 1px;
+            background: linear-gradient(to right, rgba(214,168,91,0.3), rgba(214,168,91,0.05), transparent);
+            margin-bottom: 18px;
+        }
+
+        .resident-booking-create-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .resident-booking-create-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #D0C8B8;
+            font-size: 14px;
+            letter-spacing: 0.02em;
+        }
+
+        .resident-booking-create-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(214,168,91,0.14);
+            border-radius: 16px;
+            font-size: 15px;
+            color: #F8F3EA;
+            background: rgba(37,39,42,0.90);
+            outline: none;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+        }
+
+        .resident-booking-create-input:focus {
+            border-color: rgba(214,168,91,0.38);
+            box-shadow: 0 0 0 4px rgba(214,168,91,0.08);
+        }
+
+        .resident-booking-create-textarea {
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.7;
+        }
+
+        .resident-booking-create-help {
+            font-size: 12px;
+            color: #9A8D7B;
+            margin-top: 8px;
+        }
+
+        .resident-booking-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .resident-booking-slot {
+            width: 100%;
+            text-align: left;
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(214,168,91,0.14);
+            background: rgba(255,255,255,0.03);
+            color: #F0E9DF;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .resident-booking-slot-time {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .resident-booking-slot-state {
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: #B8AB98;
+        }
+
+        .resident-booking-slot.is-available:hover {
+            transform: translateY(-1px);
+            border-color: rgba(111,160,111,0.35);
+            background: rgba(111,160,111,0.08);
+        }
+
+        .resident-booking-slot.is-selected {
+            border-color: rgba(214,168,91,0.38);
+            background: rgba(214,168,91,0.10);
+        }
+
+        .resident-booking-slot.is-reserved {
+            cursor: not-allowed;
+            opacity: 0.75;
+            border-style: dashed;
+            background: rgba(255,255,255,0.025);
+        }
+
+        .resident-booking-create-form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-top: 8px;
+            border-top: 1px solid rgba(214,168,91,0.10);
+        }
+
+        .resident-booking-create-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 22px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .resident-booking-create-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .resident-booking-create-btn-primary {
+            background: linear-gradient(95deg, #b8842f, #d6a85b);
+            color: #17120d;
+            border: none;
+            cursor: pointer;
+        }
+
+        .resident-booking-create-btn-secondary {
+            background: rgba(255,255,255,0.04);
+            color: #D0C8B8;
+            border: 1px solid rgba(214,168,91,0.14);
+        }
+
+        .resident-booking-create-note-list,
+        .resident-booking-create-meta-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .resident-booking-create-note-item,
+        .resident-booking-create-meta-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 14px 16px;
+        }
+
+        .resident-booking-create-note-item {
+            color: #B8AB98;
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        .resident-booking-create-meta-item span {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #8A7A66;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .resident-booking-create-meta-item strong {
+            color: #F0E9DF;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1024px) {
+            .resident-booking-create-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .resident-booking-create-hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .resident-booking-slot-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </x-app-layout>

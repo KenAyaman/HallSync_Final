@@ -1,24 +1,8 @@
 <x-app-layout>
     <div class="community-create-page">
-        <section class="community-create-hero">
-            <div class="community-create-hero-copy">
-                <p class="community-create-kicker">Resident Community Hub</p>
-                <h1 class="community-create-title">Create a Post</h1>
-                <p class="community-create-subtitle">
-                    Start a new conversation, share a neighborhood update, or post something helpful for fellow residents in a cleaner, more professional composer.
-                </p>
-
-                <div class="community-create-pills">
-                    <span class="community-create-pill">Discussion-first layout</span>
-                    <span class="community-create-pill">Photo or video supported</span>
-                    <span class="community-create-pill">Reviewed before publishing</span>
-                </div>
-            </div>
-
-            <div class="community-create-hero-actions">
-                <a href="{{ route('community.index') }}" class="community-create-btn community-create-btn-secondary">Back to Community</a>
-            </div>
-        </section>
+        <div class="community-create-topbar">
+            <a href="{{ route('community.index') }}" class="community-create-back">Back to Community</a>
+        </div>
 
         @if ($errors->any())
             <div class="community-create-error">
@@ -46,6 +30,20 @@
 
                 <form method="POST" action="{{ route('community.store') }}" enctype="multipart/form-data" id="postForm" class="community-create-form">
                     @csrf
+
+                    <div class="community-create-composer">
+                        <div class="community-create-avatar">
+                            @if(auth()->user()->profile_photo_url)
+                                <img src="{{ auth()->user()->profile_photo_url }}" alt="{{ auth()->user()->name }}">
+                            @else
+                                {{ auth()->user()->profile_initials }}
+                            @endif
+                        </div>
+                        <div class="community-create-composer-copy">
+                            <strong>{{ auth()->user()->name }}</strong>
+                            <span>Your current profile photo will appear with this post once it is published.</span>
+                        </div>
+                    </div>
 
                     <div>
                         <label class="community-create-label">Category</label>
@@ -148,51 +146,6 @@
                     <p class="community-create-footer-note">Your post will be reviewed by admin before it appears publicly.</p>
                 </form>
             </section>
-
-            <aside class="community-create-sidebar">
-                <section class="community-create-panel">
-                    <div class="community-create-head community-create-head-simple">
-                        <div>
-                            <h2>Posting Notes</h2>
-                            <p>Keep the board useful, clear, and welcoming for everyone.</p>
-                        </div>
-                    </div>
-
-                    <div class="community-create-divider"></div>
-
-                    <div class="community-create-note-list">
-                        <div class="community-create-note-item">Choose the category that best fits your post so residents can scan the board more easily.</div>
-                        <div class="community-create-note-item">Keep the content specific and respectful, especially for community concerns or requests.</div>
-                        <div class="community-create-note-item">Use media only when it adds useful context to the discussion.</div>
-                    </div>
-                </section>
-
-                <section class="community-create-panel">
-                    <div class="community-create-head community-create-head-simple">
-                        <div>
-                            <h2>Visibility</h2>
-                            <p>What happens after you submit your post.</p>
-                        </div>
-                    </div>
-
-                    <div class="community-create-divider"></div>
-
-                    <div class="community-create-meta-list">
-                        <div class="community-create-meta-item">
-                            <span>Review</span>
-                            <strong>Posts are reviewed before appearing on the board.</strong>
-                        </div>
-                        <div class="community-create-meta-item">
-                            <span>Reach</span>
-                            <strong>Approved posts become visible to fellow residents.</strong>
-                        </div>
-                        <div class="community-create-meta-item">
-                            <span>Best Practice</span>
-                            <strong>Use a strong title and a focused message for better engagement.</strong>
-                        </div>
-                    </div>
-                </section>
-            </aside>
         </div>
     </div>
 
@@ -341,82 +294,33 @@
 
     <style>
         .community-create-page {
-            max-width: 1600px;
+            max-width: 980px;
             margin: 0 auto;
             padding: 24px 16px 32px;
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 18px;
         }
 
-        .community-create-hero,
         .community-create-panel,
         .community-create-error {
             border: 1px solid rgba(214,168,91,0.14);
             box-shadow: 0 12px 24px rgba(0,0,0,0.14);
         }
 
-        .community-create-hero {
+        .community-create-topbar {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 20px;
-            padding: 28px 30px;
-            border-radius: 36px;
-            background: linear-gradient(115deg, #1F2023 0%, #24262B 38%, #2C2C2F 62%, #3B3023 100%);
-            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+            justify-content: flex-start;
         }
 
-        .community-create-hero-copy {
-            max-width: 860px;
-        }
-
-        .community-create-kicker {
-            margin: 0 0 10px;
-            color: #D2A04C;
-            font-size: 0.72rem;
+        .community-create-back {
+            display: inline-flex;
+            color: #D6A85B;
+            text-decoration: none;
+            font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.30em;
-        }
-
-        .community-create-title {
-            margin: 0;
-            color: #F8F3EA;
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.4rem, 4.6vw, 3.8rem);
-            line-height: 1.05;
-        }
-
-        .community-create-subtitle {
-            margin: 12px 0 0;
-            color: rgba(255,255,255,0.82);
-            font-size: 1.02rem;
-            line-height: 1.7;
-            max-width: 760px;
-        }
-
-        .community-create-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .community-create-pill {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #E9D8BD;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .community-create-hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
+            letter-spacing: 0.08em;
         }
 
         .community-create-error {
@@ -441,16 +345,7 @@
         }
 
         .community-create-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
-            gap: 24px;
-            align-items: start;
-        }
-
-        .community-create-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+            display: block;
         }
 
         .community-create-panel {
@@ -507,6 +402,50 @@
             display: flex;
             flex-direction: column;
             gap: 22px;
+        }
+
+        .community-create-composer {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .community-create-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(214, 168, 91, 0.26), rgba(190,147,96,0.08));
+            color: #F4DEB5;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .community-create-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .community-create-composer-copy strong {
+            display: block;
+            color: #F0E9DF;
+            font-size: 1rem;
+        }
+
+        .community-create-composer-copy span {
+            display: block;
+            margin-top: 4px;
+            color: #8A7A66;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
         .community-create-label {
@@ -602,9 +541,7 @@
             line-height: 1.65;
         }
 
-        .community-create-subpanel,
-        .community-create-note-item,
-        .community-create-meta-item {
+        .community-create-subpanel {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -725,59 +662,13 @@
             border: 1px solid rgba(214,168,91,0.14);
         }
 
-        .community-create-note-list,
-        .community-create-meta-list {
-            display: grid;
-            gap: 12px;
-        }
-
-        .community-create-note-item,
-        .community-create-meta-item {
-            padding: 14px 16px;
-        }
-
-        .community-create-note-item {
-            color: #B8AB98;
-            font-size: 0.88rem;
-            line-height: 1.75;
-        }
-
-        .community-create-meta-item span {
-            display: block;
-            color: #8A7A66;
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            margin-bottom: 8px;
-        }
-
-        .community-create-meta-item strong {
-            color: #F0E9DF;
-            font-size: 0.92rem;
-            line-height: 1.6;
-            font-weight: 600;
-        }
-
-        @media (max-width: 1024px) {
-            .community-create-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
             .community-create-page {
                 padding: 18px 0 28px;
             }
 
-            .community-create-hero,
             .community-create-panel {
                 padding: 22px;
-            }
-
-            .community-create-hero {
-                flex-direction: column;
-                align-items: flex-start;
             }
 
             .community-category-grid,

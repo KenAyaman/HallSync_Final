@@ -40,14 +40,17 @@
 
             <div class="rex-login-field">
                 <label for="password" class="rex-login-label">Password</label>
-                <input
-                    id="password"
-                    class="rex-login-input"
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required
-                    autocomplete="current-password">
+                <div class="rex-login-password-wrap">
+                    <input
+                        id="password"
+                        class="rex-login-input rex-login-input-password"
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password">
+                    <button type="button" class="rex-login-password-toggle" data-toggle-password="password">Show</button>
+                </div>
             </div>
 
             <div class="rex-login-row">
@@ -179,6 +182,27 @@
             box-shadow: 0 0 0 4px rgba(214, 168, 91, 0.08);
         }
 
+        .rex-login-password-wrap {
+            position: relative;
+        }
+
+        .rex-login-input-password {
+            padding-right: 76px;
+        }
+
+        .rex-login-password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 14px;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            color: #d6a85b;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         .rex-login-row {
             display: flex;
             align-items: center;
@@ -248,4 +272,15 @@
             }
         }
     </style>
+
+    <script>
+        document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const field = document.getElementById(button.dataset.togglePassword);
+                const isPassword = field.type === 'password';
+                field.type = isPassword ? 'text' : 'password';
+                button.textContent = isPassword ? 'Hide' : 'Show';
+            });
+        });
+    </script>
 </x-guest-layout>

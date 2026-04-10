@@ -15,16 +15,42 @@ class MaintenanceTicket extends Model
         'ticket_id',
         'title',
         'description',
+        'category',
         'priority',
         'status',
         'image_path',
-        'video_path'
+        'video_path',
+        'rejection_reason',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public static function normalizePriorityValue(?string $priority): string
+    {
+        return match ($priority) {
+            'urgent', 'high', 'critical' => 'critical',
+            'low' => 'low',
+            default => 'medium',
+        };
+    }
+
+    public function getNormalizedPriorityAttribute(): string
+    {
+        return self::normalizePriorityValue($this->priority);
+    }
+
+    public function getPriorityLabelAttribute(): string
+    {
+        return match ($this->normalized_priority) {
+            'critical' => 'Critical',
+            'low' => 'Low Priority',
+            'medium' => 'Medium',
+            default => ucfirst($this->normalized_priority),
+        };
+    }
 
     public function user()
     {

@@ -9,36 +9,33 @@ use Carbon\Carbon;
 
 class BookingController extends Controller
 {
+    protected const STANDARD_BOOKING_SLOTS = [
+        '08:00', '09:00', '10:00', '11:00',
+        '12:00', '13:00', '14:00', '15:00',
+        '16:00', '17:00', '18:00', '19:00',
+        '20:00', '21:00',
+    ];
+
     protected array $facilities = [
         'Study Room 1' => [
             'capacity' => 4,
             'hours' => '8:00 AM - 10:00 PM',
-            'slots' => ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'],
+            'slots' => self::STANDARD_BOOKING_SLOTS,
         ],
         'Study Room 2' => [
             'capacity' => 4,
             'hours' => '8:00 AM - 10:00 PM',
-            'slots' => ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'],
+            'slots' => self::STANDARD_BOOKING_SLOTS,
         ],
         'Conference Room' => [
             'capacity' => 12,
-            'hours' => '9:00 AM - 9:00 PM',
-            'slots' => ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'],
+            'hours' => '8:00 AM - 10:00 PM',
+            'slots' => self::STANDARD_BOOKING_SLOTS,
         ],
         'Gym' => [
             'capacity' => 10,
-            'hours' => '6:00 AM - 11:00 PM',
-            'slots' => ['06:00', '07:00', '08:00', '09:00', '10:00', '16:00', '17:00', '18:00'],
-        ],
-        'Game Room' => [
-            'capacity' => 8,
-            'hours' => '10:00 AM - 11:00 PM',
-            'slots' => ['10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
-        ],
-        'Laundry Room' => [
-            'capacity' => 6,
-            'hours' => '6:00 AM - 12:00 AM',
-            'slots' => ['06:00', '07:00', '08:00', '09:00', '10:00', '13:00', '14:00', '15:00'],
+            'hours' => '8:00 AM - 10:00 PM',
+            'slots' => self::STANDARD_BOOKING_SLOTS,
         ],
     ];
 
@@ -55,7 +52,8 @@ class BookingController extends Controller
         }
 
         $bookings = Booking::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
+            ->where('end_time', '>=', Carbon::today())
+            ->orderBy('booking_date')
             ->get();
 
         return view('resident.bookings.index', compact('bookings'));
@@ -299,13 +297,9 @@ class BookingController extends Controller
             ->get()
             ->groupBy('facility_name');
         
-        // Define time slots (8 AM to 10 PM)
-        $timeSlots = [];
-        for ($hour = 8; $hour <= 22; $hour++) {
-            $timeSlots[] = sprintf('%02d:00', $hour);
-        }
+        $timeSlots = self::STANDARD_BOOKING_SLOTS;
         
-        $facilities = ['Study Room 1', 'Study Room 2', 'Conference Room', 'Gym', 'Game Room', 'Laundry Room'];
+        $facilities = ['Study Room 1', 'Study Room 2', 'Conference Room', 'Gym'];
         
         // Build calendar grid
         $calendar = [];

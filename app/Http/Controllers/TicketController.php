@@ -22,7 +22,7 @@ class TicketController extends Controller
 
             return view('admin.tickets.index', compact('tickets', 'handymen'));
         } elseif ($user->role === 'handyman') {
-            return redirect()->route('dashboard');
+            return redirect()->route('staff.queue');
         } else {
             // Resident sees only their own tickets
             $tickets = MaintenanceTicket::where('user_id', $user->id)
@@ -54,7 +54,8 @@ class TicketController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'priority' => 'required|in:low,medium,high,urgent',
+            'category' => 'required|in:plumbing,electrical,furniture,hvac,other',
+            'priority' => 'required|in:low,medium,critical',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'nullable|file|mimes:mp4,mov,avi|max:10240',
         ]);
@@ -65,7 +66,8 @@ class TicketController extends Controller
             $ticket->ticket_id = 'TKT-' . strtoupper(uniqid());
             $ticket->title = $request->title;
             $ticket->description = $request->description;
-            $ticket->priority = $request->priority;
+            $ticket->category = $request->category;
+            $ticket->priority = MaintenanceTicket::normalizePriorityValue($request->priority);
             $ticket->status = 'pending_approval'; // NEW STATUS
 
             if ($request->hasFile('image')) {
@@ -149,7 +151,7 @@ class TicketController extends Controller
 
         $request->validate([
             'description' => 'required|string',
-            'priority' => 'required|in:low,medium,high,urgent',
+            'priority' => 'required|in:low,medium,critical',
             'category' => 'required|in:plumbing,electrical,furniture,hvac,other',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'nullable|file|mimes:mp4,mov,avi|max:10240',
@@ -159,7 +161,7 @@ class TicketController extends Controller
 
         try {
             $ticket->description = $request->description;
-            $ticket->priority = $request->priority;
+            $ticket->priority = MaintenanceTicket::normalizePriorityValue($request->priority);
             $ticket->category = $request->category;
 
             if ($request->has('remove_image') && $request->remove_image) {
@@ -217,9 +219,9 @@ class TicketController extends Controller
             abort(403, 'You cannot delete this ticket.');
         }
 
-        if (in_array($ticket->status, ['in_progress', 'completed'])) {
+        if ($user->role !== 'manager' && $ticket->status === 'in_progress') {
             return redirect()->route('tickets.index')
-                ->with('error', 'Cannot delete a ticket that is already in progress or completed.');
+                ->with('error', 'Cannot delete a ticket that is already in progress.');
         }
 
         if ($ticket->image_path) {
@@ -307,9 +309,9 @@ class TicketController extends Controller
             abort(403);
         }
         
-        if ($ticket->status !== 'approved') {
+        if (! in_array($ticket->status, ['pending_approval', 'approved', 'assigned'], true)) {
             return redirect()->back()
-                ->with('error', 'Only approved tickets can be assigned.');
+                ->with('error', 'Only tickets awaiting review or assignment can be assigned.');
         }
         
         $request->validate([
@@ -321,6 +323,6 @@ class TicketController extends Controller
         $ticket->save();
         
         return redirect()->route('tickets.index')
-            ->with('success', 'Ticket assigned to handyman successfully!');
+            ->with('success', 'Ticket assigned to staff successfully!');
     }
 }

@@ -1,8 +1,14 @@
 <x-app-layout>
     @php
-        $openTickets = $tickets->whereIn('status', ['received', 'assigned', 'in_progress'])->count();
+        $activeTicketsList = $tickets->whereNotIn('status', ['completed', 'rejected']);
+        $historyTicketsList = $tickets->whereIn('status', ['completed', 'rejected']);
+        $visibleActiveTickets = $activeTicketsList->take(3);
+        $hiddenActiveTickets = $activeTicketsList->slice(3);
+        $visibleHistoryTickets = $historyTicketsList->take(3);
+        $hiddenHistoryTickets = $historyTicketsList->slice(3);
+        $openTickets = $activeTicketsList->count();
         $resolvedTickets = $tickets->where('status', 'completed')->count();
-        $urgentTickets = $tickets->whereIn('priority', ['high', 'urgent'])->count();
+        $criticalTickets = $tickets->filter(fn ($ticket) => $ticket->normalized_priority === 'critical')->count();
     @endphp
     <div class="resident-page">
         <section class="resident-page-hero">
@@ -24,7 +30,7 @@
                     </div>
                     <div class="resident-hero-stat">
                         <span>Priority</span>
-                        <strong>{{ $urgentTickets }}</strong>
+                        <strong>{{ $criticalTickets }}</strong>
                     </div>
                 </div>
             </div>
@@ -35,26 +41,31 @@
         </section>
 
         @if(session('success'))
-            <div class="resident-flash resident-flash-success">{{ session('success') }}</div>
+            <div class="resident-flash resident-flash-success" data-auto-dismiss>{{ session('success') }}</div>
         @endif
 
         @if(session('error'))
-            <div class="resident-flash resident-flash-error">{{ session('error') }}</div>
+            <div class="resident-flash resident-flash-error" data-auto-dismiss>{{ session('error') }}</div>
         @endif
 
         <section class="resident-page-panel">
             <div class="resident-page-panel-head">
                 <div>
-                    <h2>Submitted Tickets</h2>
-                    <p>Your maintenance requests and their latest status.</p>
+                    <h2>Active Requests</h2>
+                    <p>Your current maintenance concerns that are still waiting, assigned, or being worked on.</p>
                 </div>
-                <span class="resident-page-eyebrow">Concern History</span>
+                <span class="resident-page-eyebrow">Current Queue</span>
             </div>
 
             <div class="resident-page-divider"></div>
 
+            <div class="resident-ticket-section-head">
+                <h3>Open and Ongoing</h3>
+                <span>{{ $activeTicketsList->count() }} open</span>
+            </div>
+
             <div class="resident-page-list">
-                @forelse($tickets as $ticket)
+                @forelse($visibleActiveTickets as $ticket)
                     <article class="resident-card">
                         <div class="resident-card-top">
                             <div>
@@ -63,15 +74,15 @@
                                     <span class="resident-badge resident-badge-status-{{ $ticket->status }}">
                                         {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
                                     </span>
-                                    <span class="resident-badge resident-badge-priority-{{ $ticket->priority }}">
-                                        {{ ucfirst($ticket->priority) }} Priority
+                                    <span class="resident-badge resident-badge-priority-{{ $ticket->normalized_priority }}">
+                                        {{ $ticket->priority_label }}
                                     </span>
                                 </div>
                                 <p class="resident-card-description">{{ Str::limit($ticket->description, 160) }}</p>
                             </div>
 
                             <div class="resident-card-links">
-                                @if(in_array($ticket->status, ['received', 'assigned']))
+                                @if(!in_array($ticket->status, ['in_progress', 'completed', 'rejected']))
                                     <a href="{{ route('tickets.edit', $ticket) }}">Edit</a>
                                 @endif
                                 <a href="{{ route('tickets.show', $ticket) }}">View Details</a>
@@ -81,8 +92,8 @@
                         @if($ticket->image_path || $ticket->video_path)
                             <div class="resident-media-row">
                                 @if($ticket->image_path)
-                                    <a href="{{ asset('storage/' . $ticket->image_path) }}" target="_blank" class="resident-media-chip">
-                                        Photo Attachment
+                                    <a href="{{ asset('storage/' . $ticket->image_path) }}" target="_blank" class="resident-ticket-thumb-link">
+                                        <img src="{{ asset('storage/' . $ticket->image_path) }}" alt="Ticket attachment" class="resident-ticket-thumb">
                                     </a>
                                 @endif
 
@@ -107,14 +118,200 @@
                     </article>
                 @empty
                     <div class="resident-empty-state">
-                        <h3>No tickets found</h3>
-                        <p>Create your first maintenance request to get started.</p>
+                        <h3>No active tickets</h3>
+                        <p>Your current maintenance concerns will appear here.</p>
                         <a href="{{ route('tickets.create') }}">Create Your First Ticket</a>
                     </div>
                 @endforelse
+
+                @if($hiddenActiveTickets->isNotEmpty())
+                    <div id="resident-more-active" class="resident-more-list" style="display: none;">
+                        @foreach($hiddenActiveTickets as $ticket)
+                            <article class="resident-card">
+                                <div class="resident-card-top">
+                                    <div>
+                                        <div class="resident-card-heading">
+                                            <h3>{{ $ticket->title }}</h3>
+                                            <span class="resident-badge resident-badge-status-{{ $ticket->status }}">
+                                                {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
+                                            </span>
+                                            <span class="resident-badge resident-badge-priority-{{ $ticket->normalized_priority }}">
+                                                {{ $ticket->priority_label }}
+                                            </span>
+                                        </div>
+                                        <p class="resident-card-description">{{ Str::limit($ticket->description, 160) }}</p>
+                                    </div>
+
+                                    <div class="resident-card-links">
+                                        @if(!in_array($ticket->status, ['in_progress', 'completed', 'rejected']))
+                                            <a href="{{ route('tickets.edit', $ticket) }}">Edit</a>
+                                        @endif
+                                        <a href="{{ route('tickets.show', $ticket) }}">View Details</a>
+                                    </div>
+                                </div>
+
+                                @if($ticket->image_path || $ticket->video_path)
+                                    <div class="resident-media-row">
+                                        @if($ticket->image_path)
+                                            <a href="{{ asset('storage/' . $ticket->image_path) }}" target="_blank" class="resident-ticket-thumb-link">
+                                                <img src="{{ asset('storage/' . $ticket->image_path) }}" alt="Ticket attachment" class="resident-ticket-thumb">
+                                            </a>
+                                        @endif
+
+                                        @if($ticket->video_path)
+                                            <a href="{{ asset('storage/' . $ticket->video_path) }}" target="_blank" class="resident-media-chip">
+                                                Video Attachment
+                                            </a>
+                                        @endif
+                                    </div>
+                                @endif
+
+                                <div class="resident-card-meta-grid">
+                                    <div class="resident-meta-box">
+                                        <span>Ticket ID</span>
+                                        <strong>{{ $ticket->ticket_id }}</strong>
+                                    </div>
+                                    <div class="resident-meta-box">
+                                        <span>Submitted</span>
+                                        <strong>{{ $ticket->created_at->format('M d, Y h:i A') }}</strong>
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+                    </div>
+
+                    <button type="button" class="resident-see-more-btn" data-target="resident-more-active">See more</button>
+                @endif
+            </div>
+        </section>
+
+        <section class="resident-page-panel resident-page-panel-history">
+            <div class="resident-page-panel-head">
+                <div>
+                    <h2>Past History</h2>
+                    <p>Completed and closed tickets are stored here so they stay visually separate from active work.</p>
+                </div>
+                <span class="resident-page-eyebrow">Archive</span>
+            </div>
+
+            <div class="resident-page-divider"></div>
+
+            <div class="resident-ticket-section-head">
+                <h3>Resolved and Archived</h3>
+                <span>{{ $historyTicketsList->count() }} archived</span>
+            </div>
+
+            <div class="resident-page-list">
+                @forelse($visibleHistoryTickets as $ticket)
+                    <article class="resident-card resident-card-history">
+                        <div class="resident-card-top">
+                            <div>
+                                <div class="resident-card-heading">
+                                    <h3>{{ $ticket->title }}</h3>
+                                    <span class="resident-badge resident-badge-status-{{ $ticket->status }}">
+                                        {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
+                                    </span>
+                                    <span class="resident-badge resident-badge-priority-{{ $ticket->normalized_priority }}">
+                                        {{ $ticket->priority_label }}
+                                    </span>
+                                </div>
+                                <p class="resident-card-description">{{ Str::limit($ticket->description, 160) }}</p>
+                            </div>
+
+                            <div class="resident-card-links">
+                                <a href="{{ route('tickets.show', $ticket) }}">View Details</a>
+                            </div>
+                        </div>
+
+                        <div class="resident-card-meta-grid">
+                            <div class="resident-meta-box">
+                                <span>Ticket ID</span>
+                                <strong>{{ $ticket->ticket_id }}</strong>
+                            </div>
+                            <div class="resident-meta-box">
+                                <span>Closed</span>
+                                <strong>{{ $ticket->updated_at->format('M d, Y h:i A') }}</strong>
+                            </div>
+                        </div>
+                    </article>
+                @empty
+                    <div class="resident-empty-state resident-empty-state-compact">
+                        <h3>No ticket history yet</h3>
+                        <p>Completed and rejected tickets will move here.</p>
+                    </div>
+                @endforelse
+
+                @if($hiddenHistoryTickets->isNotEmpty())
+                    <div id="resident-more-history" class="resident-more-list" style="display: none;">
+                        @foreach($hiddenHistoryTickets as $ticket)
+                            <article class="resident-card resident-card-history">
+                                <div class="resident-card-top">
+                                    <div>
+                                        <div class="resident-card-heading">
+                                            <h3>{{ $ticket->title }}</h3>
+                                            <span class="resident-badge resident-badge-status-{{ $ticket->status }}">
+                                                {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
+                                            </span>
+                                            <span class="resident-badge resident-badge-priority-{{ $ticket->normalized_priority }}">
+                                                {{ $ticket->priority_label }}
+                                            </span>
+                                        </div>
+                                        <p class="resident-card-description">{{ Str::limit($ticket->description, 160) }}</p>
+                                    </div>
+
+                                    <div class="resident-card-links">
+                                        <a href="{{ route('tickets.show', $ticket) }}">View Details</a>
+                                    </div>
+                                </div>
+
+                                <div class="resident-card-meta-grid">
+                                    <div class="resident-meta-box">
+                                        <span>Ticket ID</span>
+                                        <strong>{{ $ticket->ticket_id }}</strong>
+                                    </div>
+                                    <div class="resident-meta-box">
+                                        <span>Closed</span>
+                                        <strong>{{ $ticket->updated_at->format('M d, Y h:i A') }}</strong>
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+                    </div>
+
+                    <button type="button" class="resident-see-more-btn" data-target="resident-more-history">See more</button>
+                @endif
             </div>
         </section>
     </div>
+
+    <script>
+        document.querySelectorAll('[data-auto-dismiss]').forEach((flash) => {
+            setTimeout(() => {
+                flash.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+                flash.style.opacity = '0';
+                flash.style.transform = 'translateY(-6px)';
+                setTimeout(() => flash.remove(), 360);
+            }, 3200);
+        });
+
+        document.querySelectorAll('.resident-see-more-btn').forEach((button) => {
+            button.addEventListener('click', () => {
+                const target = document.getElementById(button.dataset.target);
+                if (!target) {
+                    return;
+                }
+
+                const expanded = target.style.display !== 'none';
+                if (expanded) {
+                    target.style.display = 'none';
+                    button.textContent = 'See more';
+                } else {
+                    target.style.display = 'flex';
+                    button.textContent = 'Show Less';
+                }
+            });
+        });
+    </script>
 
     <style>
         .resident-page {
@@ -258,6 +455,38 @@
             backdrop-filter: blur(10px);
         }
 
+        .resident-page-panel-history {
+            border-color: rgba(190,147,96,0.16);
+            background: linear-gradient(180deg, rgba(42,44,48,0.82) 0%, rgba(35,36,39,0.88) 100%);
+        }
+
+        .resident-ticket-section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .resident-ticket-section-head h3 {
+            margin: 0;
+            color: #F0E9DF;
+            font-size: 1.08rem;
+            font-weight: 700;
+        }
+
+        .resident-ticket-section-head span {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(214,168,91,0.10);
+            border: 1px solid rgba(214,168,91,0.14);
+            color: #D6A85B;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
         .resident-page-panel-head {
             display: flex;
             justify-content: space-between;
@@ -393,7 +622,7 @@
             color: #d7b07a;
         }
 
-        .resident-badge-priority-high {
+        .resident-badge-priority-critical {
             background: rgba(185, 106, 93, 0.16);
             color: #dc9a86;
         }
@@ -402,7 +631,24 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            align-items: center;
             margin-top: 16px;
+        }
+
+        .resident-ticket-thumb-link {
+            display: inline-flex;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.16);
+        }
+
+        .resident-ticket-thumb {
+            width: 92px;
+            height: 92px;
+            object-fit: cover;
+            display: block;
+            background: rgba(18,20,23,0.55);
         }
 
         .resident-media-chip {
@@ -414,6 +660,26 @@
             font-size: 0.8rem;
             font-weight: 600;
             background: rgba(255, 255, 255, 0.03);
+        }
+
+        .resident-more-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .resident-see-more-btn {
+            margin-top: 16px;
+            margin-left: auto;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: #D6A85B;
+            font-weight: 700;
+            cursor: pointer;
+            display: block;
+            text-align: right;
         }
 
         .resident-card-meta-grid {

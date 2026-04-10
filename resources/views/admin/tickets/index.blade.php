@@ -1,29 +1,27 @@
 <x-app-layout>
 @php
-    $urgentTickets = $tickets->where('priority', 'urgent')->where('status', '!=', 'completed');
+    $urgentTickets = $tickets->filter(fn ($ticket) => $ticket->normalized_priority === 'critical' && $ticket->status !== 'completed');
     $urgentCount = $urgentTickets->count();
     $firstUrgent = $urgentTickets->first();
 
-    $openCount = $tickets->where('status', '!=', 'completed')->count();
+    $pendingApprovalTickets = $tickets->where('status', 'pending_approval');
+    $assignedTickets = $tickets->where('status', 'assigned');
+    $queueTickets = $tickets->whereNotIn('status', ['assigned', 'completed']);
+    $finishedTickets = $tickets->where('status', 'completed');
+
+    $openCount = $pendingApprovalTickets->count();
+    $assignedCount = $assignedTickets->count();
     $inProgressCount = $tickets->where('status', 'in_progress')->count();
-    $totalCount = $tickets->count();
+    $finishedCount = $finishedTickets->count();
 
     $priorityMeta = [
-        'urgent' => [
-            'label' => 'Urgent',
+        'critical' => [
+            'label' => 'Critical',
             'tone' => 'Immediate dispatch',
             'bg' => 'rgba(224,112,96,0.12)',
             'fg' => '#F0B3A9',
             'border' => 'rgba(224,112,96,0.24)',
             'accent' => '#E07060',
-        ],
-        'high' => [
-            'label' => 'High',
-            'tone' => 'Same-day response',
-            'bg' => 'rgba(214,168,91,0.12)',
-            'fg' => '#E4C58E',
-            'border' => 'rgba(214,168,91,0.24)',
-            'accent' => '#D6A85B',
         ],
         'medium' => [
             'label' => 'Medium',
@@ -45,6 +43,13 @@
 @endphp
 
 <div class="dash-root admin-ticket-page">
+    @if (session('success'))
+        <div class="admin-ticket-flash admin-ticket-flash-success" data-auto-dismiss>{{ session('success') }}</div>
+    @endif
+
+    @if (session('error'))
+        <div class="admin-ticket-flash admin-ticket-flash-error" data-auto-dismiss>{{ session('error') }}</div>
+    @endif
 
     {{-- PAGE HEADER WITH PREMIUM ADMIN DESIGN --}}
     <div class="relative overflow-hidden rounded-[36px] border border-[#3A342D]"
@@ -123,12 +128,12 @@
                         <div>
                             <div class="text-[11px] font-bold uppercase tracking-[0.24em] mb-2"
                                  style="color: #FF9C8D;">
-                                Urgent Attention Required
+                                Critical Attention Required
                             </div>
 
                             <div class="text-2xl md:text-3xl font-bold leading-tight"
                                  style="color: #F8F3EA; font-family: 'Playfair Display', serif;">
-                                {{ $urgentCount }} Urgent Request{{ $urgentCount != 1 ? 's' : '' }}
+                                {{ $urgentCount }} Critical Request{{ $urgentCount != 1 ? 's' : '' }}
                             </div>
 
                             <p class="mt-2 text-sm md:text-base"
@@ -145,7 +150,7 @@
                                 <div class="flex flex-wrap items-center gap-2 mb-2">
                                     <span class="px-3 py-1 rounded-full text-[11px] font-bold tracking-[0.12em] uppercase"
                                           style="background: rgba(224,112,96,0.16); color: #FF9C8D;">
-                                        High Alert
+                                        Critical Alert
                                     </span>
                                     <span class="text-xs font-mono" style="color: #FFB2A7;">
                                         #{{ $firstUrgent->ticket_id ?? $firstUrgent->id }}
@@ -199,27 +204,27 @@
         <div class="admin-metric-card">
             <div class="admin-metric-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <path d="M9 5h6m-7 3h8m-9 11h10a2 2 0 002-2V7a2 2 0 00-2-2h-1.5a1.5 1.5 0 01-3 0h-3a1.5 1.5 0 01-3 0H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
             </div>
             <div class="admin-metric-body">
                 <div class="admin-metric-value">{{ $openCount }}</div>
-                <div class="admin-metric-label">Open Tickets</div>
+                <div class="admin-metric-label">Awaiting Assignment</div>
             </div>
-            <div class="admin-metric-sub">Needs attention</div>
+            <div class="admin-metric-sub">Ready for admin action</div>
         </div>
 
         <div class="admin-metric-card admin-metric-card-alert">
             <div class="admin-metric-icon admin-metric-icon-alert">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
             </div>
             <div class="admin-metric-body">
-                <div class="admin-metric-value admin-metric-value-alert">{{ $urgentCount }}</div>
-                <div class="admin-metric-label">Urgent Priority</div>
+                <div class="admin-metric-value admin-metric-value-alert">{{ $assignedCount }}</div>
+                <div class="admin-metric-label">Assigned</div>
             </div>
-            <div class="admin-metric-sub admin-metric-sub-alert">Immediate action required</div>
+            <div class="admin-metric-sub admin-metric-sub-alert">Already routed to staff</div>
         </div>
 
         <div class="admin-metric-card admin-metric-card-success">
@@ -233,43 +238,43 @@
                 <div class="admin-metric-value admin-metric-value-success">{{ $inProgressCount }}</div>
                 <div class="admin-metric-label">In Progress</div>
             </div>
-            <div class="admin-metric-sub">Being worked on</div>
+            <div class="admin-metric-sub">Currently handled by staff</div>
         </div>
 
         <div class="admin-metric-card">
             <div class="admin-metric-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    <path d="M5 13l4 4L19 7"></path>
                 </svg>
             </div>
             <div class="admin-metric-body">
-                <div class="admin-metric-value">{{ $totalCount }}</div>
-                <div class="admin-metric-label">Total Tickets</div>
+                <div class="admin-metric-value">{{ $finishedCount }}</div>
+                <div class="admin-metric-label">Finished</div>
             </div>
-            <div class="admin-metric-sub">All time records</div>
+            <div class="admin-metric-sub">Completed by staff</div>
         </div>
     </div>
 
-    {{-- ACTIVE TICKETS QUEUE --}}
+    {{-- MAIN OPERATIONS QUEUE --}}
     <div class="admin-ticket-panel">
         <div class="admin-ticket-panel-head">
             <div>
-                <h2 class="admin-ticket-panel-title">Active Tickets Queue</h2>
-                <p class="admin-ticket-panel-sub">Manage and assign maintenance requests</p>
+                <h2 class="admin-ticket-panel-title">Operations Queue</h2>
+                <p class="admin-ticket-panel-sub">Handle requests that still need admin attention before or during active operations.</p>
             </div>
 
             <div class="admin-ticket-filters">
                 <select id="filterStatus" class="admin-filter-select">
                     <option value="all">All Status</option>
-                    <option value="received">Received</option>
+                    <option value="pending_approval">Awaiting Assignment</option>
                     <option value="assigned">Assigned</option>
                     <option value="in_progress">In Progress</option>
                     <option value="completed">Completed</option>
+                    <option value="rejected">Rejected</option>
                 </select>
                 <select id="filterPriority" class="admin-filter-select">
                     <option value="all">All Priority</option>
-                    <option value="urgent">Urgent</option>
-                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
                     <option value="medium">Medium</option>
                     <option value="low">Low</option>
                 </select>
@@ -279,13 +284,13 @@
         <div class="admin-ticket-panel-divider"></div>
 
         <div class="space-y-3">
-            @forelse($tickets as $ticket)
+            @forelse($queueTickets as $ticket)
                 @php
-                    $priority = $priorityMeta[$ticket->priority] ?? $priorityMeta['medium'];
+                    $priority = $priorityMeta[$ticket->normalized_priority] ?? $priorityMeta['medium'];
                 @endphp
                 <div class="ticket-card"
                      data-status="{{ $ticket->status }}"
-                     data-priority="{{ $ticket->priority }}">
+                     data-priority="{{ $ticket->normalized_priority }}">
 
                     <div class="flex rounded-[22px] transition-all duration-200 cursor-pointer overflow-hidden"
                          style="
@@ -370,7 +375,7 @@
                                                       style="background: {{ $priority['accent'] }};"></span>
                                                 <span class="text-[11px] font-semibold uppercase tracking-[0.12em]"
                                                       style="color: {{ $priority['fg'] }};">
-                                                    {{ $priority['label'] }} Priority
+                                                    {{ $priority['label'] }}
                                                 </span>
                                             </div>
                                             <div class="text-xs" style="color: #9F9485;">
@@ -380,7 +385,7 @@
 
                                         <span class="px-3 py-1 rounded-full text-xs font-semibold"
                                               style="background: {{ $priority['bg'] }}; color: {{ $priority['fg'] }}; border: 1px solid {{ $priority['border'] }};">
-                                            {{ ucfirst($ticket->priority) }} Priority
+                                            {{ $ticket->priority_label }}
                                         </span>
 
                                         <span class="px-3 py-1 rounded-full text-xs font-semibold"
@@ -409,7 +414,7 @@
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                         </svg>
-                                        Assign
+                                        {{ $ticket->assigned_to ? 'Reassign' : 'Assign' }}
                                     </button>
 
                                     <a href="{{ route('tickets.show', $ticket) }}"
@@ -426,16 +431,6 @@
 
                                     @if($ticket->status === 'pending_approval')
                                         <div class="flex gap-2">
-                                            <button onclick="openApproveModal({{ $ticket->id }})" 
-                                                    class="px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5"
-                                                    style="background: rgba(90,138,90,0.15); color: #5A8A5A; border: 1px solid rgba(90,138,90,0.3);"
-                                                    onmouseover="this.style.background='rgba(90,138,90,0.22)'"
-                                                    onmouseout="this.style.background='rgba(90,138,90,0.15)'">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                                Approve
-                                            </button>
                                             <button onclick="openRejectModal({{ $ticket->id }})" 
                                                     class="px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5"
                                                     style="background: rgba(224,112,96,0.15); color: #E07060; border: 1px solid rgba(224,112,96,0.3);"
@@ -461,13 +456,93 @@
                     </div>
                     <h3 class="text-2xl font-semibold mb-2"
                         style="color: #F8F3EA; font-family: 'Playfair Display', serif;">
-                        No tickets in queue
+                        No requests in queue
                     </h3>
                     <p style="color: #8A7A66;" class="max-w-md mx-auto">
-                        All maintenance requests have been resolved. The queue is clear.
+                        Assigned and finished work now lives in its own section, so the admin queue is fully clear.
                     </p>
                 </div>
             @endforelse
+        </div>
+    </div>
+
+    <div class="admin-ticket-section-grid">
+        <div class="admin-ticket-panel">
+            <div class="admin-ticket-panel-head">
+                <div>
+                    <h2 class="admin-ticket-panel-title">Assigned</h2>
+                    <p class="admin-ticket-panel-sub">Tickets already handed over to staff and waiting for work to start.</p>
+                </div>
+                <span class="admin-section-chip">{{ $assignedCount }} assigned</span>
+            </div>
+
+            <div class="admin-ticket-panel-divider"></div>
+
+            <div class="admin-status-stack">
+                @forelse($assignedTickets as $ticket)
+                    <div class="admin-status-card {{ $loop->index >= 3 ? 'is-hidden-by-default' : '' }}" data-collapsible-item="assigned">
+                        <div>
+                            <div class="admin-status-card-top">
+                                <strong>{{ $ticket->title }}</strong>
+                                <span class="admin-status-badge admin-status-badge-assigned">Assigned</span>
+                            </div>
+                            <p>{{ Str::limit($ticket->description, 95) }}</p>
+                            <div class="admin-status-meta">
+                                <span>#{{ $ticket->ticket_id ?? $ticket->id }}</span>
+                                <span>{{ $ticket->assignedTo->name ?? 'Staff not set' }}</span>
+                                <span>{{ $ticket->updated_at->diffForHumans() }}</span>
+                            </div>
+                        </div>
+                        <a href="{{ route('tickets.show', $ticket) }}" class="admin-status-link">View</a>
+                    </div>
+                @empty
+                    <div class="admin-status-empty">No assigned tickets right now.</div>
+                @endforelse
+            </div>
+            @if($assignedCount > 3)
+                <div class="admin-collapsible-action">
+                    <button type="button" class="admin-collapsible-toggle" data-target-list="assigned" data-expand-label="See more" data-collapse-label="Hide more">See more</button>
+                </div>
+            @endif
+        </div>
+
+        <div class="admin-ticket-panel">
+            <div class="admin-ticket-panel-head">
+                <div>
+                    <h2 class="admin-ticket-panel-title">Completed</h2>
+                    <p class="admin-ticket-panel-sub">Completed requests so admin can review what staff already resolved.</p>
+                </div>
+                <span class="admin-section-chip admin-section-chip-success">{{ $finishedCount }} completed</span>
+            </div>
+
+            <div class="admin-ticket-panel-divider"></div>
+
+            <div class="admin-status-stack">
+                @forelse($finishedTickets as $ticket)
+                    <div class="admin-status-card {{ $loop->index >= 3 ? 'is-hidden-by-default' : '' }}" data-collapsible-item="completed">
+                        <div>
+                            <div class="admin-status-card-top">
+                                <strong>{{ $ticket->title }}</strong>
+                                <span class="admin-status-badge admin-status-badge-finished">Finished</span>
+                            </div>
+                            <p>{{ Str::limit($ticket->description, 95) }}</p>
+                            <div class="admin-status-meta">
+                                <span>#{{ $ticket->ticket_id ?? $ticket->id }}</span>
+                                <span>{{ $ticket->assignedTo->name ?? 'No staff recorded' }}</span>
+                                <span>Completed {{ $ticket->updated_at->diffForHumans() }}</span>
+                            </div>
+                        </div>
+                        <a href="{{ route('tickets.show', $ticket) }}" class="admin-status-link">View</a>
+                    </div>
+                @empty
+                    <div class="admin-status-empty">No finished tickets yet.</div>
+                @endforelse
+            </div>
+            @if($finishedCount > 3)
+                <div class="admin-collapsible-action">
+                    <button type="button" class="admin-collapsible-toggle" data-target-list="completed" data-expand-label="See more" data-collapse-label="Hide more">See more</button>
+                </div>
+            @endif
         </div>
     </div>
 </div>
@@ -510,6 +585,9 @@
             @csrf
 
             <div class="mb-6">
+                <div class="mb-3 text-xs font-semibold uppercase tracking-[0.14em]" style="color: #D6A85B;">
+                    Assigning this ticket will move it into the staff queue immediately.
+                </div>
                 <label class="block text-sm font-semibold mb-2" style="color: #D0C8B8;">
                     Select Staff
                 </label>
@@ -635,10 +713,56 @@ document.addEventListener('keydown', function (event) {
         });
     }
 });
+
+document.querySelectorAll('[data-auto-dismiss]').forEach((flash) => {
+    setTimeout(() => {
+        flash.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+        flash.style.opacity = '0';
+        flash.style.transform = 'translateY(-6px)';
+        setTimeout(() => flash.remove(), 360);
+    }, 3200);
+});
+
+document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
+    button.addEventListener('click', () => {
+        const target = button.dataset.targetList;
+        const items = document.querySelectorAll(`[data-collapsible-item="${target}"]`);
+        const expanded = button.dataset.expanded === 'true';
+
+        items.forEach((item, index) => {
+            if (index >= 3) {
+                item.style.display = expanded ? 'none' : 'flex';
+            }
+        });
+
+        button.dataset.expanded = expanded ? 'false' : 'true';
+        button.textContent = expanded ? button.dataset.expandLabel : button.dataset.collapseLabel;
+    });
+});
 </script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+.admin-ticket-flash {
+    padding: 16px 18px;
+    border-radius: 18px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.14);
+}
+
+.admin-ticket-flash-success {
+    background: linear-gradient(180deg, rgba(46, 58, 41, 0.92) 0%, rgba(34, 46, 31, 0.92) 100%);
+    border: 1px solid rgba(157, 195, 117, 0.18);
+    color: #D5E3BE;
+}
+
+.admin-ticket-flash-error {
+    background: linear-gradient(180deg, rgba(53, 38, 35, 0.92) 0%, rgba(42, 31, 29, 0.92) 100%);
+    border: 1px solid rgba(224,112,96,0.22);
+    color: #F0B3A9;
+}
 
 .dash-root.admin-ticket-page {
     font-family: 'Inter', sans-serif;
@@ -992,6 +1116,136 @@ document.addEventListener('keydown', function (event) {
     margin-bottom: 24px;
 }
 
+.admin-ticket-section-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.admin-section-chip {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(214,168,91,0.10);
+    border: 1px solid rgba(214,168,91,0.16);
+    color: #D6A85B;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.admin-section-chip-success {
+    background: rgba(90,138,90,0.12);
+    border-color: rgba(90,138,90,0.18);
+    color: #A8CAA8;
+}
+
+.admin-status-stack {
+    display: grid;
+    gap: 12px;
+}
+
+.admin-status-card.is-hidden-by-default {
+    display: none;
+}
+
+.admin-collapsible-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.admin-collapsible-toggle {
+    border: none;
+    background: transparent;
+    color: #D6A85B;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-status-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.admin-status-card-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.admin-status-card strong {
+    color: #F8F3EA;
+    font-size: 0.98rem;
+    font-weight: 700;
+}
+
+.admin-status-card p {
+    margin: 8px 0 0;
+    color: #B0A898;
+    font-size: 0.88rem;
+    line-height: 1.65;
+}
+
+.admin-status-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    color: #8A7A66;
+    font-size: 0.76rem;
+}
+
+.admin-status-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.admin-status-badge-assigned {
+    background: rgba(190,147,96,0.15);
+    color: #E4C58E;
+    border: 1px solid rgba(190,147,96,0.2);
+}
+
+.admin-status-badge-finished {
+    background: rgba(90,138,90,0.15);
+    color: #A8CAA8;
+    border: 1px solid rgba(90,138,90,0.2);
+}
+
+.admin-status-link {
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(214,168,91,0.08);
+    border: 1px solid rgba(214,168,91,0.14);
+    color: #D6A85B;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.admin-status-empty {
+    padding: 28px 20px;
+    border-radius: 18px;
+    text-align: center;
+    color: #8A7A66;
+    border: 1px dashed rgba(214,168,91,0.16);
+    background: rgba(255,255,255,0.02);
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
@@ -1012,6 +1266,10 @@ document.addEventListener('keydown', function (event) {
 @media (max-width: 1000px) {
     .admin-metrics-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-ticket-section-grid {
+        grid-template-columns: 1fr;
     }
 }
 

@@ -22,12 +22,12 @@
         <section class="booking-hero">
             <div>
                 <p class="booking-kicker">Manager Booking Center</p>
-                <h1 class="booking-title">Facility Schedule</h1>
+                <h1 class="booking-title">Booking Calendar</h1>
                 <p class="booking-subtitle">
                     @if ($viewMode === 'day')
-                        Live daily calendar for {{ $selectedDate->format('l, F j, Y') }}.
+                        A cleaner day-by-day view of Rexhall facility reservations for {{ $selectedDate->format('l, F j, Y') }}.
                     @else
-                        Booking history overview for {{ $monthLabel }}.
+                        Monthly reservation activity for {{ $monthLabel }}, grouped into a simpler management view.
                     @endif
                 </p>
             </div>
@@ -48,20 +48,7 @@
                     </a>
                 </div>
 
-                @if ($viewMode === 'day')
-                    <div class="date-nav">
-                        <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $previousDate]) }}" class="nav-pill">
-                            Previous
-                        </a>
-                        <div class="date-badge">{{ $selectedDate->format('M d, Y') }}</div>
-                        <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $nextDate]) }}" class="nav-pill">
-                            Next
-                        </a>
-                        <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $todayDate]) }}" class="nav-pill nav-pill-highlight">
-                            Today
-                        </a>
-                    </div>
-                @else
+                @if ($viewMode !== 'day')
                     <div class="date-nav">
                         <div class="date-badge">{{ $monthLabel }}</div>
                     </div>
@@ -99,6 +86,12 @@
                         <h2>Weekly Overview</h2>
                         <p>Select a day to jump the calendar</p>
                     </div>
+                    <div class="date-nav date-nav-inline">
+                        <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $previousDate]) }}" class="nav-pill">Previous</a>
+                        <div class="date-badge">{{ $selectedDate->format('M d, Y') }}</div>
+                        <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $nextDate]) }}" class="nav-pill">Next</a>
+                        <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $todayDate]) }}" class="nav-pill nav-pill-highlight">Today</a>
+                    </div>
                 </div>
 
                 <div class="week-strip">
@@ -126,12 +119,29 @@
                 <div class="panel-heading">
                     <div>
                         <h2>Daily Grid</h2>
-                        <p>Tap a booking card to view booking details</p>
+                        <p>Open any occupied slot to review the reservation details.</p>
                     </div>
+                </div>
+
+                <div class="calendar-legend">
+                    <span class="calendar-legend-item">
+                        <span class="calendar-legend-swatch calendar-legend-swatch-booked"></span>
+                        Reserved slot
+                    </span>
+                    <span class="calendar-legend-item">
+                        <span class="calendar-legend-swatch calendar-legend-swatch-open"></span>
+                        Available slot
+                    </span>
                 </div>
 
                 <div class="calendar-table-wrap">
                     <table class="calendar-table">
+                        <colgroup>
+                            <col class="calendar-col-time">
+                            @foreach ($facilities as $facility)
+                                <col class="calendar-col-facility">
+                            @endforeach
+                        </colgroup>
                         <thead>
                             <tr>
                                 <th>Time</th>
@@ -160,7 +170,7 @@
                                                     <span class="booking-chip-time">{{ $booking->booking_date->format('h:i A') }}</span>
                                                 </button>
                                             @else
-                                                <div class="empty-slot">&mdash;</div>
+                                                <div class="empty-slot">Available</div>
                                             @endif
                                         </td>
                                     @endforeach
@@ -430,11 +440,54 @@
         padding: 24px 26px;
     }
 
+    .calendar-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .calendar-legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--booking-muted);
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .calendar-legend-swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        display: inline-block;
+    }
+
+    .calendar-legend-swatch-booked {
+        background: rgba(214, 168, 91, 0.5);
+        border: 1px solid rgba(214, 168, 91, 0.6);
+    }
+
+    .calendar-legend-swatch-open {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.14);
+    }
+
     .panel-heading {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
         margin-bottom: 18px;
+    }
+
+    .date-nav-inline {
+        justify-content: flex-end;
     }
 
     .panel-heading h2 {
@@ -501,6 +554,15 @@
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
+        table-layout: fixed;
+    }
+
+    .calendar-col-time {
+        width: 96px;
+    }
+
+    .calendar-col-facility {
+        width: calc((100% - 96px) / 4);
     }
 
     .calendar-table th,
@@ -510,12 +572,18 @@
         vertical-align: top;
     }
 
+    .calendar-table td:not(:first-child),
+    .calendar-table th:not(:first-child) {
+        width: 25%;
+    }
+
     .calendar-table th {
         text-align: left;
         font-size: 0.82rem;
         letter-spacing: 0.12em;
         text-transform: uppercase;
         color: var(--booking-muted);
+        background: rgba(255,255,255,0.02);
     }
 
     .time-cell {
@@ -529,12 +597,16 @@
         width: 100%;
         text-align: left;
         padding: 12px;
+        min-height: 72px;
         border-radius: 16px;
         border: 1px solid rgba(214, 168, 91, 0.22);
         background: rgba(214, 168, 91, 0.1);
         color: var(--booking-text);
         cursor: pointer;
         transition: 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .booking-chip:hover {
@@ -559,11 +631,19 @@
     }
 
     .empty-slot {
+        min-height: 72px;
+        width: 100%;
         padding: 14px 10px;
         border-radius: 16px;
         background: rgba(255, 255, 255, 0.03);
         text-align: center;
         color: var(--booking-muted-2);
+        font-size: 0.82rem;
+        border: 1px dashed rgba(255,255,255,0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.3;
     }
 
     .month-grid {

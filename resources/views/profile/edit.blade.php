@@ -2,6 +2,7 @@
     <div class="profile-page">
         <section class="profile-hero">
             <div class="profile-hero-copy">
+                <a href="{{ route('dashboard') }}" class="profile-back-link">Back to Dashboard</a>
                 <p class="profile-kicker">Personal Account Settings</p>
                 <h1 class="profile-title">My Profile</h1>
                 <p class="profile-subtitle">
@@ -62,6 +63,18 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.30em;
+        }
+
+        .profile-back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 14px;
+            color: #D6A85B;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
         .profile-title {

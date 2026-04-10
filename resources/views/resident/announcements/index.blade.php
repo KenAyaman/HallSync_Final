@@ -4,6 +4,7 @@
         $importantCount = $announcements->where('priority', 'important')->count();
         $latestAnnouncement = $announcements->first();
     @endphp
+
     <div class="resident-page resident-page-wide">
         <section class="resident-page-hero">
             <div class="resident-page-hero-copy">
@@ -37,126 +38,107 @@
         </section>
 
         @if(session('success'))
-            <div class="resident-flash resident-flash-success">{{ session('success') }}</div>
+            <div class="resident-flash resident-flash-success" data-auto-dismiss>{{ session('success') }}</div>
         @endif
 
-        <div class="resident-two-column">
-            <section class="resident-page-panel">
-                <div class="resident-page-panel-head">
+        <section class="resident-page-panel resident-support-panel">
+            <div class="resident-page-panel-head">
+                <div>
+                    <h2>Community Notes</h2>
+                    <p>Best practices for staying up to date.</p>
+                </div>
+            </div>
+
+            <div class="resident-page-divider"></div>
+
+            <div class="resident-note-list">
+                <div class="resident-note-item">
+                    <strong>Check Regularly</strong>
+                    <span>Visit this page often so you do not miss schedules and reminders.</span>
+                </div>
+                <div class="resident-note-item">
+                    <strong>Prioritize Urgent Notices</strong>
+                    <span>Urgent announcements are meant to be read and acted on quickly.</span>
+                </div>
+                <div class="resident-note-item">
+                    <strong>Use It as a Bulletin</strong>
+                    <span>This space works best as your official source for community updates.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="resident-page-panel">
+            <div class="resident-page-panel-head">
+                <div>
+                    <h2>Latest Announcements</h2>
+                    <p>The newest updates shared with residents.</p>
+                </div>
+                <span class="resident-page-eyebrow">Notice Board</span>
+            </div>
+
+            <div class="resident-page-divider"></div>
+
+            @if($latestAnnouncement)
+                <article class="announcement-spotlight">
                     <div>
-                        <h2>Latest Posts</h2>
-                        <p>The newest updates shared with the community.</p>
+                        <div class="announcement-spotlight-label">Spotlight Notice</div>
+                        <h3>{{ $latestAnnouncement->title }}</h3>
+                        <p>{{ Str::limit($latestAnnouncement->content, 170) }}</p>
                     </div>
-                    <span class="resident-page-eyebrow">Notice Board</span>
-                </div>
+                    <a href="{{ route('announcements.show', $latestAnnouncement) }}">Open Notice</a>
+                </article>
+            @endif
 
-                <div class="resident-page-divider"></div>
+            <div class="resident-page-list">
+                @forelse($announcements as $announcement)
+                    <article class="resident-card resident-card-accent resident-card-accent-{{ $announcement->priority }}">
+                        <div class="resident-card-top">
+                            <div>
+                                <div class="resident-card-heading">
+                                    <h3>{{ $announcement->title }}</h3>
+                                    <span class="resident-badge resident-badge-priority-{{ $announcement->priority }}">
+                                        {{ ucfirst($announcement->priority) }}
+                                    </span>
+                                </div>
+                                <p class="resident-card-description">{{ Str::limit($announcement->content, 200) }}</p>
+                            </div>
 
-                @if($latestAnnouncement)
-                    <article class="announcement-spotlight">
-                        <div>
-                            <div class="announcement-spotlight-label">Spotlight Notice</div>
-                            <h3>{{ $latestAnnouncement->title }}</h3>
-                            <p>{{ Str::limit($latestAnnouncement->content, 170) }}</p>
+                            <div class="resident-card-links">
+                                <a href="{{ route('announcements.show', $announcement) }}">Read More</a>
+                            </div>
                         </div>
-                        <a href="{{ route('announcements.show', $latestAnnouncement) }}">Open Notice</a>
+
+                        <div class="resident-card-meta-grid">
+                            <div class="resident-meta-box">
+                                <span>Posted On</span>
+                                <strong>{{ $announcement->created_at->format('M d, Y') }}</strong>
+                            </div>
+                            <div class="resident-meta-box">
+                                <span>Notice Level</span>
+                                <strong>{{ ucfirst($announcement->priority) }}</strong>
+                            </div>
+                        </div>
                     </article>
-                @endif
-
-                <div class="resident-page-list">
-                    @forelse($announcements as $announcement)
-                        <article class="resident-card resident-card-accent resident-card-accent-{{ $announcement->priority }}">
-                            <div class="resident-card-top">
-                                <div>
-                                    <div class="resident-card-heading">
-                                        <h3>{{ $announcement->title }}</h3>
-                                        <span class="resident-badge resident-badge-priority-{{ $announcement->priority }}">
-                                            {{ ucfirst($announcement->priority) }}
-                                        </span>
-                                    </div>
-                                    <p class="resident-card-description">{{ Str::limit($announcement->content, 200) }}</p>
-                                </div>
-
-                                <div class="resident-card-links">
-                                    <a href="{{ route('announcements.show', $announcement) }}">Read More</a>
-                                </div>
-                            </div>
-
-                            <div class="resident-card-meta-grid">
-                                <div class="resident-meta-box">
-                                    <span>Posted By</span>
-                                    <strong>{{ $announcement->user->name }}</strong>
-                                </div>
-                                <div class="resident-meta-box">
-                                    <span>Posted On</span>
-                                    <strong>{{ $announcement->created_at->format('M d, Y') }}</strong>
-                                </div>
-                            </div>
-                        </article>
-                    @empty
-                        <div class="resident-empty-state">
-                            <h3>No announcements yet</h3>
-                            <p>Community notices and updates will appear here.</p>
-                        </div>
-                    @endforelse
-                </div>
-            </section>
-
-            <aside class="resident-sidebar">
-                <section class="resident-page-panel">
-                    <div class="resident-page-panel-head resident-sidebar-head">
-                        <div>
-                            <h2>Priority Guide</h2>
-                            <p>How to read announcement urgency at a glance.</p>
-                        </div>
+                @empty
+                    <div class="resident-empty-state">
+                        <h3>No announcements yet</h3>
+                        <p>Community notices and updates will appear here.</p>
                     </div>
-
-                    <div class="resident-page-divider"></div>
-
-                    <div class="resident-note-list">
-                        <div class="resident-note-item">
-                            <strong>Normal</strong>
-                            <span>Routine reminders, schedules, and general community updates.</span>
-                        </div>
-                        <div class="resident-note-item">
-                            <strong>Important</strong>
-                            <span>Notices that need attention soon, such as deadlines or policy reminders.</span>
-                        </div>
-                        <div class="resident-note-item">
-                            <strong>Urgent</strong>
-                            <span>Time-sensitive information involving safety, outages, or immediate action.</span>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="resident-page-panel">
-                    <div class="resident-page-panel-head resident-sidebar-head">
-                        <div>
-                            <h2>Community Notes</h2>
-                            <p>Best practices for staying up to date.</p>
-                        </div>
-                    </div>
-
-                    <div class="resident-page-divider"></div>
-
-                    <div class="resident-note-list">
-                        <div class="resident-note-item">
-                            <strong>Check Regularly</strong>
-                            <span>Visit this page often so you do not miss schedules and reminders.</span>
-                        </div>
-                        <div class="resident-note-item">
-                            <strong>Prioritize Urgent Notices</strong>
-                            <span>Urgent announcements are meant to be read and acted on quickly.</span>
-                        </div>
-                        <div class="resident-note-item">
-                            <strong>Use It as a Bulletin</strong>
-                            <span>This space works best as your official source for community updates.</span>
-                        </div>
-                    </div>
-                </section>
-            </aside>
-        </div>
+                @endforelse
+            </div>
+        </section>
     </div>
+
+    <script>
+        document.querySelectorAll('[data-auto-dismiss]').forEach((flash) => {
+            setTimeout(() => {
+                flash.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+                flash.style.opacity = '0';
+                flash.style.transform = 'translateY(-6px)';
+                setTimeout(() => flash.remove(), 360);
+            }, 3200);
+        });
+    </script>
 
     <style>
         .resident-page {
@@ -279,15 +261,9 @@
             backdrop-filter: blur(10px);
         }
 
-        .resident-two-column {
+        .resident-announcement-support-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-            gap: 22px;
-        }
-
-        .resident-sidebar {
-            display: flex;
-            flex-direction: column;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 22px;
         }
 
@@ -298,15 +274,15 @@
             backdrop-filter: blur(10px);
         }
 
+        .resident-support-panel {
+            padding: 14px 16px;
+        }
+
         .resident-page-panel-head {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .resident-sidebar-head {
             margin-bottom: 16px;
         }
 
@@ -317,10 +293,18 @@
             font-family: 'Playfair Display', serif;
         }
 
+        .resident-support-panel .resident-page-panel-head h2 {
+            font-size: 1.18rem;
+        }
+
         .resident-page-panel-head p {
             margin: 4px 0 0;
             color: #8A7A66;
             font-size: 0.95rem;
+        }
+
+        .resident-support-panel .resident-page-panel-head p {
+            font-size: 0.84rem;
         }
 
         .resident-page-eyebrow {
@@ -340,8 +324,8 @@
         .resident-page-list,
         .resident-note-list {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .announcement-spotlight {
@@ -349,73 +333,54 @@
             justify-content: space-between;
             align-items: flex-end;
             gap: 18px;
-            padding: 20px 22px;
             margin-bottom: 18px;
-            border-radius: 16px;
+            padding: 24px;
+            border-radius: 18px;
             background: linear-gradient(135deg, rgba(214,168,91,0.10), rgba(255,255,255,0.03));
-            border: 1px solid rgba(214,168,91,0.16);
+            border: 1px solid rgba(214,168,91,0.14);
         }
 
         .announcement-spotlight-label {
             color: #D6A85B;
             font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
             font-weight: 700;
-            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
         }
 
         .announcement-spotlight h3 {
-            margin: 0;
+            margin: 10px 0 0;
             color: #F0E9DF;
-            font-size: 1.3rem;
             font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
         }
 
         .announcement-spotlight p {
-            margin: 10px 0 0;
-            color: #C4B6A3;
-            line-height: 1.65;
+            margin: 12px 0 0;
+            color: #B8AB98;
+            line-height: 1.8;
+            max-width: 780px;
         }
 
         .announcement-spotlight a {
-            white-space: nowrap;
-            color: #F8F3EA;
-            text-decoration: none;
-            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             padding: 12px 18px;
             border-radius: 999px;
+            text-decoration: none;
             background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(214,168,91,0.16);
+            border: 1px solid rgba(214,168,91,0.18);
+            color: #D6A85B;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
         .resident-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 16px;
             padding: 22px;
-            transition: transform 0.18s ease, border-color 0.18s ease;
-        }
-
-        .resident-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(214,168,91,0.18);
-        }
-
-        .resident-card-accent {
-            border-left-width: 4px;
-        }
-
-        .resident-card-accent-normal {
-            border-left-color: #b8842f;
-        }
-
-        .resident-card-accent-important {
-            border-left-color: #d6a85b;
-        }
-
-        .resident-card-accent-urgent {
-            border-left-color: #c96b5a;
         }
 
         .resident-card-top {
@@ -442,21 +407,80 @@
         .resident-card-description {
             margin: 12px 0 0;
             color: #B8AB98;
-            line-height: 1.65;
-            font-size: 0.9rem;
+            line-height: 1.7;
+            font-size: 0.92rem;
         }
 
         .resident-card-links a {
             color: #d7b07a;
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.86rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
+        }
+
+        .resident-card-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .resident-meta-box,
+        .resident-note-item {
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .resident-meta-box span,
+        .resident-note-item strong {
+            display: block;
+            color: #8A7A66;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .resident-meta-box strong {
+            display: block;
+            margin-top: 8px;
+            color: #F0E9DF;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .resident-note-item span {
+            display: block;
+            margin-top: 8px;
+            color: #B8AB98;
+            line-height: 1.7;
+            font-size: 0.9rem;
+        }
+
+        .resident-support-panel .resident-note-item {
+            flex: 1 1 220px;
+            min-width: 0;
+            padding: 10px 12px;
+        }
+
+        .resident-support-panel .resident-note-item strong {
+            font-size: 0.64rem;
+        }
+
+        .resident-support-panel .resident-note-item span {
+            font-size: 0.78rem;
+            line-height: 1.5;
         }
 
         .resident-badge {
-            padding: 5px 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 11px;
             border-radius: 999px;
             font-size: 0.68rem;
             font-weight: 800;
@@ -465,86 +489,62 @@
         }
 
         .resident-badge-priority-normal {
-            background: rgba(199, 151, 69, 0.16);
-            color: #d7b07a;
+            background: rgba(214,168,91,0.12);
+            color: #E9D8BD;
         }
 
         .resident-badge-priority-important {
-            background: rgba(214, 168, 91, 0.18);
-            color: #efc98b;
+            background: rgba(190,147,96,0.14);
+            color: #E4C58E;
         }
 
         .resident-badge-priority-urgent {
-            background: rgba(185, 106, 93, 0.16);
-            color: #dc9a86;
+            background: rgba(224,112,96,0.14);
+            color: #F0B3A9;
         }
 
-        .resident-card-meta-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 18px;
+        .resident-card-accent-normal {
+            border-color: rgba(214,168,91,0.10);
         }
 
-        .resident-meta-box,
-        .resident-note-item {
-            padding: 14px 16px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255,255,255,0.05);
+        .resident-card-accent-important {
+            border-color: rgba(190,147,96,0.16);
         }
 
-        .resident-meta-box span,
-        .resident-note-item strong {
-            display: block;
-            color: #f0e9df;
-            font-size: 0.86rem;
-            font-weight: 700;
-        }
-
-        .resident-meta-box span {
-            color: #b39a78;
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .resident-meta-box strong {
-            margin-top: 6px;
-        }
-
-        .resident-note-item span {
-            display: block;
-            margin-top: 8px;
-            color: #B8AB98;
-            font-size: 0.9rem;
-            line-height: 1.65;
+        .resident-card-accent-urgent {
+            border-color: rgba(224,112,96,0.18);
         }
 
         .resident-empty-state {
-            padding: 34px 20px;
-            border-radius: 16px;
+            padding: 26px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed rgba(214,168,91,0.18);
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-            background: rgba(255, 255, 255, 0.03);
         }
 
         .resident-empty-state h3 {
             margin: 0;
-            color: #f0e9df;
-            font-size: 1.3rem;
-            font-family: 'Playfair Display', serif;
+            color: #F0E9DF;
+            font-size: 1.1rem;
         }
 
         .resident-empty-state p {
             margin: 10px 0 0;
             color: #B8AB98;
-            font-size: 0.92rem;
+            line-height: 1.7;
         }
 
-        @media (max-width: 1024px) {
-            .resident-two-column {
+        @media (max-width: 900px) {
+            .resident-announcement-support-grid,
+            .resident-card-meta-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .announcement-spotlight,
+            .resident-card-top {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
 
@@ -558,19 +558,9 @@
                 padding: 22px;
             }
 
-            .resident-page-hero,
-            .resident-card-top {
+            .resident-page-hero {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-
-            .announcement-spotlight {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .resident-card-meta-grid {
-                grid-template-columns: 1fr;
             }
         }
     </style>

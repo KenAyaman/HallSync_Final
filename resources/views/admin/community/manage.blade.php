@@ -250,16 +250,19 @@
                         </div>
 
                         <div class="flex gap-3 flex-shrink-0">
-                            <a href="{{ route('community.approve', $post) }}" 
-                               class="px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all duration-200 text-decoration-none"
-                               style="background: linear-gradient(135deg, #5A8A5A, #6DA76D); color: white;"
-                               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(90,138,90,0.4)'"
-                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                Approve
-                            </a>
+                            <form method="POST" action="{{ route('community.approve', $post) }}">
+                                @csrf
+                                <button type="submit"
+                                        class="px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all duration-200"
+                                        style="background: linear-gradient(135deg, #5A8A5A, #6DA76D); color: white; border: none;"
+                                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(90,138,90,0.4)'"
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Approve
+                                </button>
+                            </form>
                             <button onclick="openRejectModal({{ $post->id }})" 
                                     class="px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all duration-200"
                                     style="background: linear-gradient(135deg, #E07060, #D95B4F); color: white; border: none; cursor: pointer;"
@@ -333,7 +336,7 @@
                             </div>
                             <div class="text-xs mt-2" style="color: #8A7A66;">by {{ $post->user->name ?? 'Resident' }} • {{ $post->created_at->diffForHumans() }}</div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 items-center justify-center flex-wrap">
                             <form method="POST" action="{{ route('community.destroy', $post) }}" onsubmit="return confirm('Delete this post? This action cannot be undone.');">
                                 @csrf
                                 @method('DELETE')
@@ -401,7 +404,7 @@
                             @endif
                             <div class="text-xs mt-2" style="color: #8A7A66;">by {{ $post->user->name ?? 'Resident' }} • {{ $post->created_at->diffForHumans() }}</div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 items-center justify-center flex-wrap">
                             <form method="POST" action="{{ route('community.destroy', $post) }}" onsubmit="return confirm('Delete this post? This action cannot be undone.');">
                                 @csrf
                                 @method('DELETE')

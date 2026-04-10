@@ -274,7 +274,7 @@
         new Chart(bookingCtx, {
             type: 'bar',
             data: {
-                labels: @json($bookingTrends['labels'] ?? ['Study Room', 'Event Hall', 'Gym', 'Game Room', 'Laundry']),
+                labels: @json($bookingTrends['labels'] ?? ['Study Room 1', 'Study Room 2', 'Conference Room', 'Gym']),
                 datasets: [{
                     label: 'Total Bookings',
                     data: @json($bookingTrends['data'] ?? [0, 0, 0, 0, 0]),

@@ -2,6 +2,7 @@
 @php
     $recentTickets = $recentTickets ?? collect();
     $announcements = $announcements ?? collect();
+    $communityPosts = $communityPosts ?? collect();
     $heroName = Auth::user()->name;
     $activityCards = [
         [
@@ -80,7 +81,6 @@
                     <div class="resident-activity-card-copy">
                         <div class="resident-activity-card-top">
                             <strong>{{ $card['value'] }} {{ $card['label'] }}</strong>
-                            <span class="resident-activity-chevron">&rsaquo;</span>
                         </div>
                         <p>{{ $card['note'] }}</p>
                     </div>
@@ -104,8 +104,11 @@
             <div class="resident-stack-list">
                 @forelse($recentTickets->take(3) as $ticket)
                     <div class="resident-stack-item">
-                        <div class="resident-stack-item-icon resident-stack-item-icon-photo">
-                            <span>{{ strtoupper(substr($ticket->title, 0, 1)) }}</span>
+                        <div class="resident-stack-item-icon resident-stack-item-icon-ticket" aria-hidden="true">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" d="M14.7 6.3a1 1 0 010 1.4l-1.6 1.6 2.6 2.6 1.6-1.6a1 1 0 011.4 0l1 1a1 1 0 010 1.4l-6.8 6.8a2 2 0 01-1 .55l-3.2.64.64-3.2a2 2 0 01.55-1l6.8-6.8a1 1 0 011.4 0l1 1zM12 7l5 5"></path>
+                            </svg>
+                            <span>Request</span>
                         </div>
 
                         <div class="resident-stack-item-main">
@@ -170,21 +173,22 @@
         <div class="resident-surface-head">
             <div>
                 <h2>Community Board</h2>
-                <p>Shared announcements and updates around the residence</p>
+                <p>Resident conversations, updates, and shared moments around Rexhall</p>
             </div>
-            <a href="{{ route('announcements.index') }}">View All</a>
+            <a href="{{ route('community.index') }}">View All</a>
         </div>
 
         <div class="resident-surface-divider"></div>
 
         <div class="resident-community-board">
-            @forelse($announcements->take(3) as $announcement)
+            @forelse($communityPosts->take(3) as $post)
                 <article class="resident-community-entry">
                     <div class="resident-community-entry-main">
-                        <h3>{{ $announcement->title }}</h3>
-                        <p>{{ Str::limit($announcement->content, 180) }}</p>
+                        <h3>{{ $post->title }}</h3>
+                        <p>{{ Str::limit($post->content, 180) }}</p>
+                        <span class="resident-stack-meta">By {{ $post->user->name ?? 'Resident' }}</span>
                     </div>
-                    <div class="resident-community-entry-time">{{ $announcement->created_at->diffForHumans() }}</div>
+                    <div class="resident-community-entry-time">{{ $post->created_at->diffForHumans() }}</div>
                 </article>
             @empty
                 <div class="resident-empty-state">No community posts yet.</div>
@@ -276,10 +280,10 @@
 }
 
 .resident-home-btn-secondary {
-    color: #f2e7d8;
-    background: rgba(34,31,30,0.90);
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+    color: #f5e7d4;
+    background: linear-gradient(135deg, rgba(42,44,48,0.96), rgba(57,48,38,0.92));
+    border: 1px solid rgba(214,168,91,0.18);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.24);
 }
 
 .resident-section-title {
@@ -366,12 +370,6 @@
     font-size: 0.92rem;
 }
 
-.resident-activity-chevron {
-    color: #8f7f6c;
-    font-size: 1.7rem;
-    line-height: 1;
-}
-
 .resident-content-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr);
@@ -447,14 +445,33 @@
 .resident-stack-item-icon {
     width: 48px;
     height: 48px;
-    border-radius: 999px;
+    border-radius: 14px;
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(190,132,47,0.75), rgba(96,72,48,0.75));
-    color: #fff2d7;
     font-weight: 700;
+}
+
+.resident-stack-item-icon-ticket {
+    flex-direction: column;
+    gap: 3px;
+    background: linear-gradient(145deg, rgba(190,132,47,0.22), rgba(96,72,48,0.42));
+    border: 1px solid rgba(214,168,91,0.16);
+    color: #f1d39c;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.resident-stack-item-icon-ticket svg {
+    width: 18px;
+    height: 18px;
+}
+
+.resident-stack-item-icon-ticket span {
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
 }
 
 .resident-stack-item-main {

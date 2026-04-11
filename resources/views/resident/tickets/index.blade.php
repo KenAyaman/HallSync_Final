@@ -758,5 +758,48 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (max-width: 560px) {
+            .resident-page-title {
+                font-size: 2.1rem;
+            }
+
+            .resident-page-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .resident-page-panel-head h2,
+            .resident-ticket-section-head h3 {
+                font-size: 1.2rem;
+            }
+
+            .resident-ticket-section-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .resident-card,
+            .resident-page-panel,
+            .resident-page-hero {
+                border-radius: 22px;
+            }
+
+            .resident-card-links,
+            .resident-page-actions,
+            .resident-page-btn {
+                width: 100%;
+            }
+
+            .resident-card-links a,
+            .resident-page-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .resident-ticket-thumb {
+                width: 76px;
+                height: 76px;
+            }
+        }
     </style>
 </x-app-layout>

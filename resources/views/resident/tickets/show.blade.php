@@ -483,8 +483,26 @@
         }
 
         @media (max-width: 560px) {
+            .resident-ticket-title {
+                font-size: 2.05rem;
+            }
+
+            .resident-ticket-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .resident-ticket-panel-head h2,
+            .resident-ticket-inline-guide-head h3 {
+                font-size: 1.2rem;
+            }
+
             .resident-ticket-btn {
                 width: 100%;
+            }
+
+            .resident-ticket-hero,
+            .resident-ticket-panel {
+                border-radius: 22px;
             }
         }
     </style>

@@ -103,7 +103,7 @@
     </div>
 
     {{-- URGENT ATTENTION BOX --}}
-    @if($urgentCount > 0)
+    @if(false && $urgentCount > 0)
         <div class="relative overflow-hidden rounded-[28px]"
              style="
                 background: linear-gradient(135deg, rgba(104, 29, 24, 0.72), rgba(224,112,96,0.10));
@@ -1304,6 +1304,37 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
 
     .admin-ticket-panel {
         padding: 20px;
+    }
+
+    .admin-ticket-page > div:first-of-type h1 {
+        font-size: 2.2rem !important;
+    }
+
+    .admin-ticket-page > div:first-of-type p {
+        font-size: 0.95rem !important;
+    }
+
+    .admin-filter-select,
+    .admin-ticket-filters {
+        width: 100%;
+    }
+
+    .admin-filter-select {
+        min-width: 0;
+    }
+
+    .ticket-card > div.flex {
+        flex-direction: column;
+    }
+
+    .admin-status-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-status-link {
+        width: 100%;
+        text-align: center;
     }
 }
 </style>

@@ -120,5 +120,19 @@
                 padding: 22px;
             }
         }
+
+        @media (max-width: 560px) {
+            .profile-title {
+                font-size: 2.1rem;
+            }
+
+            .profile-subtitle {
+                font-size: 0.94rem;
+            }
+
+            .profile-back-link {
+                width: 100%;
+            }
+        }
     </style>
 </x-app-layout>

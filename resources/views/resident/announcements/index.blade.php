@@ -321,7 +321,11 @@
             margin-bottom: 18px;
         }
 
-        .resident-page-list,
+        .resident-page-list {
+            display: grid;
+            gap: 14px;
+        }
+
         .resident-note-list {
             display: flex;
             flex-wrap: wrap;
@@ -377,6 +381,7 @@
         }
 
         .resident-card {
+            width: 100%;
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -561,6 +566,38 @@
             .resident-page-hero {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .resident-page-title {
+                font-size: 2.15rem;
+            }
+
+            .resident-page-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .announcement-spotlight {
+                padding: 18px;
+            }
+
+            .announcement-spotlight h3 {
+                font-size: 1.35rem;
+            }
+
+            .announcement-spotlight a {
+                width: 100%;
+            }
+
+            .resident-card,
+            .resident-page-panel,
+            .resident-page-hero {
+                border-radius: 22px;
+            }
+
+            .resident-card-links {
+                width: 100%;
             }
         }
     </style>

@@ -641,6 +641,14 @@
         padding: 20px;
     }
 
+    .resident-surface-head h2 {
+        font-size: 1.3rem;
+    }
+
+    .resident-surface-head a {
+        letter-spacing: 0.08em;
+    }
+
     .resident-stack-item-row,
     .resident-community-entry,
     .resident-surface-head {
@@ -654,6 +662,44 @@
 
     .resident-stack-item-side {
         align-items: flex-start;
+    }
+}
+
+@media (max-width: 560px) {
+    .resident-home-title {
+        font-size: 2.3rem;
+        line-height: 1.04;
+    }
+
+    .resident-home-kicker {
+        font-size: 1.05rem;
+    }
+
+    .resident-home-subtitle {
+        font-size: 0.98rem;
+    }
+
+    .resident-activity-card {
+        align-items: flex-start;
+    }
+
+    .resident-activity-card-icon,
+    .resident-stack-item-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .resident-stack-item {
+        padding: 14px;
+    }
+
+    .resident-stack-item-icon-ticket span {
+        display: none;
+    }
+
+    .resident-notice-card,
+    .resident-community-entry {
+        padding: 16px;
     }
 }
 </style>

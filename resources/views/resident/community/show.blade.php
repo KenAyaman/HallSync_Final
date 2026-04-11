@@ -554,6 +554,23 @@
         }
 
         @media (max-width: 560px) {
+            .community-show-back {
+                width: 100%;
+            }
+
+            .community-post-copy h2 {
+                font-size: 1.5rem;
+            }
+
+            .community-show-panel-head h2 {
+                font-size: 1.25rem;
+            }
+
+            .community-post-badges,
+            .community-comment-meta {
+                flex-wrap: wrap;
+            }
+
             .community-thread-summary-grid {
                 grid-template-columns: 1fr;
             }
@@ -562,8 +579,22 @@
                 flex-direction: column;
             }
 
+            .community-post-owner-actions a,
+            .community-post-owner-actions form,
+            .community-post-owner-actions button {
+                width: 100%;
+            }
+
+            .community-post-owner-actions form {
+                display: flex;
+            }
+
             .community-comment-composer {
                 flex-direction: column;
+            }
+
+            .community-comment-btn {
+                width: 100%;
             }
         }
     </style>

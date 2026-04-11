@@ -162,5 +162,6 @@
 .staff-preview-card a, .staff-urgent-item a { display: inline-flex; align-items: center; justify-content: center; min-width: 88px; padding: 10px 14px; border-radius: 12px; text-decoration: none; background: rgba(214,168,91,0.14); color: #f2e2c6; font-weight: 700; }
 .staff-empty-copy { padding: 12px 0; color: #98a8b2; }
 @media (max-width: 980px) { .staff-metrics, .staff-overview-grid { grid-template-columns: 1fr; } .staff-page-hero { flex-direction: column; align-items: flex-start; } .staff-hero-aside { width: 100%; justify-items: stretch; } .staff-hero-mini-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; width: 100%; } }
+@media (max-width: 640px) { .staff-page-hero, .staff-panel, .staff-metric-card { border-radius: 24px; } .staff-page-hero, .staff-panel { padding: 20px; } .staff-page-title { font-size: 2rem; } .staff-page-subtitle { font-size: 0.95rem; } .staff-hero-mini-stats { grid-template-columns: 1fr; } .staff-panel-head, .staff-preview-card, .staff-urgent-item { flex-direction: column; align-items: flex-start; } .staff-preview-card a, .staff-urgent-item a { width: 100%; } }
 </style>
 </x-app-layout>

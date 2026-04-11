@@ -473,5 +473,40 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (max-width: 560px) {
+            .resident-ticket-create-page {
+                gap: 20px;
+            }
+
+            .resident-ticket-create-hero,
+            .resident-ticket-create-panel,
+            .resident-ticket-create-error {
+                border-radius: 22px;
+            }
+
+            .resident-ticket-create-title {
+                font-size: 2.05rem;
+            }
+
+            .resident-ticket-create-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .resident-ticket-create-panel-head h2 {
+                font-size: 1.2rem;
+            }
+
+            .resident-ticket-create-pills span,
+            .resident-ticket-create-btn,
+            .resident-ticket-create-hero-actions,
+            .resident-ticket-create-btn-secondary {
+                width: 100%;
+            }
+
+            .resident-ticket-create-actions {
+                flex-direction: column;
+            }
+        }
     </style>
 </x-app-layout>

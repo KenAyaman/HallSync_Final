@@ -116,6 +116,6 @@ document.getElementById('filterStatus')?.addEventListener('change', function() {
 .staff-action-view { background: rgba(255,255,255,0.04); color: #f0e9df; border-color: rgba(255,255,255,0.08); }
 .staff-empty-copy { padding: 12px 0; color: #98a8b2; }
 @media (max-width: 980px) { .staff-ticket-body { flex-direction: column; } .staff-ticket-actions { width: 100%; flex-direction: row; flex-wrap: wrap; } .staff-action-btn, .staff-ticket-actions form { flex: 1 1 180px; } }
-@media (max-width: 640px) { .staff-ticket-actions { flex-direction: column; } .staff-action-btn, .staff-ticket-actions form { width: 100%; flex: 1 1 auto; } }
+@media (max-width: 640px) { .staff-page-hero, .staff-panel { padding: 20px; border-radius: 24px; } .staff-page-title { font-size: 2rem; } .staff-page-subtitle { font-size: 0.95rem; } .staff-ticket-card { border-radius: 20px; } .staff-ticket-body { padding: 18px; } .staff-ticket-main h3 { font-size: 1.05rem; } .staff-ticket-actions { flex-direction: column; } .staff-action-btn, .staff-ticket-actions form { width: 100%; flex: 1 1 auto; } }
 </style>
 </x-app-layout>

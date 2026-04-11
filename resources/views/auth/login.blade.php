@@ -266,6 +266,25 @@
                 max-width: none;
             }
 
+            .rex-login-title {
+                font-size: 1.8rem;
+            }
+
+            .rex-login-subtitle,
+            .rex-login-note {
+                font-size: 0.88rem;
+            }
+
+            .rex-login-input,
+            .rex-login-btn {
+                min-height: 50px;
+            }
+
+            .rex-login-password-toggle {
+                right: 12px;
+                font-size: 0.76rem;
+            }
+
             .rex-login-row {
                 align-items: flex-start;
                 flex-direction: column;

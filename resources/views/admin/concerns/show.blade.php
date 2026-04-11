@@ -104,5 +104,6 @@
 .admin-form-input:focus { outline: none; border-color: rgba(214,168,91,0.34); box-shadow: 0 0 0 4px rgba(214,168,91,0.08); }
 .admin-form-textarea { min-height: 220px; resize: vertical; line-height: 1.7; }
 @media (max-width: 980px) { .admin-concern-hero { display: flex; flex-direction: column; padding: 24px; align-items: flex-start; } .admin-detail-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .admin-concern-page { gap: 18px; } .admin-concern-hero, .admin-concern-card, .admin-concern-alert { border-radius: 22px; } .admin-concern-title { font-size: 2rem; } .admin-concern-subtitle { font-size: 0.94rem; } .admin-concern-btn, .admin-concern-hero-actions { width: 100%; } .admin-concern-card { padding: 20px; } .admin-detail-item, .admin-detail-block { padding: 16px; } }
 </style>
 </x-app-layout>

@@ -583,13 +583,52 @@
                 align-items: flex-start;
             }
 
-            .resident-card-top,
+            .resident-card-top {
+                flex-direction: column;
+            }
+
             .resident-booking-schedule-grid {
                 grid-template-columns: 1fr;
             }
+        }
 
-            .resident-card-top {
-                flex-direction: column;
+        @media (max-width: 560px) {
+            .resident-page-title {
+                font-size: 2.15rem;
+            }
+
+            .resident-page-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .resident-page-panel-head h2,
+            .resident-day-heading {
+                font-size: 1.2rem;
+            }
+
+            .resident-card,
+            .resident-page-panel,
+            .resident-page-hero {
+                border-radius: 22px;
+            }
+
+            .resident-card-links {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .resident-card-links a,
+            .resident-card-links form,
+            .resident-card-links button {
+                width: 100%;
+            }
+
+            .resident-card-links form {
+                display: flex;
+            }
+
+            .resident-day-heading {
+                gap: 10px;
             }
         }
     </style>

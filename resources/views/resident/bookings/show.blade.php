@@ -300,5 +300,28 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (max-width: 560px) {
+            .resident-booking-title {
+                font-size: 2.1rem;
+            }
+
+            .resident-booking-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .resident-booking-panel-head h2 {
+                font-size: 1.25rem;
+            }
+
+            .resident-booking-hero-actions,
+            .resident-booking-btn {
+                width: 100%;
+            }
+
+            .resident-booking-btn {
+                min-height: 46px;
+            }
+        }
     </style>
 </x-app-layout>

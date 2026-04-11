@@ -816,15 +816,37 @@
         }
 
         .mode-switcher,
-        .date-nav,
-        .stats-grid,
-        .month-grid,
-        .week-strip {
-            grid-template-columns: 1fr;
+        .date-nav {
+            width: 100%;
+            justify-content: flex-start;
         }
 
         .stats-grid {
             display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .month-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .week-strip {
+            grid-template-columns: repeat(7, minmax(120px, 1fr));
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .calendar-table {
+            min-width: 760px;
+        }
+
+        .panel-heading {
+            align-items: flex-start;
+        }
+
+        .date-nav-inline {
+            width: 100%;
+            justify-content: flex-start;
         }
     }
 
@@ -835,10 +857,31 @@
             border-radius: 22px;
         }
 
+        .booking-title {
+            font-size: 2.1rem;
+        }
+
+        .booking-subtitle {
+            font-size: 0.98rem;
+            line-height: 1.6;
+        }
+
+        .mode-pill,
+        .nav-pill,
+        .date-badge {
+            padding: 9px 14px;
+            font-size: 0.84rem;
+        }
+
         .summary-row,
         .history-row {
             flex-direction: column;
             align-items: flex-start;
+        }
+
+        .booking-modal-card {
+            padding: 18px;
+            border-radius: 20px;
         }
     }
 </style>

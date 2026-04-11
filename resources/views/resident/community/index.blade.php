@@ -832,5 +832,74 @@
                 flex-direction: column;
             }
         }
+
+        @media (max-width: 560px) {
+            .community-feed-title {
+                font-size: 2rem;
+            }
+
+            .community-feed-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .community-feed-hero,
+            .community-review-strip,
+            .community-composer-card,
+            .community-feed-card,
+            .community-empty-state {
+                border-radius: 18px;
+            }
+
+            .community-composer-main {
+                align-items: flex-start;
+            }
+
+            .community-composer-trigger {
+                min-height: 50px;
+                padding: 0 14px;
+                font-size: 0.92rem;
+            }
+
+            .community-composer-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .community-composer-actions a {
+                width: 100%;
+            }
+
+            .community-feed-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .community-feed-stats-row,
+            .community-review-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .community-review-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .community-review-actions a,
+            .community-review-actions form,
+            .community-review-actions button {
+                width: 100%;
+            }
+
+            .community-review-actions form {
+                display: flex;
+            }
+
+            .community-feed-head-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
     </style>
 </x-app-layout>

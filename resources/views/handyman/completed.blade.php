@@ -52,5 +52,6 @@
 .staff-completed-card a { display: inline-flex; align-items: center; justify-content: center; min-width: 98px; padding: 10px 14px; border-radius: 12px; text-decoration: none; background: rgba(214,168,91,0.14); color: #f2e2c6; font-weight: 700; }
 .staff-empty-copy { padding: 12px 0; color: #98a8b2; }
 @media (max-width: 768px) { .staff-completed-card { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 640px) { .staff-page-hero, .staff-panel { padding: 20px; border-radius: 24px; } .staff-page-title { font-size: 2rem; } .staff-page-subtitle { font-size: 0.95rem; } .staff-completed-card a { width: 100%; } }
 </style>
 </x-app-layout>

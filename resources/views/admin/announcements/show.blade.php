@@ -271,5 +271,40 @@
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 768px) {
+    .admin-shell.admin-announce-show-page {
+        gap: 20px;
+    }
+
+    .admin-panel-card {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 560px) {
+    .admin-panel-title {
+        font-size: 1.25rem;
+    }
+
+    .admin-panel-sub,
+    .admin-meta-value,
+    .admin-announcement-body {
+        font-size: 0.92rem;
+    }
+
+    .admin-form-actions,
+    .admin-action-link,
+    .admin-secondary-btn,
+    .admin-form-actions form {
+        width: 100%;
+    }
+
+    .admin-secondary-btn,
+    .admin-action-link {
+        justify-content: center;
+        text-align: center;
+    }
+}
 </style>
 </x-app-layout>

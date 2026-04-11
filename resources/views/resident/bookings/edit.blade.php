@@ -53,7 +53,7 @@
 
                 <div class="resident-booking-edit-divider"></div>
 
-                <form method="POST" action="{{ route('bookings.update', $booking) }}" class="resident-booking-edit-form">
+                <form method="POST" action="{{ route('bookings.update', $booking) }}" class="resident-booking-edit-form" data-prevent-double-submit data-submitting-text="Saving Booking...">
                     @csrf
                     @method('PUT')
 

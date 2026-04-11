@@ -8,7 +8,7 @@
             </p>
         </div>
 
-        <form method="POST" action="{{ route('register') }}" class="rex-auth-form">
+        <form method="POST" action="{{ route('register') }}" class="rex-auth-form" data-prevent-double-submit data-submitting-text="Creating Account...">
             @csrf
 
             <div class="rex-auth-field">

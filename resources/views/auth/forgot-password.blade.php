@@ -10,7 +10,7 @@
 
         <x-auth-session-status class="rex-auth-status" :status="session('status')" />
 
-        <form method="POST" action="{{ route('password.email') }}" class="rex-auth-form">
+        <form method="POST" action="{{ route('password.email') }}" class="rex-auth-form" data-prevent-double-submit data-submitting-text="Sending Link...">
             @csrf
 
             <div class="rex-auth-field">

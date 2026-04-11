@@ -105,7 +105,7 @@
             <div class="community-show-divider"></div>
 
             @auth
-                <form method="POST" action="{{ route('community.comment', $post) }}" class="community-comment-form">
+                <form method="POST" action="{{ route('community.comment', $post) }}" class="community-comment-form" data-prevent-double-submit data-submitting-text="Posting Comment...">
                     @csrf
                     <div class="community-comment-composer">
                         <div class="community-comment-avatar">

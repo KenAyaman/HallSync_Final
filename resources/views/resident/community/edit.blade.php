@@ -30,7 +30,7 @@
 
             <div class="community-edit-divider"></div>
 
-            <form method="POST" action="{{ route('community.update', $communityPost) }}" enctype="multipart/form-data" id="postForm" class="community-edit-form">
+            <form method="POST" action="{{ route('community.update', $communityPost) }}" enctype="multipart/form-data" id="postForm" class="community-edit-form" data-prevent-double-submit data-submitting-text="Saving Changes...">
                 @csrf
                 @method('PATCH')
 

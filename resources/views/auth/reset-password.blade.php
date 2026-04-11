@@ -8,7 +8,7 @@
             </p>
         </div>
 
-        <form method="POST" action="{{ route('password.store') }}" class="rex-auth-form">
+        <form method="POST" action="{{ route('password.store') }}" class="rex-auth-form" data-prevent-double-submit data-submitting-text="Resetting Password...">
             @csrf
             <input type="hidden" name="token" value="{{ $request->route('token') }}">
 

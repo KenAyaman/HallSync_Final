@@ -53,7 +53,7 @@
 
                 <div class="resident-booking-create-divider"></div>
 
-                <form method="POST" action="{{ route('bookings.store') }}" class="resident-booking-create-form">
+                <form method="POST" action="{{ route('bookings.store') }}" class="resident-booking-create-form" data-prevent-double-submit data-submitting-text="Confirming Booking...">
                     @csrf
 
                     <div>

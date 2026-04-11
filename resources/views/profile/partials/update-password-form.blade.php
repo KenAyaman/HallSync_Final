@@ -11,7 +11,7 @@
 
     <div class="profile-section-divider"></div>
 
-    <form method="post" action="{{ route('password.update') }}" class="profile-form-grid">
+    <form method="post" action="{{ route('password.update') }}" class="profile-form-grid" data-prevent-double-submit data-submitting-text="Updating Password...">
         @csrf
         @method('put')
 

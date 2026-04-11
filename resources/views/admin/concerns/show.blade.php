@@ -54,7 +54,7 @@
                 <p>Move the concern through review and send a reply when needed.</p>
             </div>
 
-            <form method="POST" action="{{ route('admin.concerns.update', $concern) }}" class="admin-concern-form">
+            <form method="POST" action="{{ route('admin.concerns.update', $concern) }}" class="admin-concern-form" data-prevent-double-submit data-submitting-text="Saving Reply...">
                 @csrf
                 @method('PATCH')
 

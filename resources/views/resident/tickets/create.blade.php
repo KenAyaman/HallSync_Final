@@ -43,7 +43,7 @@
 
                 <div class="resident-ticket-create-divider"></div>
 
-                <form method="POST" action="{{ route('tickets.store') }}" enctype="multipart/form-data" id="ticketForm" class="resident-ticket-create-form">
+                <form method="POST" action="{{ route('tickets.store') }}" enctype="multipart/form-data" id="ticketForm" class="resident-ticket-create-form" data-prevent-double-submit data-submitting-text="Submitting Request...">
                     @csrf
 
                     <div>

@@ -21,7 +21,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}" class="rex-login-form">
+        <form method="POST" action="{{ route('login') }}" class="rex-login-form" data-prevent-double-submit data-submitting-text="Signing In...">
             @csrf
 
             <div class="rex-login-field">

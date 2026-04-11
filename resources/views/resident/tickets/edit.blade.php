@@ -53,7 +53,7 @@
 
                 <div class="resident-ticket-edit-divider"></div>
 
-                <form method="POST" action="{{ route('tickets.update', $ticket) }}" enctype="multipart/form-data" id="ticketForm" class="resident-ticket-edit-form">
+                <form method="POST" action="{{ route('tickets.update', $ticket) }}" enctype="multipart/form-data" id="ticketForm" class="resident-ticket-edit-form" data-prevent-double-submit data-submitting-text="Saving Changes...">
                     @csrf
                     @method('PUT')
 

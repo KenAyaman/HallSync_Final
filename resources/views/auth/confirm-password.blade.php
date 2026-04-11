@@ -8,7 +8,7 @@
             </p>
         </div>
 
-        <form method="POST" action="{{ route('password.confirm') }}" class="rex-auth-form">
+        <form method="POST" action="{{ route('password.confirm') }}" class="rex-auth-form" data-prevent-double-submit data-submitting-text="Confirming...">
             @csrf
 
             <div class="rex-auth-field">

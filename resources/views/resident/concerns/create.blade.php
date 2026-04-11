@@ -32,7 +32,7 @@
             <span class="concern-badge">Private to Admin</span>
         </div>
 
-        <form method="POST" action="{{ route('concerns.store') }}" class="concern-form">
+        <form method="POST" action="{{ route('concerns.store') }}" class="concern-form" data-prevent-double-submit data-submitting-text="Submitting Concern...">
             @csrf
 
             <div class="concern-grid">

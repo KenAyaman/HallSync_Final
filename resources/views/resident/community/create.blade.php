@@ -28,7 +28,7 @@
 
                 <div class="community-create-divider"></div>
 
-                <form method="POST" action="{{ route('community.store') }}" enctype="multipart/form-data" id="postForm" class="community-create-form">
+                <form method="POST" action="{{ route('community.store') }}" enctype="multipart/form-data" id="postForm" class="community-create-form" data-prevent-double-submit data-submitting-text="Submitting Post...">
                     @csrf
 
                     <div class="community-create-composer">

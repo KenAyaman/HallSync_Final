@@ -281,5 +281,41 @@
                 </section>
             </div>
         </div>
+        <script>
+            document.addEventListener('submit', function (event) {
+                const form = event.target;
+
+                if (!(form instanceof HTMLFormElement) || !form.hasAttribute('data-prevent-double-submit')) {
+                    return;
+                }
+
+                if (form.dataset.submitting === 'true') {
+                    event.preventDefault();
+                    return;
+                }
+
+                form.dataset.submitting = 'true';
+
+                const submittingText = form.getAttribute('data-submitting-text') || 'Submitting...';
+                const submitButtons = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+
+                submitButtons.forEach((button) => {
+                    if (!button.dataset.originalLabel) {
+                        button.dataset.originalLabel = button.tagName === 'INPUT' ? button.value : button.innerHTML;
+                    }
+
+                    button.disabled = true;
+
+                    if (button.tagName === 'INPUT') {
+                        button.value = submittingText;
+                    } else {
+                        button.innerHTML = submittingText;
+                    }
+
+                    button.style.opacity = '0.7';
+                    button.style.cursor = 'not-allowed';
+                });
+            }, true);
+        </script>
     </body>
 </html>

@@ -15,7 +15,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="profile-form-grid">
+    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="profile-form-grid" data-prevent-double-submit data-submitting-text="Saving Profile...">
         @csrf
         @method('patch')
 

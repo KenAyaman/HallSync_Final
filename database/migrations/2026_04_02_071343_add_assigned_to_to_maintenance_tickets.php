@@ -17,6 +17,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (!Schema::hasColumn('maintenance_tickets', 'assigned_to')) {
+            return;
+        }
+
         Schema::table('maintenance_tickets', function (Blueprint $table) {
             $table->dropForeign(['assigned_to']);
             $table->dropColumn('assigned_to');

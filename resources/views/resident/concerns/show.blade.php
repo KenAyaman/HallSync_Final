@@ -7,7 +7,7 @@
             <p class="concern-subtitle">Private conversation between you and administration regarding this concern.</p>
         </div>
         <div class="concern-hero-actions">
-            <a href="{{ route('concerns.index') }}" class="concern-btn concern-btn-secondary">Back to My Reports</a>
+            <a href="{{ route('concerns.index') }}" class="concern-btn concern-btn-secondary concern-btn-back">Back to My Reports</a>
             <span class="concern-status concern-status-{{ $concern->status }}">{{ $concern->status_label }}</span>
         </div>
     </section>
@@ -54,7 +54,9 @@
 .concern-title { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; }
 .concern-subtitle { margin: 12px 0 0; max-width: 720px; color: rgba(240,233,223,0.74); line-height: 1.7; }
 .concern-hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-.concern-btn { display: inline-flex; align-items: center; justify-content: center; padding: 13px 22px; border-radius: 999px; text-decoration: none; font-weight: 700; border: 1px solid rgba(214,168,91,0.16); background: rgba(255,255,255,0.04); color: #e8e0d3; }
+.concern-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 0.9rem; border: 1px solid rgba(214,168,91,0.18); background: linear-gradient(180deg, rgba(42,44,48,0.92) 0%, rgba(33,35,38,0.92) 100%); color: #f0e9df; box-shadow: 0 12px 24px rgba(0,0,0,0.14); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.concern-btn:hover { transform: translateY(-1px); box-shadow: 0 14px 28px rgba(0,0,0,0.18); }
+.concern-btn-back { min-width: 188px; }
 .concern-status { padding: 10px 14px; border-radius: 999px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.76rem; }
 .concern-status-submitted { background: rgba(214,168,91,0.16); color: #d6a85b; }
 .concern-status-in_review { background: rgba(103,138,196,0.16); color: #93afd8; }

@@ -64,25 +64,30 @@
                 <article class="resident-activity-card resident-activity-card-{{ $card['tone'] }}">
                     <div class="resident-activity-card-icon">
                         @if($card['icon'] === 'wrench')
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg class="resident-dashboard-loaded-content" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7 6.3a1 1 0 010 1.4l-1.6 1.6 2.6 2.6 1.6-1.6a1 1 0 011.4 0l1 1a1 1 0 010 1.4l-6.8 6.8a2 2 0 01-1 .55l-3.2.64.64-3.2a2 2 0 01.55-1l6.8-6.8a1 1 0 011.4 0l1 1zM12 7l5 5"></path>
                             </svg>
                         @elseif($card['icon'] === 'clipboard')
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg class="resident-dashboard-loaded-content" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h6m-7 3h8m-9 11h10a2 2 0 002-2V7a2 2 0 00-2-2h-1.5a1.5 1.5 0 01-3 0h-3a1.5 1.5 0 01-3 0H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                         @else
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg class="resident-dashboard-loaded-content" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
                         @endif
+                        <span class="resident-dashboard-skeleton resident-dashboard-skeleton-icon" aria-hidden="true"></span>
                     </div>
 
                     <div class="resident-activity-card-copy">
-                        <div class="resident-activity-card-top">
+                        <div class="resident-activity-card-top resident-dashboard-loaded-content">
                             <strong>{{ $card['value'] }} {{ $card['label'] }}</strong>
                         </div>
-                        <p>{{ $card['note'] }}</p>
+                        <p class="resident-dashboard-loaded-content">{{ $card['note'] }}</p>
+                        <div class="resident-dashboard-skeleton-copy" aria-hidden="true">
+                            <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-title"></span>
+                            <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-short"></span>
+                        </div>
                     </div>
                 </article>
             @endforeach
@@ -101,7 +106,31 @@
 
             <div class="resident-surface-divider"></div>
 
-            <div class="resident-stack-list">
+            <div class="resident-stack-list resident-dashboard-skeleton-list" aria-hidden="true">
+                @for($i = 0; $i < 3; $i++)
+                    <div class="resident-stack-item">
+                        <div class="resident-stack-item-icon resident-stack-item-icon-ticket">
+                            <span class="resident-dashboard-skeleton resident-dashboard-skeleton-icon-small"></span>
+                        </div>
+
+                        <div class="resident-stack-item-main">
+                            <div class="resident-stack-item-row">
+                                <div class="resident-dashboard-skeleton-main">
+                                    <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-title"></span>
+                                    <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-wide"></span>
+                                </div>
+
+                                <div class="resident-stack-item-side resident-dashboard-skeleton-side">
+                                    <span class="resident-dashboard-skeleton resident-dashboard-skeleton-chip"></span>
+                                    <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-meta"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endfor
+            </div>
+
+            <div class="resident-stack-list resident-dashboard-loaded-content">
                 @forelse($recentTickets->take(3) as $ticket)
                     <div class="resident-stack-item">
                         <div class="resident-stack-item-icon resident-stack-item-icon-ticket" aria-hidden="true">
@@ -144,7 +173,23 @@
 
             <div class="resident-surface-divider"></div>
 
-            <div class="resident-notice-list">
+            <div class="resident-notice-list resident-dashboard-skeleton-list" aria-hidden="true">
+                @for($i = 0; $i < 2; $i++)
+                    <div class="resident-notice-card">
+                        <div class="resident-notice-title">
+                            <span class="resident-notice-marker">
+                                <span class="resident-dashboard-skeleton resident-dashboard-skeleton-dot"></span>
+                            </span>
+                            <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-title"></span>
+                        </div>
+                        <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-wide"></span>
+                        <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-short"></span>
+                        <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-meta"></span>
+                    </div>
+                @endfor
+            </div>
+
+            <div class="resident-notice-list resident-dashboard-loaded-content">
                 @forelse($announcements->take(2) as $announcement)
                     <div class="resident-notice-card">
                         <div class="resident-notice-title">
@@ -180,7 +225,21 @@
 
         <div class="resident-surface-divider"></div>
 
-        <div class="resident-community-board">
+        <div class="resident-community-board resident-dashboard-skeleton-list" aria-hidden="true">
+            @for($i = 0; $i < 3; $i++)
+                <article class="resident-community-entry">
+                    <div class="resident-community-entry-main">
+                        <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-title"></span>
+                        <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-wide"></span>
+                        <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-short"></span>
+                        <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-meta"></span>
+                    </div>
+                    <span class="resident-dashboard-skeleton resident-dashboard-skeleton-line resident-dashboard-skeleton-line-meta"></span>
+                </article>
+            @endfor
+        </div>
+
+        <div class="resident-community-board resident-dashboard-loaded-content">
             @forelse($communityPosts->take(3) as $post)
                 <article class="resident-community-entry">
                     <div class="resident-community-entry-main">
@@ -599,6 +658,91 @@
     color: #B8AB98;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.05);
+}
+
+.resident-dashboard-skeleton,
+.resident-dashboard-skeleton-list {
+    display: none;
+}
+
+.resident-dashboard-skeleton {
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.055), rgba(255,255,255,0.17), rgba(255,255,255,0.055));
+    background-size: 220% 100%;
+    animation: skeleton-shimmer 1.15s ease-in-out infinite;
+}
+
+body.role-resident .app-loading-overlay.is-active {
+    display: none;
+}
+
+html.is-loading .resident-dashboard-loaded-content {
+    display: none !important;
+}
+
+html.is-loading .resident-dashboard-skeleton,
+html.is-loading .resident-dashboard-skeleton-list {
+    display: block;
+}
+
+html.is-loading .resident-dashboard-skeleton-list {
+    display: flex;
+}
+
+.resident-dashboard-skeleton-copy,
+.resident-dashboard-skeleton-main {
+    width: 100%;
+}
+
+.resident-dashboard-skeleton-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.resident-dashboard-skeleton-icon-small {
+    width: 26px;
+    height: 26px;
+}
+
+.resident-dashboard-skeleton-dot {
+    width: 8px;
+    height: 8px;
+}
+
+.resident-dashboard-skeleton-line {
+    height: 11px;
+    margin-top: 9px;
+}
+
+.resident-dashboard-skeleton-line:first-child {
+    margin-top: 0;
+}
+
+.resident-dashboard-skeleton-line-title {
+    width: min(220px, 74%);
+    height: 15px;
+}
+
+.resident-dashboard-skeleton-line-wide {
+    width: min(520px, 88%);
+}
+
+.resident-dashboard-skeleton-line-short {
+    width: min(180px, 52%);
+}
+
+.resident-dashboard-skeleton-line-meta {
+    width: 138px;
+    height: 10px;
+}
+
+.resident-dashboard-skeleton-chip {
+    width: 96px;
+    height: 31px;
+}
+
+.resident-dashboard-skeleton-side {
+    min-width: 150px;
 }
 
 @media (max-width: 1180px) {

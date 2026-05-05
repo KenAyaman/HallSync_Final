@@ -46,7 +46,7 @@
             <div class="resident-flash resident-flash-success" data-auto-dismiss>{{ session('success') }}</div>
         @endif
 
-        <section class="resident-page-panel">
+        <section class="resident-page-panel" data-filter-scope>
             <div class="resident-page-panel-head">
                 <div>
                     <h2>My Bookings</h2>
@@ -57,7 +57,50 @@
 
             <div class="resident-page-divider"></div>
 
-            <div class="resident-page-list">
+            <div class="resident-filter-bar">
+                <input type="search" class="resident-filter-input" placeholder="Search facility, date, or time" data-filter-input data-filter-key="search">
+                <select class="resident-filter-select" data-filter-select data-filter-key="status">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <select class="resident-filter-select" data-filter-select data-filter-key="facility">
+                    <option value="">All facilities</option>
+                    <option value="Study Room 1">Study Room 1</option>
+                    <option value="Study Room 2">Study Room 2</option>
+                    <option value="Conference Room">Conference Room</option>
+                    <option value="Gym">Gym</option>
+                </select>
+            </div>
+
+            <div class="feature-skeleton-stack" data-feature-skeleton>
+                @for($group = 0; $group < 2; $group++)
+                    <section>
+                        <span class="feature-skeleton-line feature-skeleton-day"></span>
+                        <article class="resident-card resident-card-schedule feature-skeleton-card">
+                            <div class="feature-skeleton-top">
+                                <div class="feature-skeleton-title-row">
+                                    <span class="feature-skeleton-line title"></span>
+                                    <span class="feature-skeleton-pill"></span>
+                                </div>
+                                <div class="feature-skeleton-actions">
+                                    <span class="feature-skeleton-button"></span>
+                                    <span class="feature-skeleton-button"></span>
+                                    <span class="feature-skeleton-button"></span>
+                                </div>
+                            </div>
+                            <div class="feature-skeleton-meta">
+                                <span class="feature-skeleton-box"></span>
+                                <span class="feature-skeleton-box"></span>
+                            </div>
+                        </article>
+                    </section>
+                @endfor
+            </div>
+
+            <div class="resident-page-list" data-skeleton-content>
                 @forelse($visibleBookingGroups as $date => $dateBookings)
                     @php
                         $displayDate = \Illuminate\Support\Carbon::parse($date);
@@ -70,22 +113,26 @@
 
                         <div class="resident-day-list">
                             @foreach($dateBookings as $booking)
-                                <article class="resident-card resident-card-schedule">
+                                <article class="resident-card resident-card-schedule"
+                                         data-filter-card
+                                         data-search="{{ Str::lower($booking->facility_name . ' ' . $booking->booking_date->format('F d, Y h:i A') . ' ' . $booking->end_time->format('h:i A')) }}"
+                                         data-status="{{ $booking->status }}"
+                                         data-facility="{{ $booking->facility_name }}">
                                     <div class="resident-card-top">
                                         <div class="resident-card-heading">
                                             <h3>{{ $booking->facility_name }}</h3>
                                             <span class="resident-badge resident-badge-status-{{ $booking->status }}">
-                                                Reserved
+                                                {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
                                             </span>
                                         </div>
 
                                         <div class="resident-card-links">
                                             <a href="{{ route('bookings.edit', $booking) }}">Edit</a>
                                             <a href="{{ route('bookings.show', $booking) }}">View</a>
-                                            <form method="POST" action="{{ route('bookings.destroy', $booking) }}">
+                                            <form method="POST" action="{{ route('bookings.destroy', $booking) }}" data-confirm-message="Cancel this booking? This will remove it from your schedule.">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" onclick="return confirm('Are you sure you want to cancel this booking?')">Delete</button>
+                                                <button type="submit">Cancel Booking</button>
                                             </form>
                                         </div>
                                     </div>
@@ -126,22 +173,26 @@
 
                                 <div class="resident-day-list">
                                     @foreach($dateBookings as $booking)
-                                        <article class="resident-card resident-card-schedule">
+                                        <article class="resident-card resident-card-schedule"
+                                                 data-filter-card
+                                                 data-search="{{ Str::lower($booking->facility_name . ' ' . $booking->booking_date->format('F d, Y h:i A') . ' ' . $booking->end_time->format('h:i A')) }}"
+                                                 data-status="{{ $booking->status }}"
+                                                 data-facility="{{ $booking->facility_name }}">
                                             <div class="resident-card-top">
                                                 <div class="resident-card-heading">
                                                     <h3>{{ $booking->facility_name }}</h3>
                                                     <span class="resident-badge resident-badge-status-{{ $booking->status }}">
-                                                        Reserved
+                                                        {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
                                                     </span>
                                                 </div>
 
                                                 <div class="resident-card-links">
                                                     <a href="{{ route('bookings.edit', $booking) }}">Edit</a>
                                                     <a href="{{ route('bookings.show', $booking) }}">View</a>
-                                                    <form method="POST" action="{{ route('bookings.destroy', $booking) }}">
+                                                    <form method="POST" action="{{ route('bookings.destroy', $booking) }}" data-confirm-message="Cancel this booking? This will remove it from your schedule.">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" onclick="return confirm('Are you sure you want to cancel this booking?')">Delete</button>
+                                                        <button type="submit">Cancel Booking</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -165,6 +216,8 @@
 
                     <button type="button" class="resident-see-more-btn" data-target="resident-more-bookings">See more</button>
                 @endif
+
+                <div class="resident-filter-empty" data-filter-empty>No bookings match your filters.</div>
             </div>
         </section>
     </div>

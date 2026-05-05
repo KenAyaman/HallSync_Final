@@ -160,8 +160,10 @@
 
 /* ── CSS Variables ─────────────────────────────────────────── */
 :root {
-    --sidebar-bg:       #0D0C08;
-    --sidebar-border:   rgba(214,168,91,0.12);
+    --sidebar-bg:       #34312c;
+    --sidebar-bg-deep:  #2d2a26;
+    --sidebar-bg-soft:  #3d3932;
+    --sidebar-border:   rgba(214,168,91,0.16);
     --sidebar-width:    280px;
     --gold:             #D6A85B;
     --gold-dim:         rgba(214,168,91,0.12);
@@ -169,8 +171,8 @@
     --gold-glow:        rgba(214,168,91,0.08);
     --text-primary:     #F5F0E9;
     --text-secondary:   #C4BCB2;
-    --text-muted:       #7A7268;
-    --text-soft:        #A8A094;
+    --text-muted:       #9b8f80;
+    --text-soft:        #d2c5b5;
     --accent-red:       #E07060;
     --accent-green:     #5A8A5A;
     --transition:       0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -196,10 +198,10 @@
     width: 44px;
     height: 44px;
     
-    /* No background by default */
-    background: transparent;
-    backdrop-filter: none;
-    border: none;
+    background: rgba(255, 249, 240, 0.86);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(94, 75, 55, 0.22);
+    box-shadow: 0 10px 24px rgba(72, 48, 24, 0.16);
     
     border-radius: 14px;
     display: flex;
@@ -214,9 +216,9 @@
 
 /* Subtle background appears only on hover */
 .admin-burger-btn:hover {
-    background: rgba(13, 12, 8, 0.8);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(214,168,91,0.25);
+    background: rgba(255, 252, 246, 0.96);
+    border-color: rgba(138, 95, 43, 0.32);
+    box-shadow: 0 14px 28px rgba(72, 48, 24, 0.20);
 }
 
 /* The three gold lines */
@@ -224,7 +226,7 @@
     display: block;
     width: 18px;
     height: 2px;
-    background: var(--gold);
+    background: #5e4b37;
     border-radius: 10px;
     transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center;
@@ -244,9 +246,15 @@
 
 /* Keep consistent background when open */
 .burger-active {
-    background: rgba(13, 12, 8, 0.85);
+    background: rgba(52,49,44,0.96);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(214,168,91,0.3);
+    border: 1px solid rgba(214,168,91,0.30);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
+    left: calc(var(--sidebar-width) - 68px);
+}
+
+.burger-active .burger-line {
+    background: var(--gold);
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -271,7 +279,7 @@
     left: 0;
     width: var(--sidebar-width);
     height: 100vh;
-    background: var(--sidebar-bg);
+    background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-bg-deep) 100%);
     border-right: 1px solid var(--sidebar-border);
     display: flex;
     flex-direction: column;
@@ -286,7 +294,7 @@
 /* Sidebar open state */
 .sidebar-open {
     transform: translateX(0) !important;
-    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 12px 0 36px rgba(72,48,24,0.22);
 }
 
 /* Custom scrollbar */
@@ -309,13 +317,13 @@
     right: -50px;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(214,168,91,0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(214,168,91,0.09) 0%, transparent 70%);
     pointer-events: none;
 }
 
 /* ── Sidebar Header ───────────────────────────────────────── */
 .sidebar-header {
-    padding: 32px 24px 24px 80px;
+    padding: 32px 80px 24px 24px;
     border-bottom: 1px solid var(--sidebar-border);
 }
 
@@ -356,7 +364,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--gold);
-    background: var(--gold-dim);
+    background: rgba(214,168,91,0.10);
     padding: 6px 14px;
     border-radius: 40px;
     border: 1px solid rgba(214,168,91,0.2);
@@ -411,13 +419,13 @@
 }
 
 .nav-item:hover:not(.nav-active) {
-    background: var(--gold-faint);
+    background: rgba(255,255,255,0.045);
     color: var(--text-primary);
     border-color: var(--sidebar-border);
 }
 
 .nav-active {
-    background: var(--gold-dim);
+    background: rgba(214,168,91,0.12);
     color: var(--gold);
     border-color: rgba(214,168,91,0.25);
 }
@@ -441,18 +449,18 @@
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    background: rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.045);
     flex-shrink: 0;
     transition: all 0.2s ease;
 }
 
 .nav-active .nav-icon-wrap {
-    background: rgba(214,168,91,0.15);
+    background: rgba(214,168,91,0.14);
     color: var(--gold);
 }
 
 .nav-item:hover:not(.nav-active) .nav-icon-wrap {
-    background: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.07);
 }
 
 .nav-label {
@@ -486,7 +494,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.045);
     border-radius: 14px;
     border: 1px solid var(--sidebar-border);
     margin-bottom: 14px;
@@ -494,7 +502,7 @@
 }
 
 .user-card:hover {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.065);
     border-color: rgba(214,168,91,0.2);
 }
 
@@ -543,7 +551,7 @@
     justify-content: center;
     gap: 10px;
     padding: 11px 16px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.04);
     border: 1px solid var(--sidebar-border);
     border-radius: 12px;
     color: var(--text-muted);
@@ -567,8 +575,12 @@
         left: 16px;
     }
 
+    .admin-burger-btn.burger-active {
+        left: calc(260px - 60px);
+    }
+
     .sidebar-header {
-        padding-left: 72px;
+        padding: 28px 72px 22px 20px;
     }
     
     .admin-sidebar {

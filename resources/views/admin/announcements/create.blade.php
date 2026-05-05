@@ -77,9 +77,7 @@
     @endif
 
     {{-- MAIN CONTENT --}}
-    <div class="admin-create-grid">
-        {{-- LEFT: FORM --}}
-        <div class="admin-panel-card admin-form-panel">
+    <div class="admin-panel-card admin-form-panel">
             <div class="admin-panel-head">
                 <div>
                     <h2 class="admin-panel-title">Announcement Details</h2>
@@ -134,68 +132,6 @@
                     </a>
                 </div>
             </form>
-        </div>
-
-        {{-- RIGHT: SIDE PANELS --}}
-        <div class="space-y-6">
-            <div class="admin-panel-card">
-                <div class="admin-side-icon-wrap">
-                    <div class="admin-side-icon">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h8m-8 4h6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <h2 class="admin-panel-title mb-0">Priority Guide</h2>
-                </div>
-
-                <div class="admin-panel-divider"></div>
-
-                <div class="admin-note-list">
-                    <div class="admin-priority-item admin-priority-normal">
-                        <span class="admin-priority-dot"></span>
-                        <div>
-                            <div class="admin-priority-title">Normal</div>
-                            <div class="admin-priority-text">Use for routine updates and regular reminders.</div>
-                        </div>
-                    </div>
-
-                    <div class="admin-priority-item admin-priority-important">
-                        <span class="admin-priority-dot"></span>
-                        <div>
-                            <div class="admin-priority-title">Important</div>
-                            <div class="admin-priority-text">Use for notices residents should prioritize reading.</div>
-                        </div>
-                    </div>
-
-                    <div class="admin-priority-item admin-priority-urgent">
-                        <span class="admin-priority-dot"></span>
-                        <div>
-                            <div class="admin-priority-title">Urgent</div>
-                            <div class="admin-priority-text">Use for immediate action, service disruption, or critical issues.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="admin-panel-card">
-                <div class="admin-side-icon-wrap">
-                    <div class="admin-side-icon" style="background: rgba(190,147,96,0.12); color: #BE9360;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h2 class="admin-panel-title mb-0">Writing Tips</h2>
-                </div>
-
-                <div class="admin-panel-divider"></div>
-
-                <div class="admin-note-list">
-                    <div class="admin-note-item">Use a title residents can understand instantly.</div>
-                    <div class="admin-note-item">Lead with the action, schedule, or change that matters most.</div>
-                    <div class="admin-note-item">Keep paragraphs short so the notice is easy to scan.</div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -217,13 +153,6 @@
     z-index: 1;
     font-size: 16px;
     line-height: 1.55;
-}
-
-.admin-create-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-    gap: 28px;
-    align-items: start;
 }
 
 .admin-error-box {
@@ -388,82 +317,6 @@
     color: #F0E9DF;
 }
 
-.admin-side-icon-wrap {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.admin-side-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(214,168,91,0.12);
-    color: #D6A85B;
-    flex-shrink: 0;
-}
-
-.admin-note-list {
-    display: grid;
-    gap: 12px;
-}
-
-.admin-note-item {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 16px;
-    padding: 14px 16px;
-    color: #B8AB98;
-    font-size: 14px;
-    line-height: 1.75;
-}
-
-.admin-priority-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 16px;
-    padding: 14px 16px;
-}
-
-.admin-priority-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    margin-top: 6px;
-    flex-shrink: 0;
-}
-
-.admin-priority-title {
-    color: #F0E9DF;
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.admin-priority-text {
-    color: #B8AB98;
-    font-size: 13px;
-    line-height: 1.65;
-}
-
-.admin-priority-normal .admin-priority-dot {
-    background: #A37222;
-}
-
-.admin-priority-important .admin-priority-dot {
-    background: #B8842F;
-}
-
-.admin-priority-urgent .admin-priority-dot {
-    background: #B96A5D;
-}
-
 /* Scrollbar */
 
 ::-webkit-scrollbar {
@@ -480,14 +333,6 @@
 }
 ::-webkit-scrollbar-thumb:hover {
     background: #C49A4A;
-}
-
-@media (max-width: 1024px) {
-    .admin-create-grid {
-        grid-template-columns: 1fr;
-    }
-
-
 }
 
 @media (max-width: 768px) {

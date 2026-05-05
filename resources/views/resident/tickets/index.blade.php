@@ -48,7 +48,7 @@
             <div class="resident-flash resident-flash-error" data-auto-dismiss>{{ session('error') }}</div>
         @endif
 
-        <section class="resident-page-panel">
+        <section class="resident-page-panel" data-filter-scope>
             <div class="resident-page-panel-head">
                 <div>
                     <h2>Active Requests</h2>
@@ -59,14 +59,61 @@
 
             <div class="resident-page-divider"></div>
 
+            <div class="resident-filter-bar">
+                <input type="search" class="resident-filter-input" placeholder="Search title, description, or ticket ID" data-filter-input data-filter-key="search">
+                <select class="resident-filter-select" data-filter-select data-filter-key="status">
+                    <option value="">All statuses</option>
+                    <option value="received">Received</option>
+                    <option value="pending">Pending</option>
+                    <option value="assigned">Assigned</option>
+                    <option value="in_progress">In Progress</option>
+                </select>
+                <select class="resident-filter-select" data-filter-select data-filter-key="priority">
+                    <option value="">All priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+
             <div class="resident-ticket-section-head">
                 <h3>Open and Ongoing</h3>
                 <span>{{ $activeTicketsList->count() }} open</span>
             </div>
 
-            <div class="resident-page-list">
+            <div class="feature-skeleton-stack" data-feature-skeleton>
+                @for($i = 0; $i < 3; $i++)
+                    <article class="resident-card feature-skeleton-card">
+                        <div class="feature-skeleton-top">
+                            <div>
+                                <div class="feature-skeleton-title-row">
+                                    <span class="feature-skeleton-line title"></span>
+                                    <span class="feature-skeleton-pill"></span>
+                                    <span class="feature-skeleton-pill"></span>
+                                </div>
+                                <span class="feature-skeleton-line long"></span>
+                                <span class="feature-skeleton-line medium"></span>
+                            </div>
+                            <div class="feature-skeleton-actions">
+                                <span class="feature-skeleton-button"></span>
+                                <span class="feature-skeleton-button"></span>
+                            </div>
+                        </div>
+                        <div class="feature-skeleton-meta">
+                            <span class="feature-skeleton-box"></span>
+                            <span class="feature-skeleton-box"></span>
+                        </div>
+                    </article>
+                @endfor
+            </div>
+
+            <div class="resident-page-list" data-skeleton-content>
                 @forelse($visibleActiveTickets as $ticket)
-                    <article class="resident-card">
+                    <article class="resident-card"
+                             data-filter-card
+                             data-search="{{ Str::lower($ticket->title . ' ' . $ticket->description . ' ' . $ticket->ticket_id) }}"
+                             data-status="{{ $ticket->status }}"
+                             data-priority="{{ $ticket->normalized_priority }}">
                         <div class="resident-card-top">
                             <div>
                                 <div class="resident-card-heading">
@@ -127,7 +174,11 @@
                 @if($hiddenActiveTickets->isNotEmpty())
                     <div id="resident-more-active" class="resident-more-list" style="display: none;">
                         @foreach($hiddenActiveTickets as $ticket)
-                            <article class="resident-card">
+                            <article class="resident-card"
+                                     data-filter-card
+                                     data-search="{{ Str::lower($ticket->title . ' ' . $ticket->description . ' ' . $ticket->ticket_id) }}"
+                                     data-status="{{ $ticket->status }}"
+                                     data-priority="{{ $ticket->normalized_priority }}">
                                 <div class="resident-card-top">
                                     <div>
                                         <div class="resident-card-heading">
@@ -182,10 +233,12 @@
 
                     <button type="button" class="resident-see-more-btn" data-target="resident-more-active">See more</button>
                 @endif
+
+                <div class="resident-filter-empty" data-filter-empty>No active tickets match your filters.</div>
             </div>
         </section>
 
-        <section class="resident-page-panel resident-page-panel-history">
+        <section class="resident-page-panel resident-page-panel-history" data-filter-scope>
             <div class="resident-page-panel-head">
                 <div>
                     <h2>Past History</h2>
@@ -196,14 +249,58 @@
 
             <div class="resident-page-divider"></div>
 
+            <div class="resident-filter-bar">
+                <input type="search" class="resident-filter-input" placeholder="Search history by title, description, or ticket ID" data-filter-input data-filter-key="search">
+                <select class="resident-filter-select" data-filter-select data-filter-key="status">
+                    <option value="">All statuses</option>
+                    <option value="completed">Completed</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <select class="resident-filter-select" data-filter-select data-filter-key="priority">
+                    <option value="">All priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+
             <div class="resident-ticket-section-head">
                 <h3>Resolved and Archived</h3>
                 <span>{{ $historyTicketsList->count() }} archived</span>
             </div>
 
-            <div class="resident-page-list">
+            <div class="feature-skeleton-stack" data-feature-skeleton>
+                @for($i = 0; $i < 2; $i++)
+                    <article class="resident-card resident-card-history feature-skeleton-card">
+                        <div class="feature-skeleton-top">
+                            <div>
+                                <div class="feature-skeleton-title-row">
+                                    <span class="feature-skeleton-line title"></span>
+                                    <span class="feature-skeleton-pill"></span>
+                                    <span class="feature-skeleton-pill"></span>
+                                </div>
+                                <span class="feature-skeleton-line long"></span>
+                                <span class="feature-skeleton-line short"></span>
+                            </div>
+                            <div class="feature-skeleton-actions">
+                                <span class="feature-skeleton-button"></span>
+                            </div>
+                        </div>
+                        <div class="feature-skeleton-meta">
+                            <span class="feature-skeleton-box"></span>
+                            <span class="feature-skeleton-box"></span>
+                        </div>
+                    </article>
+                @endfor
+            </div>
+
+            <div class="resident-page-list" data-skeleton-content>
                 @forelse($visibleHistoryTickets as $ticket)
-                    <article class="resident-card resident-card-history">
+                    <article class="resident-card resident-card-history"
+                             data-filter-card
+                             data-search="{{ Str::lower($ticket->title . ' ' . $ticket->description . ' ' . $ticket->ticket_id) }}"
+                             data-status="{{ $ticket->status }}"
+                             data-priority="{{ $ticket->normalized_priority }}">
                         <div class="resident-card-top">
                             <div>
                                 <div class="resident-card-heading">
@@ -244,7 +341,11 @@
                 @if($hiddenHistoryTickets->isNotEmpty())
                     <div id="resident-more-history" class="resident-more-list" style="display: none;">
                         @foreach($hiddenHistoryTickets as $ticket)
-                            <article class="resident-card resident-card-history">
+                            <article class="resident-card resident-card-history"
+                                     data-filter-card
+                                     data-search="{{ Str::lower($ticket->title . ' ' . $ticket->description . ' ' . $ticket->ticket_id) }}"
+                                     data-status="{{ $ticket->status }}"
+                                     data-priority="{{ $ticket->normalized_priority }}">
                                 <div class="resident-card-top">
                                     <div>
                                         <div class="resident-card-heading">
@@ -280,6 +381,8 @@
 
                     <button type="button" class="resident-see-more-btn" data-target="resident-more-history">See more</button>
                 @endif
+
+                <div class="resident-filter-empty" data-filter-empty>No history items match your filters.</div>
             </div>
         </section>
     </div>

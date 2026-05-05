@@ -94,10 +94,6 @@
                     </p>
                 </div>
 
-                <div class="shrink-0 flex items-center gap-3 px-4 py-2 rounded-full"
-                     style="background: rgba(214,168,91,0.1); border: 1px solid rgba(214,168,91,0.2);">
-                    <span class="text-xs font-mono" style="color: #D6A85B;">👑 Administrator Access</span>
-                </div>
             </div>
         </div>
     </div>
@@ -264,14 +260,6 @@
             </div>
 
             <div class="admin-ticket-filters">
-                <select id="filterStatus" class="admin-filter-select">
-                    <option value="all">All Status</option>
-                    <option value="pending_approval">Awaiting Assignment</option>
-                    <option value="assigned">Assigned</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="rejected">Rejected</option>
-                </select>
                 <select id="filterPriority" class="admin-filter-select">
                     <option value="all">All Priority</option>
                     <option value="critical">Critical</option>
@@ -295,12 +283,12 @@
                     <div class="flex rounded-[22px] transition-all duration-200 cursor-pointer overflow-hidden"
                          style="
                             background: linear-gradient(135deg, #2C2C2F 0%, #25272A 100%);
-                            border: 1px solid rgba(58,52,45,0.6);
+                            border: 1px solid rgba(214,168,91,0.14);
                             box-shadow: 0 8px 22px rgba(0,0,0,0.12);
                          "
                          onclick="window.location.href='{{ route('tickets.show', $ticket) }}'"
                          onmouseover="this.style.transform='translateY(-2px)'; this.style.borderColor='rgba(214,168,91,0.32)'; this.style.boxShadow='0 18px 38px rgba(0,0,0,0.22)'"
-                         onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(58,52,45,0.6)'; this.style.boxShadow='0 8px 22px rgba(0,0,0,0.12)'">
+                         onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(214,168,91,0.14)'; this.style.boxShadow='0 8px 22px rgba(0,0,0,0.12)'">
 
                         <div class="flex-1 p-5 md:p-6">
                             <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-5">
@@ -480,7 +468,7 @@
 
             <div class="admin-status-stack">
                 @forelse($assignedTickets as $ticket)
-                    <div class="admin-status-card {{ $loop->index >= 3 ? 'is-hidden-by-default' : '' }}" data-collapsible-item="assigned">
+                    <div class="admin-status-card {{ $loop->index >= 3 ? 'is-hidden-by-default' : '' }}" data-collapsible-item="assigned" style="background: linear-gradient(135deg, rgba(49, 50, 54, 0.96) 0%, rgba(38, 40, 43, 0.98) 100%) !important; border: 1px solid rgba(214,168,91,0.14) !important;" onmouseover="this.style.borderColor='rgba(214,168,91,0.32)'" onmouseout="this.style.borderColor='rgba(214,168,91,0.14)'">
                         <div>
                             <div class="admin-status-card-top">
                                 <strong>{{ $ticket->title }}</strong>
@@ -519,7 +507,7 @@
 
             <div class="admin-status-stack">
                 @forelse($finishedTickets as $ticket)
-                    <div class="admin-status-card {{ $loop->index >= 3 ? 'is-hidden-by-default' : '' }}" data-collapsible-item="completed">
+                    <div class="admin-status-card {{ $loop->index >= 3 ? 'is-hidden-by-default' : '' }}" data-collapsible-item="completed" style="background: linear-gradient(135deg, rgba(49, 50, 54, 0.96) 0%, rgba(38, 40, 43, 0.98) 100%) !important; border: 1px solid rgba(214,168,91,0.14) !important;" onmouseover="this.style.borderColor='rgba(214,168,91,0.32)'" onmouseout="this.style.borderColor='rgba(214,168,91,0.14)'">
                         <div>
                             <div class="admin-status-card-top">
                                 <strong>{{ $ticket->title }}</strong>
@@ -667,27 +655,22 @@ function closeRejectModal() {
     modal.style.display = 'none';
 }
 
-const filterStatus = document.getElementById('filterStatus');
 const filterPriority = document.getElementById('filterPriority');
 
-if (filterStatus && filterPriority) {
-    filterStatus.addEventListener('change', filterTickets);
+if (filterPriority) {
     filterPriority.addEventListener('change', filterTickets);
 }
 
 function filterTickets() {
-    const statusFilter = document.getElementById('filterStatus').value;
     const priorityFilter = document.getElementById('filterPriority').value;
     const tickets = document.querySelectorAll('.ticket-card');
 
     tickets.forEach(ticket => {
-        const status = ticket.dataset.status;
         const priority = ticket.dataset.priority;
 
-        const statusMatch = statusFilter === 'all' || status === statusFilter;
         const priorityMatch = priorityFilter === 'all' || priority === priorityFilter;
 
-        if (statusMatch && priorityMatch) {
+        if (priorityMatch) {
             ticket.style.display = '';
         } else {
             ticket.style.display = 'none';
@@ -858,6 +841,11 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
     background: #d6a85b !important;
 }
 
+.admin-ticket-page > div:first-of-type .mb-3.flex.items-center.gap-3 span:last-child {
+    font-size: 0.875rem !important;
+    letter-spacing: 0.18em !important;
+}
+
 .admin-ticket-page > div:first-of-type h1 {
     font-family: 'Playfair Display', serif !important;
     font-size: clamp(2.5rem, 4vw, 3.5rem) !important;
@@ -902,77 +890,6 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
     display: inline-block;
 }
 
-.admin-ticket-page > div:nth-of-type(2) {
-    border-radius: 20px !important;
-    background: linear-gradient(180deg, rgba(53, 38, 35, 0.92) 0%, rgba(42, 31, 29, 0.92) 100%) !important;
-    border: 1px solid rgba(224,112,96,0.18) !important;
-    box-shadow: 0 16px 32px rgba(0,0,0,0.18) !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) > div.absolute:first-child {
-    width: 4px !important;
-    background: #e07060 !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) > div.absolute:nth-child(2) {
-    display: none !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .w-16.h-16.rounded-full {
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 12px !important;
-    background: rgba(224,112,96,0.12) !important;
-    border: 1px solid rgba(224,112,96,0.16) !important;
-    box-shadow: none !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .w-16.h-16.rounded-full span {
-    font-size: 0 !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .w-16.h-16.rounded-full::before {
-    content: 'Urgent';
-    color: #f2b0a5;
-    font-size: 0.68rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .text-\[11px\].font-bold.uppercase.tracking-\[0\.24em\] {
-    color: #f2b0a5 !important;
-    letter-spacing: 0.16em !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .text-2xl.md\:text-3xl {
-    font-size: 1.65rem !important;
-    line-height: 1.2 !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .grid.grid-cols-1.lg\:grid-cols-\[1fr_auto\] {
-    min-width: 0 !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .rounded-2xl.px-4.py-4 {
-    background: rgba(255,255,255,0.03) !important;
-    border: 1px solid rgba(255,255,255,0.06) !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .rounded-2xl.px-4.py-4 .text-xs.font-mono {
-    color: #c9b8a5 !important;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .rounded-2xl.px-4.py-4 .flex.flex-wrap.items-center.gap-x-4 span:nth-child(even) {
-    opacity: 0.5;
-}
-
-.admin-ticket-page > div:nth-of-type(2) .flex.flex-col.gap-3 button,
-.admin-ticket-page > div:nth-of-type(2) .flex.flex-col.gap-3 a {
-    box-shadow: none !important;
-    border-radius: 12px !important;
-}
-
 .admin-metrics-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -980,16 +897,16 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
 }
 
 .admin-metric-card {
-    background: rgba(37,39,42,0.88);
+    background: rgba(48,45,40,0.86);
     border-radius: 16px;
     padding: 18px 20px;
-    border: 1px solid rgba(214,168,91,0.14);
+    border: 1px solid rgba(214,168,91,0.18);
     display: flex;
     align-items: center;
     gap: 14px;
     color: #c4b8a8;
     backdrop-filter: blur(10px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.14);
+    box-shadow: 0 10px 20px rgba(72,48,24,0.10);
     transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
@@ -999,11 +916,11 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
 }
 
 .admin-metric-card-alert {
-    border-color: rgba(224,112,96,0.18);
+    border-color: rgba(214,168,91,0.18);
 }
 
 .admin-metric-card-success {
-    border-color: rgba(90,138,90,0.18);
+    border-color: rgba(214,168,91,0.18);
 }
 
 .admin-metric-icon {
@@ -1019,13 +936,13 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
 }
 
 .admin-metric-icon-alert {
-    background: rgba(224,112,96,0.12);
-    color: #e07060;
+    background: rgba(214,168,91,0.12);
+    color: #d6a85b;
 }
 
 .admin-metric-icon-success {
-    background: rgba(90,138,90,0.14);
-    color: #5a8a5a;
+    background: rgba(214,168,91,0.12);
+    color: #d6a85b;
 }
 
 .admin-metric-body {
@@ -1040,11 +957,11 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
 }
 
 .admin-metric-value-alert {
-    color: #e07060;
+    color: #f0e9df;
 }
 
 .admin-metric-value-success {
-    color: #5a8a5a;
+    color: #f0e9df;
 }
 
 .admin-metric-label {
@@ -1060,7 +977,7 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
 }
 
 .admin-metric-sub-alert {
-    color: #e39a8f;
+    color: #8a7a66;
 }
 
 .admin-ticket-panel {
@@ -1171,8 +1088,16 @@ document.querySelectorAll('.admin-collapsible-toggle').forEach((button) => {
     gap: 14px;
     padding: 16px 18px;
     border-radius: 18px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
+    background: linear-gradient(135deg, rgba(49, 50, 54, 0.96) 0%, rgba(38, 40, 43, 0.98) 100%) !important;
+    border: 1px solid rgba(214,168,91,0.14) !important;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.24);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.admin-status-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(214,168,91,0.26) !important;
+    box-shadow: 0 16px 34px rgba(0,0,0,0.32);
 }
 
 .admin-status-card-top {

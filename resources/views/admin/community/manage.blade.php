@@ -1,5 +1,5 @@
 <x-app-layout>
-<div class="space-y-8 admin-shell">
+<div class="space-y-8 admin-shell admin-community-page">
 
     {{-- PREMIUM ADMIN HEADER --}}
     <div class="relative overflow-hidden rounded-[36px] border border-[#3A342D]"
@@ -55,7 +55,7 @@
         $totalCount = $pendingCount + $approvedCount + $rejectedCount;
     @endphp
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 admin-feature-stat-grid">
         <div class="group relative overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.02]"
              style="background: linear-gradient(135deg, #1A1C1E 0%, #24262B 100%); border: 1px solid rgba(214,168,91,0.15); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);">
             <div class="absolute top-0 right-0 w-24 h-24 -translate-y-8 translate-x-8 rounded-full blur-3xl opacity-20 transition-opacity duration-300 group-hover:opacity-40" style="background: #D6A85B;"></div>

@@ -84,7 +84,7 @@
                             <div class="community-review-actions">
                                 <a href="{{ route('community.show', $reviewPost) }}">View</a>
                                 <a href="{{ route('community.edit', $reviewPost) }}">Edit</a>
-                                <form method="POST" action="{{ route('community.destroy', $reviewPost) }}" onsubmit="return confirm('Delete this post? This action cannot be undone.');">
+                                <form method="POST" action="{{ route('community.destroy', $reviewPost) }}" data-confirm-message="Delete this post? This action cannot be undone.">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit">Delete</button>
@@ -116,9 +116,45 @@
             </div>
         </section>
 
-        <section class="community-feed-list">
+        <section data-filter-scope>
+            <div class="community-filter-bar">
+                <input type="search" class="community-filter-input" placeholder="Search posts, authors, or content" data-filter-input data-filter-key="search">
+                <select class="community-filter-select" data-filter-select data-filter-key="type">
+                    <option value="">All post types</option>
+                    <option value="general">General</option>
+                    <option value="announcement">Announcement</option>
+                    <option value="question">Question</option>
+                    <option value="lost_found">Lost found</option>
+                </select>
+            </div>
+
+            <div class="community-feed-list" data-feature-skeleton>
+                @for($i = 0; $i < 3; $i++)
+                    <article class="community-feed-card feature-skeleton-card">
+                        <div class="feature-skeleton-post-head">
+                            <span class="feature-skeleton-avatar"></span>
+                            <div style="flex: 1;">
+                                <span class="feature-skeleton-line title"></span>
+                                <span class="feature-skeleton-line short"></span>
+                            </div>
+                        </div>
+                        <span class="feature-skeleton-line medium" style="margin-top: 18px;"></span>
+                        <span class="feature-skeleton-line long"></span>
+                        <span class="feature-skeleton-line long"></span>
+                        <div class="feature-skeleton-post-actions">
+                            <span class="feature-skeleton-box"></span>
+                            <span class="feature-skeleton-box"></span>
+                        </div>
+                    </article>
+                @endfor
+            </div>
+
+            <section class="community-feed-list" data-skeleton-content>
             @forelse($posts as $post)
-                <article class="community-feed-card">
+                <article class="community-feed-card"
+                         data-filter-card
+                         data-search="{{ Str::lower($post->title . ' ' . $post->content . ' ' . ($post->user->name ?? '')) }}"
+                         data-type="{{ $post->type }}">
                     <div class="community-feed-card-head">
                         <div class="community-feed-author">
                             <div class="community-feed-avatar">
@@ -149,7 +185,7 @@
                                     </summary>
                                     <div class="community-post-menu-list">
                                         <a href="{{ route('community.edit', $post) }}">Edit post</a>
-                                        <form method="POST" action="{{ route('community.destroy', $post) }}" onsubmit="return confirm('Delete this post? This action cannot be undone.');">
+                                        <form method="POST" action="{{ route('community.destroy', $post) }}" data-confirm-message="Delete this post? This action cannot be undone.">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit">Delete post</button>
@@ -201,6 +237,9 @@
                     <a href="{{ route('community.create') }}">Create a Post</a>
                 </div>
             @endforelse
+            </section>
+
+            <div class="community-filter-empty" data-filter-empty>No community posts match your filters.</div>
         </section>
 
         @if($posts->hasMorePages())
@@ -262,8 +301,9 @@
 
     <style>
         .community-feed-page {
-            max-width: 980px;
-            margin: 0 auto;
+            width: min(100%, 980px);
+            margin-left: auto;
+            margin-right: auto;
             padding: 24px 16px 36px;
             display: flex;
             flex-direction: column;
@@ -294,6 +334,10 @@
             padding: 28px 30px;
             border-radius: 34px;
             background: linear-gradient(115deg, #1F2023 0%, #24262B 38%, #2C2C2F 62%, #3B3023 100%);
+        }
+
+        .community-feed-hero-copy {
+            width: min(100%, 760px);
         }
 
         .community-feed-kicker {
@@ -359,6 +403,13 @@
             border-radius: 22px;
             background: rgba(42,44,48,0.82);
             backdrop-filter: blur(10px);
+        }
+
+        .community-review-strip,
+        .community-composer-card,
+        .community-feed-list,
+        .community-pagination-link {
+            width: 100%;
         }
 
         .community-review-strip,

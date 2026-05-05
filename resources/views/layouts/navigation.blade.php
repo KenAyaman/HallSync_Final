@@ -1,4 +1,4 @@
-<div x-data="{ open: false }" class="role-topbar-wrap">
+<div x-data="{ open: false, notificationsOpen: false }" class="role-topbar-wrap">
     @php
         $navLinks = [
             ['label' => 'Home', 'route' => 'dashboard', 'match' => 'dashboard'],
@@ -6,6 +6,7 @@
             ['label' => 'Book Spaces', 'route' => 'bookings.index', 'match' => 'bookings.*'],
             ['label' => 'Announcements', 'route' => 'announcements.index', 'match' => 'announcements.*'],
             ['label' => 'Community', 'route' => 'community.index', 'match' => 'community.*'],
+            ['label' => 'Concerns', 'route' => 'concerns.index', 'match' => 'concerns.*'],
         ];
     @endphp
 
@@ -33,6 +34,42 @@
             @endguest
 
             @auth
+                <div class="role-notification-wrap" @click.away="notificationsOpen = false">
+                    <button type="button"
+                            class="role-notification-btn"
+                            @click="notificationsOpen = !notificationsOpen"
+                            aria-label="Open notifications">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.4-1.4a2 2 0 01-.6-1.4V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0m6 0H9"></path>
+                        </svg>
+                        @if(($navNotificationCount ?? 0) > 0)
+                            <span class="role-notification-count">{{ $navNotificationCount }}</span>
+                        @endif
+                    </button>
+
+                    <div x-show="notificationsOpen"
+                         x-transition
+                         class="role-notification-panel"
+                         style="display: none;">
+                        <div class="role-notification-head">
+                            <strong>Notifications</strong>
+                            <span>{{ $navNotificationCount ?? 0 }} item{{ ($navNotificationCount ?? 0) === 1 ? '' : 's' }}</span>
+                        </div>
+
+                        <div class="role-notification-list">
+                            @forelse(($navNotifications ?? collect()) as $notification)
+                                <a href="{{ $notification['url'] }}" class="role-notification-item" @click="notificationsOpen = false">
+                                    <span class="role-notification-label">{{ $notification['title'] }}</span>
+                                    <strong>{{ $notification['message'] }}</strong>
+                                    <small>{{ $notification['time'] }}</small>
+                                </a>
+                            @empty
+                                <div class="role-notification-empty">No new notifications right now.</div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
                 <a href="{{ route('profile.edit') }}" class="role-user-chip" aria-label="Open profile">
                     <span class="role-user-avatar" aria-hidden="true">
                         @if (Auth::user()->profile_photo_url)
@@ -80,6 +117,21 @@
         @endguest
 
         @auth
+            <div class="role-mobile-notification-block">
+                <div class="role-mobile-notification-head">
+                    <strong>Notifications</strong>
+                    <span>{{ $navNotificationCount ?? 0 }}</span>
+                </div>
+                @forelse(($navNotifications ?? collect())->take(3) as $notification)
+                    <a href="{{ $notification['url'] }}" class="role-mobile-notification-item">
+                        <strong>{{ $notification['title'] }}</strong>
+                        <span>{{ $notification['message'] }}</span>
+                    </a>
+                @empty
+                    <div class="role-mobile-notification-empty">No new notifications.</div>
+                @endforelse
+            </div>
+
             <a href="{{ route('profile.edit') }}" class="role-action-btn">{{ Auth::user()->name }}</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

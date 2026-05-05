@@ -32,7 +32,7 @@
                 @if($ticket->status !== 'in_progress')
                     <form method="POST"
                           action="{{ route('tickets.destroy', $ticket) }}"
-                          onsubmit="return confirm('Are you sure you want to delete this ticket? This action cannot be undone.');">
+                          data-confirm-message="Delete this ticket? This action cannot be undone.">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="resident-ticket-btn resident-ticket-btn-danger">

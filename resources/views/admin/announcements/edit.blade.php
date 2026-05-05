@@ -75,9 +75,7 @@
     @endif
 
     {{-- MAIN CONTENT --}}
-    <div class="admin-edit-grid">
-        {{-- LEFT: FORM --}}
-        <div class="admin-panel-card admin-form-panel">
+    <div class="admin-panel-card admin-form-panel">
             <div class="admin-panel-head">
                 <div>
                     <h2 class="admin-panel-title">Announcement Details</h2>
@@ -133,59 +131,6 @@
                     </a>
                 </div>
             </form>
-        </div>
-
-        {{-- RIGHT: SIDE PANELS --}}
-        <div class="space-y-6">
-            <div class="admin-panel-card">
-                <div class="admin-side-icon-wrap">
-                    <div class="admin-side-icon">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <h2 class="admin-panel-title mb-0">Current Status</h2>
-                </div>
-
-                <div class="admin-panel-divider"></div>
-
-                <div class="admin-meta-list">
-                    <div class="admin-meta-item">
-                        <span class="admin-meta-label">Created</span>
-                        <span class="admin-meta-value">{{ $announcement->created_at->format('M d, Y h:i A') }}</span>
-                    </div>
-
-                    <div class="admin-meta-item">
-                        <span class="admin-meta-label">Priority</span>
-                        <span class="admin-meta-value">{{ ucfirst($announcement->priority) }}</span>
-                    </div>
-
-                    <div class="admin-meta-item">
-                        <span class="admin-meta-label">Visibility</span>
-                        <span class="admin-meta-value">{{ $announcement->is_active ? 'Visible to residents' : 'Not visible' }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="admin-panel-card">
-                <div class="admin-side-icon-wrap">
-                    <div class="admin-side-icon" style="background: rgba(190,147,96,0.12); color: #BE9360;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h2 class="admin-panel-title mb-0">Editing Notes</h2>
-                </div>
-
-                <div class="admin-panel-divider"></div>
-
-                <div class="admin-note-list">
-                    <div class="admin-note-item">Keep any schedule, location, or instructions clear and updated.</div>
-                    <div class="admin-note-item">Use urgent only if the announcement truly needs immediate attention.</div>
-                    <div class="admin-note-item">If the notice is no longer useful, deleting it is cleaner than hiding it in your current workflow.</div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -229,13 +174,6 @@
     padding-left: 18px;
     color: #E7C3BD;
     line-height: 1.7;
-}
-
-.admin-edit-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-    gap: 28px;
-    align-items: start;
 }
 
 .admin-panel-card {
@@ -377,60 +315,6 @@
     color: #F0E9DF;
 }
 
-.admin-side-icon-wrap {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.admin-side-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(214,168,91,0.12);
-    color: #D6A85B;
-    flex-shrink: 0;
-}
-
-.admin-meta-list,
-.admin-note-list {
-    display: grid;
-    gap: 12px;
-}
-
-.admin-meta-item,
-.admin-note-item {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 16px;
-    padding: 14px 16px;
-}
-
-.admin-meta-label {
-    display: block;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #8A7A66;
-    margin-bottom: 6px;
-    font-weight: 700;
-}
-
-.admin-meta-value {
-    color: #F0E9DF;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.admin-note-item {
-    color: #B8AB98;
-    font-size: 14px;
-    line-height: 1.75;
-}
-
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
@@ -446,12 +330,6 @@
 }
 ::-webkit-scrollbar-thumb:hover {
     background: #C49A4A;
-}
-
-@media (max-width: 1024px) {
-    .admin-edit-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 768px) {

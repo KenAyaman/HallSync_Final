@@ -7,6 +7,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ConcernController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CommunityPostController;
+use App\Http\Controllers\NotificationController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/notifications/open/{type}/{id}', [NotificationController::class, 'open'])->name('notifications.open');
 });
 
 require __DIR__.'/auth.php';
@@ -88,6 +90,8 @@ Route::get('/community/{communityPost}/edit', [CommunityPostController::class, '
 Route::patch('/community/{communityPost}', [CommunityPostController::class, 'update'])->name('community.update')->middleware('auth');
 Route::get('/community/{communityPost}', [CommunityPostController::class, 'show'])->name('community.show');
 Route::post('/community/{communityPost}/comment', [CommunityPostController::class, 'comment'])->name('community.comment')->middleware('auth');
+Route::patch('/community/comments/{communityComment}', [CommunityPostController::class, 'updateComment'])->name('community.comments.update')->middleware('auth');
+Route::delete('/community/comments/{communityComment}', [CommunityPostController::class, 'destroyComment'])->name('community.comments.destroy')->middleware('auth');
 Route::post('/community/{communityPost}/like', [CommunityPostController::class, 'toggleLike'])->name('community.like')->middleware('auth');
 
 // Admin management routes for community

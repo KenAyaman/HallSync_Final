@@ -26,6 +26,7 @@
 
             <div class="resident-booking-edit-actions">
                 <a href="{{ route('bookings.show', $booking) }}" class="resident-booking-edit-btn resident-booking-edit-btn-secondary">Back to Booking</a>
+                <button type="submit" form="resident-booking-edit-form" class="resident-booking-edit-btn resident-booking-edit-btn-primary">Save Changes</button>
             </div>
         </section>
 
@@ -53,7 +54,7 @@
 
                 <div class="resident-booking-edit-divider"></div>
 
-                <form method="POST" action="{{ route('bookings.update', $booking) }}" class="resident-booking-edit-form" data-prevent-double-submit data-submitting-text="Saving Booking...">
+                <form method="POST" action="{{ route('bookings.update', $booking) }}" id="resident-booking-edit-form" class="resident-booking-edit-form" data-prevent-double-submit data-submitting-text="Saving Booking...">
                     @csrf
                     @method('PUT')
 
@@ -194,31 +195,40 @@
                 btn.dataset.available = isReserved ? 'false' : 'true';
                 btn.innerHTML = `
                     <div class="resident-booking-slot-time">${formatTime(slot)}</div>
-                    <div class="resident-booking-slot-state">${isReserved ? 'Reserved' : 'Available'}</div>
+                    <div class="resident-booking-slot-state">${isReserved ? 'Reserved' : (isSelected ? 'Selected' : 'Available')}</div>
                 `;
 
                 if (isReserved) {
                     btn.classList.add('is-reserved');
                 } else if (isSelected) {
                     btn.classList.add('is-selected');
+                    btn.addEventListener('click', function () {
+                        selectSlot(btn, slot);
+                    });
                 } else {
                     btn.classList.add('is-available');
                     btn.addEventListener('click', function () {
-                        document.querySelectorAll('#slot-grid .resident-booking-slot').forEach(other => {
-                            if (other.dataset.available === 'true') {
-                                other.classList.remove('is-selected');
-                                other.classList.add('is-available');
-                            }
-                        });
-
-                        btn.classList.remove('is-available');
-                        btn.classList.add('is-selected');
-                        bookingTimeInput.value = slot;
+                        selectSlot(btn, slot);
                     });
                 }
 
                 slotGrid.appendChild(btn);
             });
+        }
+
+        function selectSlot(selectedButton, slot) {
+            document.querySelectorAll('#slot-grid .resident-booking-slot').forEach(other => {
+                if (other.dataset.available === 'true') {
+                    other.classList.remove('is-selected');
+                    other.classList.add('is-available');
+                    other.querySelector('.resident-booking-slot-state').textContent = 'Available';
+                }
+            });
+
+            selectedButton.classList.remove('is-available');
+            selectedButton.classList.add('is-selected');
+            selectedButton.querySelector('.resident-booking-slot-state').textContent = 'Selected';
+            bookingTimeInput.value = slot;
         }
 
         facilityInput.addEventListener('change', loadSlots);
@@ -318,6 +328,7 @@
         .resident-booking-edit-actions {
             display: flex;
             flex-wrap: wrap;
+            justify-content: flex-end;
             gap: 12px;
         }
 
@@ -433,6 +444,22 @@
             box-shadow: 0 0 0 4px rgba(214,168,91,0.08);
         }
 
+        .resident-booking-edit-input[type="date"] {
+            color-scheme: dark;
+        }
+
+        .resident-booking-edit-input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 1;
+            width: 18px;
+            height: 18px;
+            padding: 5px;
+            border-radius: 10px;
+            background-color: rgba(214,168,91,0.18);
+            filter: invert(91%) sepia(43%) saturate(807%) hue-rotate(343deg) brightness(112%) contrast(101%)
+                drop-shadow(0 0 4px rgba(214,168,91,0.55));
+        }
+
         .resident-booking-edit-textarea {
             resize: vertical;
             min-height: 140px;
@@ -459,6 +486,8 @@
             transition: all 0.2s ease;
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
         }
 
         .resident-booking-slot-time {
@@ -486,10 +515,19 @@
         }
 
         .resident-booking-slot.is-selected {
-            border: 2px solid rgba(214,168,91,0.48);
-            background: rgba(214,168,91,0.16);
-            color: #e8c58a;
+            border: 1px solid rgba(214,168,91,0.78);
+            background:
+                linear-gradient(135deg, rgba(214,168,91,0.26), rgba(184,132,47,0.16));
+            color: #FFF2D3;
             cursor: pointer;
+            box-shadow:
+                0 0 0 3px rgba(214,168,91,0.12),
+                0 14px 28px rgba(0,0,0,0.22);
+        }
+
+        .resident-booking-slot.is-selected .resident-booking-slot-state {
+            color: #F2D49A;
+            font-weight: 800;
         }
 
         .resident-booking-edit-form-actions {
@@ -518,13 +556,12 @@
         .resident-booking-edit-btn-primary {
             background: linear-gradient(95deg, #b8842f, #d6a85b);
             color: #17120d;
-            box-shadow: 0 10px 24px rgba(199, 150, 69, 0.28);
         }
 
         .resident-booking-edit-btn-secondary {
-            background: rgba(255,255,255,0.04);
-            color: #D0C8B8;
-            border: 1px solid rgba(214,168,91,0.14);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(214,168,91,0.22);
+            color: #F0E9DF;
         }
 
         .resident-booking-edit-note-list,

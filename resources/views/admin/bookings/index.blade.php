@@ -1,5 +1,5 @@
 <x-app-layout>
-<div class="space-y-8 admin-shell">
+<div class="space-y-8 admin-shell admin-booking-requests-page">
 
     {{-- PREMIUM ADMIN HEADER --}}
     <div class="relative overflow-hidden rounded-[36px] border border-[#3A342D]"
@@ -55,7 +55,7 @@
         $rejected = $bookings->where('status', 'rejected')->count();
     @endphp
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 admin-feature-stat-grid">
         <div class="group relative overflow-hidden rounded-[22px] transition-all duration-300"
              style="background: linear-gradient(180deg, #25272C 0%, #1F2023 100%); border: 1px solid rgba(214,168,91,0.14); box-shadow: 0 14px 36px rgba(0,0,0,0.22);">
             <div class="relative p-5">

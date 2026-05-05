@@ -1,15 +1,16 @@
 <x-app-layout>
-<div class="max-w-2xl mx-auto">
+<div class="admin-user-form-page max-w-2xl mx-auto">
 
-    <div class="mb-6">
+    <div class="admin-user-form-hero mb-6">
         <a href="{{ route('admin.users') }}" class="text-sm text-[#D6A85B] hover:underline">← Back to Users</a>
+        <div class="admin-user-kicker">Access Control</div>
         <h1 class="text-2xl font-bold mt-2" style="color: #F8F3EA; font-family: 'Playfair Display', serif;">
             Add New User
         </h1>
         <p class="text-sm text-gray-400 mt-1">Default temporary password: <span class="text-[#D6A85B]">password123</span></p>
     </div>
 
-    <div class="rounded-xl p-6" style="background: #1F2023; border: 1px solid #2A2C30;">
+    <div class="admin-user-form-card rounded-xl p-6" style="background: #1F2023; border: 1px solid #2A2C30;">
         <form method="POST" action="{{ route('admin.users.store') }}">
             @csrf
 
@@ -60,4 +61,47 @@
     </div>
 
 </div>
+<style>
+.admin-user-form-page { width: 100%; }
+.admin-user-form-hero,
+.admin-user-form-card {
+    border-radius: 20px;
+    border: 1px solid rgba(214,168,91,0.18);
+    box-shadow: 0 18px 36px rgba(72,48,24,0.14);
+}
+.admin-user-form-hero {
+    padding: 24px 28px;
+    background: linear-gradient(120deg, #15120d 0%, #211c15 52%, #2c2419 100%);
+}
+.admin-user-form-hero h1,
+.admin-user-form-hero p { color: #f8f3ea !important; }
+.admin-user-kicker {
+    margin-top: 14px;
+    color: #d6a85b;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+.admin-user-form-hero a {
+    display: inline-flex;
+    text-decoration: none !important;
+    font-weight: 700;
+}
+.admin-user-form-card {
+    background: linear-gradient(180deg, rgba(43,42,39,0.95) 0%, rgba(31,31,29,0.95) 100%) !important;
+    padding: 28px !important;
+}
+.admin-user-form-card label { color: #d4c8b8 !important; }
+.admin-user-form-card input,
+.admin-user-form-card select { min-height: 44px; }
+.admin-user-form-card .flex.gap-3 {
+    border-top: 1px solid rgba(214,168,91,0.12);
+}
+@media (max-width: 560px) {
+    .admin-user-form-hero,
+    .admin-user-form-card { padding: 20px !important; }
+    .admin-user-form-card .flex.gap-3 { flex-direction: column; }
+}
+</style>
 </x-app-layout>

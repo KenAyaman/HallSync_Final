@@ -12,8 +12,8 @@
             <p class="concern-subtitle">Track private concern reports sent to administration and review official responses in one place.</p>
         </div>
         <div class="concern-hero-actions">
-            <a href="{{ route('community.index') }}" class="concern-btn concern-btn-secondary">Back to Community</a>
-            <a href="{{ route('concerns.create') }}" class="concern-btn concern-btn-primary">Report New Concern</a>
+            <a href="{{ route('community.index') }}" class="concern-btn concern-btn-secondary concern-btn-wide">Back to Community</a>
+            <a href="{{ route('concerns.create') }}" class="concern-btn concern-btn-primary concern-btn-wide">Report New Concern</a>
         </div>
     </section>
 
@@ -72,10 +72,12 @@
 .concern-kicker { margin: 0 0 10px; color: #d6a85b; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
 .concern-title { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 3.3rem); line-height: 1.04; }
 .concern-subtitle { margin: 12px 0 0; max-width: 760px; color: rgba(240,233,223,0.74); font-size: 1rem; line-height: 1.7; }
-.concern-hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.concern-btn { display: inline-flex; align-items: center; justify-content: center; padding: 13px 22px; border-radius: 999px; text-decoration: none; font-weight: 700; border: 1px solid rgba(214,168,91,0.16); }
-.concern-btn-primary { background: linear-gradient(135deg, #c79745 0%, #d6a85b 100%); color: #1b150f; }
-.concern-btn-secondary { background: rgba(255,255,255,0.04); color: #e8e0d3; }
+.concern-hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.concern-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 0.9rem; border: 1px solid rgba(214,168,91,0.16); transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; box-shadow: 0 10px 24px rgba(0,0,0,0.14); }
+.concern-btn:hover { transform: translateY(-1px); }
+.concern-btn-wide { min-width: 188px; }
+.concern-btn-primary { background: linear-gradient(135deg, #c79745 0%, #d6a85b 100%); color: #1b150f; box-shadow: 0 12px 28px rgba(199, 151, 69, 0.22); }
+.concern-btn-secondary { background: linear-gradient(180deg, rgba(42,44,48,0.92) 0%, rgba(33,35,38,0.92) 100%); color: #f0e9df; border-color: rgba(214,168,91,0.18); }
 .concern-alert { padding: 16px 20px; background: rgba(90,138,90,0.16); color: #d8edd8; }
 .concern-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .concern-stat { padding: 20px 22px; background: rgba(42,44,48,0.82); }
@@ -90,7 +92,8 @@
 .concern-row-main p { margin: 0; color: #b8ab98; line-height: 1.7; }
 .concern-row-meta { display: flex; flex-wrap: wrap; gap: 10px; color: #9f927f; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; }
 .concern-row-side { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 12px; min-width: 170px; }
-.concern-link { color: #d6a85b; font-weight: 700; text-decoration: none; }
+.concern-link { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 18px; border-radius: 999px; background: rgba(214,168,91,0.10); border: 1px solid rgba(214,168,91,0.18); color: #f0e0bf; font-weight: 700; text-decoration: none; transition: transform 0.2s ease, background 0.2s ease; }
+.concern-link:hover { transform: translateY(-1px); background: rgba(214,168,91,0.14); }
 .concern-reply-note { color: #b8ab98; font-size: 0.85rem; text-align: right; }
 .concern-status { padding: 6px 10px; border-radius: 999px; font-weight: 700; letter-spacing: 0.08em; }
 .concern-status-submitted { background: rgba(214,168,91,0.16); color: #d6a85b; }

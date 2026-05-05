@@ -206,6 +206,10 @@ class CommunityPostController extends Controller
     // Add comment
     public function comment(Request $request, CommunityPost $communityPost)
     {
+        if ($communityPost->status !== 'approved' && $communityPost->user_id !== Auth::id() && optional(Auth::user())->role !== 'manager') {
+            abort(403);
+        }
+
         $request->validate([
             'content' => 'required|string|max:1000'
         ]);
@@ -218,6 +222,43 @@ class CommunityPostController extends Controller
 
         return redirect()->route('community.show', $communityPost)
             ->with('success', 'Comment added!');
+    }
+
+    public function updateComment(Request $request, CommunityComment $communityComment)
+    {
+        $user = Auth::user();
+
+        if (! $user || ($communityComment->user_id !== $user->id && $user->role !== 'manager')) {
+            abort(403);
+        }
+
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $communityComment->update([
+            'content' => $request->content,
+        ]);
+
+        return redirect()
+            ->route('community.show', $communityComment->community_post_id)
+            ->with('success', 'Comment updated successfully.');
+    }
+
+    public function destroyComment(CommunityComment $communityComment)
+    {
+        $user = Auth::user();
+
+        if (! $user || ($communityComment->user_id !== $user->id && $user->role !== 'manager')) {
+            abort(403);
+        }
+
+        $postId = $communityComment->community_post_id;
+        $communityComment->delete();
+
+        return redirect()
+            ->route('community.show', $postId)
+            ->with('success', 'Comment deleted successfully.');
     }
 
     public function toggleLike(Request $request, CommunityPost $communityPost)

@@ -106,6 +106,7 @@
 .staff-nav-wrapper { position: relative; z-index: 1000; }
 .staff-burger-btn { position: fixed; top: 20px; left: 24px; z-index: 200; width: 44px; height: 44px; background: transparent; border: none; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; transition: all 0.2s ease; }
 .staff-burger-btn:hover, .staff-burger-active { background: rgba(12,16,19,0.88); backdrop-filter: blur(12px); border: 1px solid rgba(88,135,165,0.28); }
+.staff-burger-active { left: calc(292px - 68px); }
 .staff-burger-line { display: block; width: 18px; height: 2px; background: #d6a85b; border-radius: 10px; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); transform-origin: center; }
 .staff-burger-active .staff-burger-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .staff-burger-active .staff-burger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
@@ -114,7 +115,7 @@
 .staff-sidebar { position: fixed; top: 0; left: 0; width: 292px; height: 100vh; background: linear-gradient(180deg, #0d1318 0%, #10181d 42%, #0e1419 100%); border-right: 1px solid rgba(214,168,91,0.12); display: flex; flex-direction: column; z-index: 160; transform: translateX(-100%); overflow-y: auto; }
 .staff-sidebar-open { transform: translateX(0) !important; box-shadow: 14px 0 44px rgba(0,0,0,0.46); }
 .staff-sidebar::before { content: ''; position: absolute; top: -90px; right: -40px; width: 220px; height: 220px; background: radial-gradient(circle, rgba(88,135,165,0.14) 0%, transparent 70%); pointer-events: none; }
-.staff-sidebar-header { padding: 32px 24px 24px 80px; border-bottom: 1px solid rgba(214,168,91,0.12); }
+.staff-sidebar-header { padding: 32px 80px 24px 24px; border-bottom: 1px solid rgba(214,168,91,0.12); }
 .staff-brand-name { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; color: #f5f0e9; }
 .staff-brand-name span { color: #d6a85b; }
 .staff-brand-tagline { margin-top: 4px; font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: #9fb1bd; font-weight: 700; }
@@ -137,4 +138,10 @@
 .staff-user-role { margin-top: 2px; color: #91a0aa; font-size: 0.82rem; }
 .staff-logout-btn { width: 100%; margin-top: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: #f1eadf; font-weight: 700; cursor: pointer; }
 .staff-logout-btn:hover { background: rgba(255,255,255,0.08); }
+@media (max-width: 768px) {
+    .staff-burger-btn { top: 16px; left: 16px; }
+    .staff-burger-active { left: calc(292px - 62px); }
+    .staff-sidebar { width: 292px; max-width: 88vw; }
+    .staff-sidebar-header { padding: 28px 72px 22px 20px; }
+}
 </style>

@@ -25,7 +25,17 @@ class ConcernController extends Controller
     {
         abort_unless(Auth::user()->role === 'resident', 403);
 
-        return view('resident.concerns.create');
+        $contextTitle = trim((string) request()->query('context_title', ''));
+        $contextType = trim((string) request()->query('context_type', ''));
+
+        return view('resident.concerns.create', [
+            'prefillCategory' => request()->query('category', 'other'),
+            'prefillLocation' => request()->query('location', ''),
+            'prefillInvolvedPerson' => request()->query('involved_person', ''),
+            'prefillDetails' => request()->query('details', ''),
+            'contextTitle' => $contextTitle,
+            'contextType' => $contextType,
+        ]);
     }
 
     public function store(Request $request)

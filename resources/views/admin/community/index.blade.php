@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="space-y-8 admin-shell">
+    <div class="space-y-8 admin-shell admin-community-page">
         {{-- PAGE HEADER --}}
         <div class="relative overflow-hidden rounded-[36px] border border-[#3A342D]"
              style="
@@ -51,7 +51,7 @@
         </div>
 
         {{-- QUICK STATS --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 admin-feature-stat-grid">
             <div style="background: linear-gradient(180deg, #25272C 0%, #1F2023 100%); border: 1px solid rgba(214,168,91,0.14); border-radius: 22px; padding: 22px 24px;">
                 <div style="display:flex; align-items:end; justify-content:space-between; gap:12px;">
                     <div style="font-size: 32px; font-weight: 800; color: #F0B3A9; line-height: 1;">{{ $pendingPosts->total() }}</div>

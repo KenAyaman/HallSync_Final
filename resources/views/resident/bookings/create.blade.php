@@ -40,8 +40,7 @@
             </div>
         @endif
 
-        <div class="resident-booking-create-grid">
-            <section class="resident-booking-create-panel">
+        <section class="resident-booking-create-panel">
                 <div class="resident-booking-create-head">
                     <div>
                         <h2>Booking Details</h2>
@@ -91,53 +90,7 @@
                         <a href="{{ route('bookings.index') }}" class="resident-booking-create-btn resident-booking-create-btn-secondary">Cancel</a>
                     </div>
                 </form>
-            </section>
-
-            <aside class="resident-booking-create-sidebar">
-                <section class="resident-booking-create-panel">
-                    <div class="resident-booking-create-head resident-booking-create-head-simple">
-                        <div>
-                            <h2>Booking Rules</h2>
-                            <p>Quick reminders before you confirm your reservation.</p>
-                        </div>
-                    </div>
-
-                    <div class="resident-booking-create-divider"></div>
-
-                    <div class="resident-booking-create-note-list">
-                        <div class="resident-booking-create-note-item">Only today and future dates are allowed.</div>
-                        <div class="resident-booking-create-note-item">Each booking is limited to one time slot.</div>
-                        <div class="resident-booking-create-note-item">Reserved slots cannot be selected again.</div>
-                    </div>
-                </section>
-
-                <section class="resident-booking-create-panel">
-                    <div class="resident-booking-create-head resident-booking-create-head-simple">
-                        <div>
-                            <h2>Time Slot Guide</h2>
-                            <p>How the slot states work during selection.</p>
-                        </div>
-                    </div>
-
-                    <div class="resident-booking-create-divider"></div>
-
-                    <div class="resident-booking-create-meta-list">
-                        <div class="resident-booking-create-meta-item">
-                            <span>Available</span>
-                            <strong>Green cards can be selected.</strong>
-                        </div>
-                        <div class="resident-booking-create-meta-item">
-                            <span>Reserved</span>
-                            <strong>Gray cards are already blocked.</strong>
-                        </div>
-                        <div class="resident-booking-create-meta-item">
-                            <span>Selected</span>
-                            <strong>Gold highlights your chosen slot.</strong>
-                        </div>
-                    </div>
-                </section>
-            </aside>
-        </div>
+        </section>
     </div>
 
     <script>
@@ -198,31 +151,40 @@
                 btn.dataset.available = isReserved ? 'false' : 'true';
                 btn.innerHTML = `
                     <div class="resident-booking-slot-time">${formatTime(slot)}</div>
-                    <div class="resident-booking-slot-state">${isReserved ? 'Reserved' : 'Available'}</div>
+                    <div class="resident-booking-slot-state">${isReserved ? 'Reserved' : (isSelected ? 'Selected' : 'Available')}</div>
                 `;
 
                 if (isReserved) {
                     btn.classList.add('is-reserved');
                 } else if (isSelected) {
                     btn.classList.add('is-selected');
+                    btn.addEventListener('click', function () {
+                        selectSlot(btn, slot);
+                    });
                 } else {
                     btn.classList.add('is-available');
                     btn.addEventListener('click', function () {
-                        document.querySelectorAll('#slot-grid .resident-booking-slot').forEach(other => {
-                            if (other.dataset.available === 'true') {
-                                other.classList.remove('is-selected');
-                                other.classList.add('is-available');
-                            }
-                        });
-
-                        btn.classList.remove('is-available');
-                        btn.classList.add('is-selected');
-                        bookingTimeInput.value = slot;
+                        selectSlot(btn, slot);
                     });
                 }
 
                 slotGrid.appendChild(btn);
             });
+        }
+
+        function selectSlot(selectedButton, slot) {
+            document.querySelectorAll('#slot-grid .resident-booking-slot').forEach(other => {
+                if (other.dataset.available === 'true') {
+                    other.classList.remove('is-selected');
+                    other.classList.add('is-available');
+                    other.querySelector('.resident-booking-slot-state').textContent = 'Available';
+                }
+            });
+
+            selectedButton.classList.remove('is-available');
+            selectedButton.classList.add('is-selected');
+            selectedButton.querySelector('.resident-booking-slot-state').textContent = 'Selected';
+            bookingTimeInput.value = slot;
         }
 
         facilityInput.addEventListener('change', loadSlots);
@@ -350,18 +312,6 @@
             line-height: 1.7;
         }
 
-        .resident-booking-create-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
-            gap: 22px;
-        }
-
-        .resident-booking-create-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-        }
-
         .resident-booking-create-panel {
             padding: 26px 28px;
             border-radius: 20px;
@@ -436,6 +386,22 @@
             box-shadow: 0 0 0 4px rgba(214,168,91,0.08);
         }
 
+        .resident-booking-create-input[type="date"] {
+            color-scheme: dark;
+        }
+
+        .resident-booking-create-input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 1;
+            width: 18px;
+            height: 18px;
+            padding: 5px;
+            border-radius: 10px;
+            background-color: rgba(214,168,91,0.18);
+            filter: invert(91%) sepia(43%) saturate(807%) hue-rotate(343deg) brightness(112%) contrast(101%)
+                drop-shadow(0 0 4px rgba(214,168,91,0.55));
+        }
+
         .resident-booking-create-textarea {
             resize: vertical;
             min-height: 140px;
@@ -464,6 +430,7 @@
             color: #F0E9DF;
             cursor: pointer;
             transition: 0.2s ease;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
         }
 
         .resident-booking-slot-time {
@@ -484,8 +451,18 @@
         }
 
         .resident-booking-slot.is-selected {
-            border-color: rgba(214,168,91,0.38);
-            background: rgba(214,168,91,0.10);
+            border-color: rgba(214,168,91,0.78);
+            background:
+                linear-gradient(135deg, rgba(214,168,91,0.26), rgba(184,132,47,0.16));
+            color: #FFF2D3;
+            box-shadow:
+                0 0 0 3px rgba(214,168,91,0.12),
+                0 14px 28px rgba(0,0,0,0.22);
+        }
+
+        .resident-booking-slot.is-selected .resident-booking-slot-state {
+            color: #F2D49A;
+            font-weight: 800;
         }
 
         .resident-booking-slot.is-reserved {
@@ -530,48 +507,6 @@
             background: rgba(255,255,255,0.04);
             color: #D0C8B8;
             border: 1px solid rgba(214,168,91,0.14);
-        }
-
-        .resident-booking-create-note-list,
-        .resident-booking-create-meta-list {
-            display: grid;
-            gap: 12px;
-        }
-
-        .resident-booking-create-note-item,
-        .resident-booking-create-meta-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 14px 16px;
-        }
-
-        .resident-booking-create-note-item {
-            color: #B8AB98;
-            font-size: 14px;
-            line-height: 1.75;
-        }
-
-        .resident-booking-create-meta-item span {
-            display: block;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #8A7A66;
-            margin-bottom: 6px;
-            font-weight: 700;
-        }
-
-        .resident-booking-create-meta-item strong {
-            color: #F0E9DF;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        @media (max-width: 1024px) {
-            .resident-booking-create-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 768px) {

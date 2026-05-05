@@ -38,7 +38,7 @@
                 </div>
 
                 <span class="resident-booking-badge resident-booking-badge-status-{{ $booking->status }}">
-                    Reserved
+                    {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
                 </span>
             </div>
 

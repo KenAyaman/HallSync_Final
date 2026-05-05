@@ -13,11 +13,6 @@
                 <a href="{{ route('tickets.index') }}" class="resident-ticket-create-btn resident-ticket-create-btn-secondary">Back to My Tickets</a>
             </div>
 
-            <div class="resident-ticket-create-pills">
-                <span>Category-based routing</span>
-                <span>Photo or video supported</span>
-                <span>Reviewed before dispatch</span>
-            </div>
         </section>
 
         @if ($errors->any())
@@ -224,22 +219,6 @@
             display: flex;
             justify-content: flex-end;
             width: 100%;
-        }
-
-        .resident-ticket-create-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .resident-ticket-create-pills span {
-            padding: 10px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #E9D8BD;
-            font-size: 0.8rem;
-            font-weight: 600;
         }
 
         .resident-ticket-create-error {
@@ -497,7 +476,6 @@
                 font-size: 1.2rem;
             }
 
-            .resident-ticket-create-pills span,
             .resident-ticket-create-btn,
             .resident-ticket-create-hero-actions,
             .resident-ticket-create-btn-secondary {

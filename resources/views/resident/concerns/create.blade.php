@@ -1,4 +1,10 @@
 <x-app-layout>
+@php
+    $prefillCategory = old('category', $prefillCategory ?? 'other');
+    $prefillLocation = old('location', $prefillLocation ?? '');
+    $prefillInvolvedPerson = old('involved_person', $prefillInvolvedPerson ?? '');
+    $prefillDetails = old('details', $prefillDetails ?? '');
+@endphp
 <div class="concern-page">
     <section class="concern-hero">
         <div>
@@ -7,8 +13,8 @@
             <p class="concern-subtitle">Send a private concern to administration about roommate conflicts, noise, safety, shared spaces, or policy issues.</p>
         </div>
         <div class="concern-hero-actions">
+            <a href="{{ route('concerns.index') }}" class="concern-btn concern-btn-secondary concern-btn-back">Back to My Reports</a>
             <a href="{{ route('community.index') }}" class="concern-btn concern-btn-secondary">Back to Community</a>
-            <a href="{{ route('concerns.index') }}" class="concern-btn concern-btn-primary">My Reports</a>
         </div>
     </section>
 
@@ -20,6 +26,13 @@
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
+        </div>
+    @endif
+
+    @if(!empty($contextTitle))
+        <div class="concern-alert concern-alert-context">
+            <strong>Follow-up request</strong>
+            This report will reference the {{ $contextType ?: 'item' }}: "{{ $contextTitle }}".
         </div>
     @endif
 
@@ -40,35 +53,35 @@
                     <label class="concern-label" for="category">Concern Type</label>
                     <select id="category" name="category" class="concern-input" required>
                         <option value="">Select concern type</option>
-                        <option value="roommate" @selected(old('category') === 'roommate')>Roommate Conflict</option>
-                        <option value="noise" @selected(old('category') === 'noise')>Noise or Disturbance</option>
-                        <option value="cleanliness" @selected(old('category') === 'cleanliness')>Cleanliness or Hygiene</option>
-                        <option value="safety" @selected(old('category') === 'safety')>Safety Concern</option>
-                        <option value="policy" @selected(old('category') === 'policy')>Policy Violation</option>
-                        <option value="shared_space" @selected(old('category') === 'shared_space')>Shared Space Issue</option>
-                        <option value="other" @selected(old('category') === 'other')>Other</option>
+                        <option value="roommate" @selected($prefillCategory === 'roommate')>Roommate Conflict</option>
+                        <option value="noise" @selected($prefillCategory === 'noise')>Noise or Disturbance</option>
+                        <option value="cleanliness" @selected($prefillCategory === 'cleanliness')>Cleanliness or Hygiene</option>
+                        <option value="safety" @selected($prefillCategory === 'safety')>Safety Concern</option>
+                        <option value="policy" @selected($prefillCategory === 'policy')>Policy Violation</option>
+                        <option value="shared_space" @selected($prefillCategory === 'shared_space')>Shared Space Issue</option>
+                        <option value="other" @selected($prefillCategory === 'other')>Other</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="concern-label" for="involved_person">Person Involved</label>
-                    <input id="involved_person" type="text" name="involved_person" class="concern-input" value="{{ old('involved_person') }}" placeholder="Optional name, roommate, or resident">
+                    <label class="concern-label" for="involved_person">Person Involved (Optional)</label>
+                    <input id="involved_person" type="text" name="involved_person" class="concern-input" value="{{ $prefillInvolvedPerson }}" placeholder="Optional name, roommate, or resident">
                 </div>
 
                 <div>
                     <label class="concern-label" for="location">Location</label>
-                    <input id="location" type="text" name="location" class="concern-input" value="{{ old('location') }}" placeholder="Room, hallway, study room, or dorm area">
+                    <input id="location" type="text" name="location" class="concern-input" value="{{ $prefillLocation }}" placeholder="Room, hallway, study room, or dorm area">
                 </div>
             </div>
 
             <div>
                 <label class="concern-label" for="details">Full Description</label>
-                <textarea id="details" name="details" rows="8" class="concern-input concern-textarea" placeholder="Describe what happened, when it happened, and any details that would help administration understand the situation." required>{{ old('details') }}</textarea>
+                <textarea id="details" name="details" rows="8" class="concern-input concern-textarea" placeholder="Describe what happened, when it happened, and any details that would help administration understand the situation." required>{{ $prefillDetails }}</textarea>
             </div>
 
             <div class="concern-form-actions">
                 <button type="submit" class="concern-btn concern-btn-primary">Submit Concern</button>
-                <a href="{{ route('community.index') }}" class="concern-btn concern-btn-secondary">Cancel</a>
+                <a href="{{ route('concerns.index') }}" class="concern-btn concern-btn-secondary concern-btn-back">View Reports</a>
             </div>
         </form>
     </section>
@@ -82,11 +95,13 @@
 .concern-title { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 3.3rem); line-height: 1.04; }
 .concern-subtitle { margin: 12px 0 0; max-width: 760px; color: rgba(240,233,223,0.74); font-size: 1rem; line-height: 1.7; }
 .concern-hero-actions, .concern-form-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.concern-hero-actions { flex-shrink: 0; align-items: center; justify-content: flex-end; }
+.concern-hero-actions { align-items: center; justify-content: flex-end; }
 .concern-btn { display: inline-flex; align-items: center; justify-content: center; padding: 13px 22px; border-radius: 999px; text-decoration: none; font-weight: 700; border: 1px solid rgba(214,168,91,0.16); white-space: nowrap; }
 .concern-btn-primary { background: linear-gradient(135deg, #c79745 0%, #d6a85b 100%); color: #1b150f; }
 .concern-btn-secondary { background: rgba(255,255,255,0.04); color: #e8e0d3; }
+.concern-btn-back { min-width: 188px; }
 .concern-alert { padding: 18px 22px; background: rgba(224,112,96,0.12); color: #f4d0c9; }
+.concern-alert-context { background: rgba(214,168,91,0.12); color: #f0e9df; }
 .concern-alert ul { margin: 10px 0 0; padding-left: 18px; }
 .concern-card { padding: 20px 22px; background: rgba(42,44,48,0.82); backdrop-filter: blur(10px); }
 .concern-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px; }

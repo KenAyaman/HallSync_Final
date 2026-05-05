@@ -1,5 +1,5 @@
 <x-app-layout>
-<div class="space-y-8 admin-shell">
+<div class="space-y-8 admin-shell admin-announcements-page">
     {{-- PAGE HEADER --}}
     <div class="relative overflow-hidden rounded-[36px] border border-[#3A342D]"
          style="
@@ -63,12 +63,12 @@
         </div>
     </div>
 
-    <div style="
-        background: linear-gradient(135deg, rgba(214,168,91,0.10), rgba(255,255,255,0.02));
-        border: 1px solid rgba(214,168,91,0.16);
+    <div class="announcement-standards-panel" style="
+        background: linear-gradient(135deg, rgba(226, 211, 190, 0.92), rgba(238, 228, 214, 0.88));
+        border: 1px solid rgba(130, 98, 62, 0.24);
         border-radius: 24px;
         padding: 22px 26px;
-        box-shadow: 0 14px 36px rgba(0,0,0,0.18);
+        box-shadow: none;
     ">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -146,107 +146,59 @@
         <div style="height: 1px; background: linear-gradient(to right, rgba(214,168,91,0.4), transparent); margin-bottom: 32px;"></div>
 
         @forelse($announcements ?? collect() as $announcement)
-            <div style="
-                background: linear-gradient(135deg, #2C2C2F 0%, #25272A 100%);
-                border: 1px solid rgba(58,52,45,0.6);
-                border-radius: 24px;
-                padding: 32px;
-                margin-bottom: 24px;
-                transition: all 0.3s ease;
-            " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 48px rgba(0,0,0,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.3)'">
-                <div class="flex flex-col gap-5">
-                    <div class="flex items-center justify-between gap-4 flex-wrap">
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <span style="width: 10px; height: 10px; border-radius: 999px; display: inline-block; background:
-                                {{ $announcement->priority === 'urgent' ? '#E07060' : ($announcement->priority === 'important' ? '#D6A85B' : '#8F877C') }};">
-                            </span>
-                            <span style="font-size: 12px; color: #9F9383; letter-spacing: 0.10em; text-transform: uppercase; font-weight: 700;">
-                                Notice Record
-                            </span>
-                        </div>
-                        <div style="font-size: 13px; color: #8F877C;">
-                            Published {{ $announcement->created_at->format('M d, Y h:i A') }}
-                        </div>
+            <article class="announcement-card">
+                <div class="announcement-card__topline">
+                    <div class="announcement-card__record">
+                        <span class="announcement-card__dot" style="background:
+                            {{ $announcement->priority === 'urgent' ? '#E07060' : ($announcement->priority === 'important' ? '#D6A85B' : '#8F877C') }};">
+                        </span>
+                        <span>Notice Record</span>
                     </div>
+                    <time class="announcement-card__date" datetime="{{ $announcement->created_at->toIso8601String() }}">
+                        Published {{ $announcement->created_at->format('M d, Y h:i A') }}
+                    </time>
+                </div>
 
-                <div class="flex flex-col lg:flex-row lg:items-start lg:gap-6">
-                    <div class="flex flex-col gap-4 flex-1">
-                        <div class="flex items-center gap-4">
-                            <span style="padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 700; background:
+                <div class="announcement-card__body">
+                    <div class="announcement-card__content">
+                        <div class="announcement-card__meta">
+                            <span class="announcement-card__priority" style="background:
                                 {{ $announcement->priority === 'urgent' ? 'rgba(224,112,96,0.12)' : ($announcement->priority === 'important' ? 'rgba(214,168,91,0.12)' : 'rgba(168,159,145,0.12)') }}; color:
-                                {{ $announcement->priority === 'urgent' ? '#F0B3A9' : ($announcement->priority === 'important' ? '#E4C58E' : '#C4B6A1') }}; border: 1px solid
-                                {{ $announcement->priority === 'urgent' ? 'rgba(224,112,96,0.22)' : ($announcement->priority === 'important' ? 'rgba(214,168,91,0.22)' : 'rgba(168,159,145,0.22)') }}; letter-spacing: 0.08em; text-transform: uppercase;">
+                                {{ $announcement->priority === 'urgent' ? '#F0B3A9' : ($announcement->priority === 'important' ? '#E4C58E' : '#C4B6A1') }}; border-color:
+                                {{ $announcement->priority === 'urgent' ? 'rgba(224,112,96,0.22)' : ($announcement->priority === 'important' ? 'rgba(214,168,91,0.22)' : 'rgba(168,159,145,0.22)') }};">
                                 {{ ucfirst($announcement->priority) }}
                             </span>
-                            <div style="font-size: 13px; color: #A89F91;">
+                            <span class="announcement-card__age">
                                 Live since {{ $announcement->created_at->diffForHumans() }}
-                            </div>
+                            </span>
                         </div>
 
-                        <h3 style="font-size: 26px; font-weight: 700; color: #F8F3EA; margin: 0; font-family: 'Playfair Display', serif; line-height: 1.2;">
+                        <h3 class="announcement-card__title">
                             {{ $announcement->title }}
                         </h3>
 
-                        <div style="font-size: 16px; color: #D0C8B8; line-height: 1.7; max-width: 800px;">
+                        <p class="announcement-card__excerpt">
                             {{ Str::limit($announcement->content, 280) }}
-                        </div>
+                        </p>
                     </div>
 
-                    <div style="flex-shrink: 0; mt: 8px; lg:mt: 0; min-width: 190px;">
-                        <div style="padding: 18px; border-radius: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
-                            <div style="font-size: 11px; color: #8F877C; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-bottom: 14px;">
-                                Actions
-                            </div>
-                            <div style="display: flex; gap: 10px; flex-direction: column; align-items: stretch; text-align:center;">
-                            <a href="{{ route('announcements.show', $announcement) }}" style="
-                                background: rgba(255,255,255,0.04);
-                                color: #F0E9DF;
-                                padding: 12px 24px;
-                                border-radius: 999px;
-                                font-weight: 600;
-                                text-decoration: none;
-                                border: 1px solid rgba(255,255,255,0.08);
-                                transition: all 0.2s;
-                                display:block;
-                            " onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-                                View Details
-                            </a>
-                            <a href="{{ route('announcements.edit', $announcement) }}" style="
-                                background: rgba(214,168,91,0.12);
-                                color: #D6A85B;
-                                padding: 12px 24px;
-                                border-radius: 999px;
-                                font-weight: 600;
-                                text-decoration: none;
-                                border: 1px solid rgba(214,168,91,0.22);
-                                transition: all 0.2s;
-                                display:block;
-                            " onmouseover="this.style.background='rgba(214,168,91,0.18)'" onmouseout="this.style.background='rgba(214,168,91,0.12)'">
-                                Edit
-                            </a>
-                            <form action="{{ route('announcements.destroy', $announcement) }}" method="POST" style="display: block;" onsubmit="return confirm('Delete this announcement?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" style="
-                                    background: rgba(224,112,96,0.12);
-                                    color: #F0B3A9;
-                                    padding: 12px 24px;
-                                    border-radius: 999px;
-                                    font-weight: 600;
-                                    border: 1px solid rgba(224,112,96,0.22);
-                                    cursor: pointer;
-                                    transition: all 0.2s;
-                                    width:100%;
-                                " onmouseover="this.style.background='rgba(224,112,96,0.18)'" onmouseout="this.style.background='rgba(224,112,96,0.12)'">
-                                    Delete
-                                </button>
-                            </form>
-                            </div>
-                        </div>
+                    <div class="announcement-card__actions" aria-label="Announcement actions">
+                        <a href="{{ route('announcements.show', $announcement) }}" class="announcement-action announcement-action--details">
+                            View Details
+                        </a>
+                        <a href="{{ route('announcements.edit', $announcement) }}" class="announcement-action announcement-action--edit">
+                            Edit
+                        </a>
+                        <form action="{{ route('announcements.destroy', $announcement) }}" method="POST" onsubmit="return confirm('Delete this announcement?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="announcement-action announcement-action--delete">
+                                Delete
+                            </button>
+                        </form>
                     </div>
                 </div>
-                </div>
-            </div>
+            </article>
         @empty
             <div style="text-align: center; padding: 80px 60px; background: linear-gradient(135deg, rgba(37,39,42,0.6), rgba(31,32,35,0.6)); border: 1px dashed rgba(214,168,91,0.25); border-radius: 32px;">
                 <div style="width: 88px; height: 88px; border-radius: 999px; margin: 0 auto 32px; display:flex; align-items:center; justify-content:center; background: rgba(214,168,91,0.15); font-size: 44px;">
@@ -367,9 +319,228 @@
     max-width: 760px !important;
 }
 
+.announcement-standards-panel {
+    color: #4d4135;
+}
+
+.announcement-standards-panel p {
+    color: #5f5143 !important;
+}
+
+.announcement-standards-panel span {
+    color: #805928 !important;
+}
+
+.announcement-standards-panel .flex.flex-wrap.gap-2 span {
+    background: rgba(255, 246, 233, 0.45) !important;
+    border-color: rgba(130, 98, 62, 0.18) !important;
+}
+
+.announcement-card {
+    background:
+        linear-gradient(135deg, rgba(49, 50, 54, 0.96) 0%, rgba(38, 40, 43, 0.98) 100%);
+    border: 1px solid rgba(214,168,91,0.14);
+    border-radius: 20px;
+    padding: 24px 28px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.24);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.announcement-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(214,168,91,0.26);
+    box-shadow: 0 16px 34px rgba(0,0,0,0.32);
+}
+
+.announcement-card__topline,
+.announcement-card__body,
+.announcement-card__meta,
+.announcement-card__record,
+.announcement-card__actions {
+    display: flex;
+}
+
+.announcement-card__topline {
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.announcement-card__record {
+    align-items: center;
+    gap: 12px;
+    color: #AFA394;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.announcement-card__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    display: inline-block;
+    box-shadow: 0 0 0 4px rgba(214,168,91,0.06);
+}
+
+.announcement-card__date {
+    color: #A89F91;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.announcement-card__body {
+    align-items: end;
+    justify-content: space-between;
+    gap: 28px;
+}
+
+.announcement-card__content {
+    min-width: 0;
+    max-width: 880px;
+}
+
+.announcement-card__meta {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.announcement-card__priority {
+    border: 1px solid;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.10em;
+    line-height: 1;
+    padding: 8px 15px;
+    text-transform: uppercase;
+}
+
+.announcement-card__age {
+    color: #A89F91;
+    font-size: 13px;
+}
+
+.announcement-card__title {
+    color: #F8F3EA;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.35rem, 1.5vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 12px;
+}
+
+.announcement-card__excerpt {
+    color: #D0C8B8;
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0;
+}
+
+.announcement-card__actions {
+    align-items: center;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.announcement-card__actions form {
+    margin: 0;
+}
+
+.announcement-action {
+    align-items: center;
+    border: 1px solid;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    justify-content: center;
+    line-height: 1;
+    min-height: 42px;
+    padding: 0 18px;
+    text-decoration: none;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    white-space: nowrap;
+}
+
+.announcement-action:hover {
+    transform: translateY(-1px);
+}
+
+.announcement-action--details {
+    background: rgba(255,255,255,0.045);
+    border-color: rgba(255,255,255,0.09);
+    color: #F0E9DF;
+}
+
+.announcement-action--details:hover {
+    background: rgba(255,255,255,0.085);
+    border-color: rgba(255,255,255,0.15);
+}
+
+.announcement-action--edit {
+    background: rgba(214,168,91,0.12);
+    border-color: rgba(214,168,91,0.24);
+    color: #E4C58E;
+}
+
+.announcement-action--edit:hover {
+    background: rgba(214,168,91,0.18);
+}
+
+.announcement-action--delete {
+    background: rgba(224,112,96,0.12);
+    border-color: rgba(224,112,96,0.24);
+    color: #F0B3A9;
+}
+
+.announcement-action--delete:hover {
+    background: rgba(224,112,96,0.18);
+}
+
+@media (max-width: 1024px) {
+    .announcement-card__body {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .announcement-card__actions {
+        justify-content: flex-start;
+    }
+}
+
 @media (max-width: 768px) {
     .admin-shell > div:first-of-type > div.relative {
         padding: 24px !important;
+    }
+
+    .announcement-card {
+        padding: 22px;
+    }
+
+    .announcement-card__topline {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .announcement-card__date {
+        white-space: normal;
+    }
+
+    .announcement-card__actions,
+    .announcement-card__actions form,
+    .announcement-action {
+        width: 100%;
     }
 }
 

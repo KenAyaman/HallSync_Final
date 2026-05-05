@@ -73,9 +73,10 @@
 .admin-concern-page { max-width: 1580px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; color: #f0e9df; }
 .admin-concern-hero, .admin-concern-card, .admin-concern-alert { border-radius: 28px; border: 1px solid rgba(214,168,91,0.16); box-shadow: 0 24px 48px rgba(0,0,0,0.20); }
 .admin-concern-hero { display: flex; justify-content: space-between; gap: 24px; align-items: center; padding: 34px 38px; background: linear-gradient(135deg, rgba(20,16,13,0.96) 0%, rgba(30,23,18,0.90) 55%, rgba(25,19,15,0.96) 100%); }
-.admin-concern-kicker { margin: 0 0 10px; color: #d6a85b; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+.admin-concern-kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 8px; color: #d6a85b; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.18em; line-height: 1.2; text-transform: uppercase; }
+.admin-concern-kicker::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: #d6a85b; display: inline-block; flex-shrink: 0; }
 .admin-concern-title { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(2.3rem, 4vw, 3.3rem); line-height: 1.06; }
-.admin-concern-subtitle { margin: 12px 0 0; max-width: 760px; color: rgba(240,233,223,0.72); line-height: 1.7; }
+.admin-concern-subtitle { margin: 8px 0 0; max-width: 760px; color: rgba(240,233,223,0.72); line-height: 1.65; }
 .admin-concern-hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .admin-concern-btn { display: inline-flex; align-items: center; justify-content: center; padding: 13px 22px; border-radius: 999px; text-decoration: none; font-weight: 700; border: 1px solid rgba(214,168,91,0.16); }
 .admin-concern-btn-primary { background: linear-gradient(135deg, #c79745 0%, #d6a85b 100%); color: #1b150f; }

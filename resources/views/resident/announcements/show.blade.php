@@ -33,7 +33,6 @@
     <div class="resident-announcement-page">
         <section class="resident-announcement-hero">
             <div class="resident-announcement-hero-copy">
-                <a href="{{ route('announcements.index') }}" class="resident-announcement-back">Back to Announcements</a>
                 <p class="resident-announcement-kicker">Community Notice Details</p>
                 <h1 class="resident-announcement-title">Announcement Details</h1>
                 <p class="resident-announcement-subtitle">
@@ -55,6 +54,10 @@
                     </div>
                 </div>
             </div>
+
+            <div class="resident-announcement-hero-actions">
+                <a href="{{ route('announcements.index') }}" class="resident-announcement-btn resident-announcement-btn-secondary">Back to Announcements</a>
+            </div>
         </section>
 
         <section class="resident-announcement-panel">
@@ -70,7 +73,7 @@
 
             <div class="resident-announcement-divider"></div>
 
-            <div class="resident-announcement-highlight" style="background: linear-gradient(135deg, {{ $priority['panel'] }}, rgba(255,255,255,0.03)); border-color: {{ $priority['border'] }};">
+            <div class="resident-announcement-highlight" style="border-color: {{ $priority['border'] }};">
                 <span>Notice Level</span>
                 <strong>{{ $priority['tone'] }}</strong>
             </div>
@@ -91,6 +94,12 @@
             </article>
 
             <div class="resident-announcement-actions">
+                <a href="{{ route('concerns.create', [
+                    'category' => 'other',
+                    'details' => "Follow-up request regarding announcement: {$announcement->title}\n\nPlease help with:",
+                    'context_title' => $announcement->title,
+                    'context_type' => 'announcement',
+                ]) }}" class="resident-announcement-btn resident-announcement-btn-secondary">Request Follow-up</a>
                 <a href="{{ route('announcements.index') }}" class="resident-announcement-btn resident-announcement-btn-primary">View All Announcements</a>
             </div>
         </section>
@@ -113,7 +122,11 @@
         }
 
         .resident-announcement-hero {
-            padding: 28px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            padding: 30px;
             border-radius: 36px;
             background: linear-gradient(115deg, #1F2023 0%, #24262B 38%, #2C2C2F 62%, #3B3023 100%);
             box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
@@ -123,15 +136,11 @@
             max-width: 860px;
         }
 
-        .resident-announcement-back {
-            display: inline-flex;
-            margin-bottom: 14px;
-            color: #D6A85B;
-            text-decoration: none;
-            font-size: 0.84rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+        .resident-announcement-hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 12px;
         }
 
         .resident-announcement-kicker {
@@ -167,7 +176,7 @@
         }
 
         .resident-announcement-stat {
-            min-width: 128px;
+            min-width: 130px;
             padding: 12px 14px;
             border-radius: 16px;
             background: rgba(255,255,255,0.05);
@@ -220,13 +229,13 @@
         }
 
         .resident-announcement-badge {
-            padding: 8px 14px;
+            padding: 6px 11px;
             border-radius: 999px;
             border: 1px solid transparent;
-            font-size: 0.76rem;
-            font-weight: 700;
+            font-size: 0.68rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             white-space: nowrap;
         }
 
@@ -246,6 +255,7 @@
         .resident-announcement-highlight {
             padding: 16px 18px;
             margin-bottom: 18px;
+            background: rgba(255,255,255,0.03);
         }
 
         .resident-announcement-highlight span,
@@ -316,6 +326,12 @@
             color: #17120d;
         }
 
+        .resident-announcement-btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(214,168,91,0.22);
+            color: #F0E9DF;
+        }
+
         @media (max-width: 768px) {
             .resident-announcement-page {
                 padding: 18px 0 28px;
@@ -326,8 +342,24 @@
                 padding: 22px;
             }
 
+            .resident-announcement-hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
             .resident-announcement-summary-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .resident-announcement-title {
+                font-size: 2.1rem;
+            }
+
+            .resident-announcement-hero-actions,
+            .resident-announcement-btn {
+                width: 100%;
             }
         }
     </style>

@@ -32,50 +32,43 @@
                 </p>
             </div>
 
-            <div class="booking-toolbar">
-                <div class="mode-switcher">
-                    <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $selectedDate->toDateString()]) }}"
-                       class="mode-pill {{ $viewMode === 'day' ? 'is-active' : '' }}">
-                        Day
-                    </a>
-                    <a href="{{ route('admin.bookings.calendar', ['view' => 'this_month']) }}"
-                       class="mode-pill {{ $viewMode === 'this_month' ? 'is-active' : '' }}">
-                        This Month
-                    </a>
-                    <a href="{{ route('admin.bookings.calendar', ['view' => 'last_month']) }}"
-                       class="mode-pill {{ $viewMode === 'last_month' ? 'is-active' : '' }}">
-                        Last Month
-                    </a>
-                </div>
-
-                @if ($viewMode !== 'day')
+            @if ($viewMode !== 'day')
+                <div class="booking-toolbar">
                     <div class="date-nav">
                         <div class="date-badge">{{ $monthLabel }}</div>
                     </div>
-                @endif
-            </div>
+                </div>
+            @endif
         </section>
 
         @if ($viewMode === 'day')
             <section class="stats-grid">
                 <article class="stat-card">
-                    <span class="stat-label">Total Bookings</span>
-                    <strong class="stat-value">{{ $totalBookings }}</strong>
+                    <div class="stat-card-main">
+                        <strong class="stat-value">{{ $totalBookings }}</strong>
+                        <span class="stat-label">Total Bookings</span>
+                    </div>
                     <span class="stat-note">Scheduled today</span>
                 </article>
                 <article class="stat-card">
-                    <span class="stat-label">Occupancy</span>
-                    <strong class="stat-value">{{ $occupancyRate }}%</strong>
+                    <div class="stat-card-main">
+                        <strong class="stat-value">{{ $occupancyRate }}%</strong>
+                        <span class="stat-label">Occupancy</span>
+                    </div>
                     <span class="stat-note">Used slots today</span>
                 </article>
                 <article class="stat-card">
-                    <span class="stat-label">Available Slots</span>
-                    <strong class="stat-value">{{ $totalSlots - $occupiedSlots }}</strong>
+                    <div class="stat-card-main">
+                        <strong class="stat-value">{{ $totalSlots - $occupiedSlots }}</strong>
+                        <span class="stat-label">Available Slots</span>
+                    </div>
                     <span class="stat-note">Open today</span>
                 </article>
                 <article class="stat-card">
-                    <span class="stat-label">Facilities</span>
-                    <strong class="stat-value">{{ count($facilities) }}</strong>
+                    <div class="stat-card-main">
+                        <strong class="stat-value">{{ count($facilities) }}</strong>
+                        <span class="stat-label">Facilities</span>
+                    </div>
                     <span class="stat-note">Tracked spaces</span>
                 </article>
             </section>
@@ -84,12 +77,22 @@
                 <div class="panel-heading">
                     <div>
                         <h2>Weekly Overview</h2>
-                        <p>Select a day to jump the calendar</p>
+                        <p>Select a day or use the compact calendar to jump dates.</p>
                     </div>
                     <div class="date-nav date-nav-inline">
-                        <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $previousDate]) }}" class="nav-pill">Previous</a>
                         <div class="date-badge">{{ $selectedDate->format('M d, Y') }}</div>
-                        <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $nextDate]) }}" class="nav-pill">Next</a>
+                        <form method="GET" action="{{ route('admin.bookings.calendar') }}" class="date-picker-form">
+                            <input type="hidden" name="view" value="day">
+                            <label for="bookingDateJump" class="date-picker-label" aria-label="Choose calendar date">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                <input id="bookingDateJump" type="date" name="date" value="{{ $selectedDate->toDateString() }}" onchange="this.form.submit()">
+                            </label>
+                        </form>
                         <a href="{{ route('admin.bookings.calendar', ['view' => 'day', 'date' => $todayDate]) }}" class="nav-pill nav-pill-highlight">Today</a>
                     </div>
                 </div>
@@ -183,23 +186,31 @@
         @else
             <section class="stats-grid">
                 <article class="stat-card">
-                    <span class="stat-label">Bookings</span>
-                    <strong class="stat-value">{{ $monthBookingCount }}</strong>
+                    <div class="stat-card-main">
+                        <strong class="stat-value">{{ $monthBookingCount }}</strong>
+                        <span class="stat-label">Bookings</span>
+                    </div>
                     <span class="stat-note">{{ $monthLabel }}</span>
                 </article>
                 <article class="stat-card">
-                    <span class="stat-label">Approved</span>
-                    <strong class="stat-value">{{ $monthApprovedCount }}</strong>
+                    <div class="stat-card-main">
+                        <strong class="stat-value">{{ $monthApprovedCount }}</strong>
+                        <span class="stat-label">Approved</span>
+                    </div>
                     <span class="stat-note">Confirmed reservations</span>
                 </article>
                 <article class="stat-card">
-                    <span class="stat-label">Pending</span>
-                    <strong class="stat-value">{{ $monthPendingCount }}</strong>
+                    <div class="stat-card-main">
+                        <strong class="stat-value">{{ $monthPendingCount }}</strong>
+                        <span class="stat-label">Pending</span>
+                    </div>
                     <span class="stat-note">Awaiting decision</span>
                 </article>
                 <article class="stat-card">
-                    <span class="stat-label">Facilities Used</span>
-                    <strong class="stat-value">{{ $monthlyFacilitySummary->count() }}</strong>
+                    <div class="stat-card-main">
+                        <strong class="stat-value">{{ $monthlyFacilitySummary->count() }}</strong>
+                        <span class="stat-label">Facilities Used</span>
+                    </div>
                     <span class="stat-note">Spaces with bookings</span>
                 </article>
             </section>
@@ -385,6 +396,33 @@
         text-decoration: none;
         font-size: 0.92rem;
         transition: 0.2s ease;
+    }
+
+    .date-picker-form {
+        margin: 0;
+    }
+
+    .date-picker-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        min-height: 42px;
+        border-radius: 999px;
+        border: 1px solid var(--booking-border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--booking-gold);
+    }
+
+    .date-picker-label input {
+        width: 138px;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: var(--booking-text);
+        font: inherit;
+        font-size: 0.9rem;
+        color-scheme: dark;
     }
 
     .mode-pill:hover,
@@ -586,6 +624,15 @@
         background: rgba(255,255,255,0.02);
     }
 
+    .calendar-table th:not(:first-child) {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .calendar-table td:not(:first-child) {
+        vertical-align: middle;
+    }
+
     .time-cell {
         white-space: nowrap;
         color: var(--booking-muted);
@@ -595,7 +642,7 @@
 
     .booking-chip {
         width: 100%;
-        text-align: left;
+        text-align: center;
         padding: 12px;
         min-height: 72px;
         border-radius: 16px;
@@ -606,6 +653,7 @@
         transition: 0.2s ease;
         display: flex;
         flex-direction: column;
+        align-items: center;
         justify-content: center;
     }
 

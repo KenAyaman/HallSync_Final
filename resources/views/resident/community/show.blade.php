@@ -65,7 +65,7 @@
                 @if(auth()->check() && auth()->id() === $post->user_id)
                     <div class="community-post-owner-actions">
                         <a href="{{ route('community.edit', $post) }}" class="community-post-owner-btn">Edit Post</a>
-                        <form method="POST" action="{{ route('community.destroy', $post) }}" onsubmit="return confirm('Delete this post? This action cannot be undone.');">
+                        <form method="POST" action="{{ route('community.destroy', $post) }}" data-confirm-message="Delete this post? This action cannot be undone.">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="community-post-owner-btn community-post-owner-btn-delete">Delete Post</button>
@@ -129,7 +129,7 @@
 
             <div class="community-comment-list">
                 @forelse($post->comments as $comment)
-                    <div class="community-comment-item">
+                    <div class="community-comment-item" x-data="{ editing: false }">
                         <div class="community-comment-avatar">
                             @if($comment->user->profile_photo_url)
                                 <img src="{{ $comment->user->profile_photo_url }}" alt="{{ $comment->user->name }}">
@@ -140,9 +140,46 @@
                         <div class="community-comment-body">
                             <div class="community-comment-meta">
                                 <strong>{{ $comment->user->name }}</strong>
-                                <span>{{ $comment->created_at->diffForHumans() }}</span>
+                                <span>
+                                    {{ $comment->created_at->diffForHumans() }}
+                                    @if($comment->updated_at && $comment->updated_at->gt($comment->created_at))
+                                        • Edited
+                                    @endif
+                                </span>
                             </div>
-                            <p>{{ $comment->content }}</p>
+
+                            <div class="community-comment-content" x-show="!editing">
+                                <p>{{ $comment->content }}</p>
+                            </div>
+
+                            @auth
+                                @if(auth()->id() === $comment->user_id || auth()->user()->role === 'manager')
+                                    <form method="POST"
+                                          action="{{ route('community.comments.update', $comment) }}"
+                                          class="community-comment-edit-form"
+                                          x-show="editing"
+                                          style="display: none;"
+                                          data-prevent-double-submit
+                                          data-submitting-text="Saving...">
+                                        @csrf
+                                        @method('PATCH')
+                                        <textarea name="content" rows="3" class="community-comment-input" required>{{ old('content', $comment->content) }}</textarea>
+                                        <div class="community-comment-actions">
+                                            <button type="submit" class="community-comment-action-btn community-comment-action-btn-primary">Save</button>
+                                            <button type="button" class="community-comment-action-btn" @click="editing = false">Cancel</button>
+                                        </div>
+                                    </form>
+
+                                    <div class="community-comment-actions" x-show="!editing">
+                                        <button type="button" class="community-comment-action-btn" @click="editing = true">Edit</button>
+                                        <form method="POST" action="{{ route('community.comments.destroy', $comment) }}" data-confirm-message="Delete this comment?">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="community-comment-action-btn community-comment-action-btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                @endif
+                            @endauth
                         </div>
                     </div>
                 @empty
@@ -517,11 +554,58 @@
             flex: 1;
         }
 
+        .community-comment-content {
+            margin-bottom: 10px;
+        }
+
         .community-comment-meta {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 8px;
+        }
+
+        .community-comment-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .community-comment-actions form {
+            margin: 0;
+        }
+
+        .community-comment-edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .community-comment-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(214,168,91,0.18);
+            background: rgba(255,255,255,0.03);
+            color: #d6a85b;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .community-comment-action-btn-primary {
+            background: linear-gradient(95deg, #b8842f, #d6a85b);
+            color: #17120d;
+            border: none;
+        }
+
+        .community-comment-action-btn-danger {
+            border-color: rgba(224,112,96,0.22);
+            color: #f0b3a9;
+            background: rgba(224,112,96,0.08);
         }
 
         .community-empty-state {

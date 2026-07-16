@@ -1,0 +1,1054 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================= HallSync UI/UX Design System (Global) =================
+   Goal: consistent spacing, radius, shadows, typography hierarchy.
+   NOTE: Do NOT introduce new branding colors; reuse existing palette tokens
+   or current role/theme variables.
+   ======================================================================= */
+
+:root{
+  /* Spacing scale (mapped to existing layout rhythm where possible) */
+  --hs-space-1: 6px;
+  --hs-space-2: 10px;
+  --hs-space-3: 14px;
+  --hs-space-4: 18px;
+  --hs-space-5: 24px;
+  --hs-space-6: 32px;
+  --hs-space-7: 40px;
+
+  /* Radii scale */
+  --hs-radius-sm: 10px;
+  --hs-radius-md: 14px;
+  --hs-radius-lg: 18px;
+  --hs-radius-xl: 22px;
+  --hs-radius-pill: 999px;
+
+  /* Shadows (single elevation ladder) */
+  --hs-shadow-sm: 0 8px 18px rgba(0,0,0,0.14);
+  --hs-shadow-md: 0 14px 30px rgba(0,0,0,0.18);
+  --hs-shadow-lg: 0 22px 54px rgba(0,0,0,0.24);
+
+  /* Typography */
+  --hs-font-kicker: 0.72rem;
+  --hs-font-title: 1.75rem;
+  --hs-font-section: 1.12rem;
+  --hs-font-body: 0.95rem;
+  --hs-font-caption: 0.78rem;
+}
+
+/* Role-aware defaults: fall back to existing variables in layouts/app.blade.php */
+.hs-text-heading{ color: var(--text-heading, #F0E9DF); }
+.hs-text-body{ color: var(--text-body, #C4B8A8); }
+.hs-text-muted{ color: var(--text-muted, #8A7A66); }
+
+/* Cards / panels */
+.hs-card,
+.hs-panel{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(214,168,91,0.14);
+  border-radius: var(--hs-radius-lg);
+  box-shadow: var(--hs-shadow-sm);
+}
+
+/* Raised surface for modals/hero */
+.hs-elevated{
+  border-radius: var(--hs-radius-xl);
+  box-shadow: var(--hs-shadow-md);
+}
+
+/* Buttons */
+.hs-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 11px 18px;
+  border-radius: var(--hs-radius-pill);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-decoration: none;
+}
+
+.hs-btn-primary{
+  background: linear-gradient(135deg, #c79745 0%, #d6a85b 100%);
+  color: #1a1714;
+  border: 1px solid rgba(214,168,91,0.25);
+}
+
+.hs-btn-secondary{
+  background: rgba(255,255,255,0.04);
+  color: #e8e0d3;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.hs-btn-danger{
+  background: linear-gradient(135deg, rgba(224,112,96,0.20) 0%, rgba(224,112,96,0.08) 100%);
+  color: #f0ccc8;
+  border: 1px solid rgba(224,112,96,0.30);
+}
+
+/* Inputs */
+.hs-input{
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+  border-radius: var(--hs-radius-md);
+  border: 1px solid rgba(214,168,91,0.16);
+  background: rgba(37,39,42,0.90);
+  color: #f8f3ea;
+}
+
+.hs-input:focus-visible{
+  outline: 3px solid color-mix(in srgb, #d6a85b 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* Badges / chips */
+.hs-badge,
+.hs-chip,
+.hs-status{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--hs-radius-pill);
+  border: 1px solid rgba(214,168,91,0.20);
+  background: rgba(255,255,255,0.03);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: none;
+}
+
+/* Standard page header block (used by existing heroes) */
+.hs-page-header{ display:flex; flex-direction:column; gap: var(--hs-space-2); }
+.hs-page-header .hs-kicker{ font-size: var(--hs-font-kicker); letter-spacing: 0.14em; text-transform: uppercase; font-weight: 900; color: var(--accent-gold-strong, #D6A85B); }
+.hs-page-header h1{ font-size: clamp(1.85rem, 3vw, 2.35rem); letter-spacing: 0; line-height: 1.08; margin:0; }
+.hs-page-header p{ font-size: var(--hs-font-body); line-height: 1.6; color: var(--text-muted, #8A7A66); margin:0; }
+
+/* Table normalization */
+.hs-table{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.hs-table th{ text-align:left; padding: 12px 14px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted, #8A7A66); }
+.hs-table td{ padding: 12px 14px; font-size: var(--hs-font-body); color: var(--text-heading, #F0E9DF); }
+.hs-table tbody tr{ background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(214,168,91,0.10); }
+
+/* Modal normalization */
+.hs-modal-dialog{
+  border-radius: var(--hs-radius-lg);
+  box-shadow: var(--hs-shadow-lg);
+  background: rgba(30,27,23,0.98);
+  border: 1px solid rgba(214,168,91,0.18);
+}
+
+html.theme-light .hs-modal-dialog{
+  background: rgba(255,253,248,0.98);
+  border-color: rgba(76,62,46,0.14);
+}
+
+/* ===== Resident Tickets - shared layout primitives (no palette drift) ===== */
+.hs-ticket-page{
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  color: var(--text-heading, #F0E9DF);
+}
+
+.hs-ticket-topbar{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.hs-ticket-hero{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 28px 30px;
+  border-radius: var(--hs-radius-xl);
+  background: linear-gradient(115deg, rgba(31,32,35,1) 0%, rgba(36,38,43,1) 38%, rgba(44,44,47,1) 62%, rgba(59,48,35,1) 100%);
+  box-shadow: var(--hs-shadow-md);
+  border: 1px solid rgba(214,168,91,0.14);
+}
+
+.hs-ticket-panel{
+  padding: 24px;
+  border-radius: var(--hs-radius-lg);
+  background: rgba(42,44,48,0.78);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(214,168,91,0.14);
+  box-shadow: var(--hs-shadow-sm);
+}
+
+.hs-ticket-grid{
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+  gap: 22px;
+  align-items: start;
+}
+
+@media (max-width: 900px){
+  .hs-ticket-hero, .hs-ticket-panel-head{ flex-direction: column; align-items: flex-start; }
+  .hs-ticket-grid{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px){
+  .hs-ticket-page{ padding: 18px 0 28px; }
+  .hs-ticket-hero, .hs-ticket-panel{ border-radius: 22px; padding: 22px; }
+}
+
+/* ============================================================
+   RESIDENT TICKET MODULE STYLES (was in blade files)
+   ============================================================ */
+
+/* --- Page Container --- */
+.resident-page {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px 16px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+.resident-page-hero, .resident-page-panel, .resident-flash {
+    border: 1px solid rgba(214, 168, 91, 0.14);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
+}
+.resident-page-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 28px 30px;
+    border-radius: 36px;
+    background: linear-gradient(115deg, #1F2023 0%, #24262B 38%, #2C2C2F 62%, #3B3023 100%);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+}
+.resident-page-hero-copy {
+    max-width: 860px;
+}
+.resident-page-kicker {
+    margin: 0 0 10px;
+    color: #D2A04C;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.30em;
+}
+.resident-page-title {
+    margin: 0;
+    color: #F8F3EA;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4.6vw, 3.8rem);
+    line-height: 1.05;
+}
+.resident-page-subtitle {
+    margin: 12px 0 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 1.02rem;
+    line-height: 1.7;
+    max-width: 760px;
+}
+
+/* --- Stats Row --- */
+.resident-hero-stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 22px;
+}
+.resident-hero-stat {
+    min-width: 110px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+button.resident-hero-stat {
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+.resident-hero-stat span {
+    display: block;
+    color: #A89376;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+}
+.resident-hero-stat strong {
+    display: block;
+    margin-top: 6px;
+    color: #F0E9DF;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* --- Buttons --- */
+.resident-page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 700;
+    transition: transform 0.2s ease;
+}
+.resident-page-btn:hover {
+    transform: translateY(-1px);
+}
+.resident-page-btn-primary {
+    background: linear-gradient(95deg, #b8842f, #d6a85b);
+    color: #17120d;
+}
+.resident-page-btn-secondary {
+    background: rgba(255, 255, 255, 0.04);
+    color: #D0C8B8;
+    border: 1px solid rgba(214, 168, 91, 0.14);
+}
+.resident-page-btn-danger {
+    border: 1px solid rgba(224, 112, 96, 0.24);
+    background: linear-gradient(180deg, rgba(53, 38, 35, 0.92) 0%, rgba(42, 31, 29, 0.92) 100%);
+    color: #F0B3A9;
+}
+
+/* --- Page Actions --- */
+.resident-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* --- Panel --- */
+.resident-page-panel {
+    padding: 26px 28px;
+    border-radius: 20px;
+    background: rgba(42, 44, 48, 0.78);
+    backdrop-filter: blur(10px);
+}
+.resident-page-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.resident-page-panel-head h2 {
+    margin: 0;
+    color: #F0E9DF;
+    font-size: 1.5rem;
+    font-family: 'Playfair Display', serif;
+}
+.resident-page-panel-head p {
+    margin: 4px 0 0;
+    color: #8A7A66;
+    font-size: 0.95rem;
+}
+.resident-page-eyebrow {
+    color: #D6A85B;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+}
+.resident-page-divider {
+    height: 1px;
+    background: linear-gradient(to right, rgba(214, 168, 91, 0.3), rgba(214, 168, 91, 0.05), transparent);
+    margin-bottom: 18px;
+}
+.resident-page-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* --- Ticket Section Head --- */
+.resident-ticket-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.resident-ticket-section-head h3 {
+    margin: 0;
+    color: #F0E9DF;
+    font-size: 1.08rem;
+    font-weight: 700;
+}
+.resident-ticket-section-head span {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(214, 168, 91, 0.10);
+    border: 1px solid rgba(214, 168, 91, 0.14);
+    color: #D6A85B;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* --- Cards --- */
+.resident-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px 22px;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.resident-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(214, 168, 91, 0.18);
+}
+.resident-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+}
+.resident-card-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.resident-card-heading h3 {
+    margin: 0;
+    color: #f0e9df;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+.resident-card-description {
+    margin: 12px 0 0;
+    color: #B8AB98;
+    line-height: 1.65;
+    font-size: 0.9rem;
+}
+.resident-card-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+/* --- Active Ticket Card --- */
+.resident-card-active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 18px;
+    row-gap: 12px;
+    padding: 16px 18px;
+}
+.resident-card-active .resident-card-top {
+    grid-column: 1 / -1;
+    align-items: center;
+    min-height: 78px;
+}
+.resident-card-active .resident-card-top {
+    display: contents;
+}
+.resident-card-active .resident-card-top > div:first-child {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+}
+.resident-card-active .resident-card-action-bar {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+    justify-self: end;
+}
+.resident-card-active .resident-card-description {
+    max-width: 900px;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+.resident-card-active .resident-media-row {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    margin-top: 0;
+}
+.resident-card-active .resident-card-meta-grid {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: end;
+    max-width: 760px;
+    margin-top: 0;
+    gap: 10px;
+}
+
+/* --- Action Bar --- */
+.resident-card-action-bar {
+    display: inline-flex;
+    align-items: stretch;
+    overflow: hidden;
+    border: 1px solid rgba(214, 168, 91, 0.16);
+    border-radius: 999px;
+    background: rgba(214, 168, 91, 0.055);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+.resident-card-action-bar a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 0;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    line-height: 1;
+    text-align: center;
+    transition: background 0.16s ease, color 0.16s ease;
+    white-space: nowrap;
+    color: #d7b07a;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+.resident-card-action-bar a + a {
+    border-left: 1px solid rgba(214, 168, 91, 0.14);
+}
+.resident-card-action-bar a:hover {
+    background: rgba(214, 168, 91, 0.12);
+    color: #f0d7a0;
+}
+.resident-card-action-bar a:last-child {
+    background: linear-gradient(95deg, #b8842f, #d6a85b);
+    color: #17120d;
+}
+.resident-card-action-bar a:last-child:hover {
+    background: linear-gradient(95deg, #c7933a, #e0b765);
+    color: #17120d;
+}
+
+/* --- Media Row --- */
+.resident-media-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 16px;
+}
+.resident-ticket-thumb-link {
+    display: inline-flex;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.16);
+}
+.resident-ticket-thumb {
+    width: 92px;
+    height: 92px;
+    object-fit: cover;
+    display: block;
+    background: rgba(18, 20, 23, 0.55);
+}
+.resident-media-chip {
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(214, 168, 91, 0.3);
+    color: #e4d1b0;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* --- Meta Box --- */
+.resident-meta-box {
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.resident-meta-box span {
+    display: block;
+    color: #8A7A66;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+.resident-meta-box strong {
+    display: block;
+    margin-top: 6px;
+    color: #F0E9DF;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    font-weight: 600;
+}
+.resident-meta-box p {
+    margin: 6px 0 0;
+    color: #B8AB98;
+    font-size: 0.92rem;
+    line-height: 1.7;
+}
+
+/* --- Badges --- */
+.resident-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+/* Status Badges */
+.resident-badge-status-pending_approval {
+    background: rgba(199, 151, 69, 0.16);
+    color: #e0bb7a;
+    border-color: rgba(199, 151, 69, 0.22);
+}
+.resident-badge-status-approved {
+    background: rgba(88, 144, 180, 0.16);
+    color: #9acae0;
+    border-color: rgba(88, 144, 180, 0.22);
+}
+.resident-badge-status-assigned {
+    background: rgba(200, 150, 60, 0.18);
+    color: #f0c06a;
+    border-color: rgba(200, 150, 60, 0.24);
+}
+.resident-badge-status-in_progress {
+    background: rgba(200, 150, 60, 0.18);
+    color: #f0c06a;
+    border-color: rgba(200, 150, 60, 0.24);
+}
+.resident-badge-status-resolved {
+    background: rgba(90, 160, 100, 0.16);
+    color: #8fd4a8;
+    border-color: rgba(90, 160, 100, 0.22);
+}
+.resident-badge-status-closed {
+    background: rgba(180, 170, 155, 0.12);
+    color: #c8bcac;
+    border-color: rgba(180, 170, 155, 0.16);
+}
+.resident-badge-status-rejected {
+    background: rgba(185, 106, 93, 0.16);
+    color: #dc9a86;
+}
+.resident-badge-status-cancelled {
+    background: rgba(185, 106, 93, 0.16);
+    color: #dc9a86;
+}
+
+/* Priority Badges */
+.resident-badge-priority-low {
+    background: rgba(120, 170, 120, 0.16);
+    color: #98c48b;
+}
+.resident-badge-priority-medium {
+    background: rgba(199, 151, 69, 0.18);
+    color: #d7b07a;
+}
+.resident-badge-priority-critical {
+    background: rgba(185, 106, 93, 0.16);
+    color: #dc9a86;
+}
+
+/* --- Status Tabs --- */
+.resident-status-tabs {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(214, 168, 91, 0.16);
+    margin-bottom: 20px;
+}
+.resident-status-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: max-content;
+    padding: 12px 16px 11px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: #b8ab98;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 700;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    white-space: nowrap;
+}
+.resident-status-tab span {
+    display: inline;
+    color: #b8ab98;
+    font-size: 0.76rem;
+}
+.resident-status-tab:hover {
+    color: #f0e9df;
+}
+.resident-status-tab.is-active {
+    border-bottom-color: #d6a85b;
+    color: #e2b45f;
+}
+.resident-status-tab.is-active span {
+    color: #e2b45f;
+}
+.resident-status-section[hidden] {
+    display: none;
+}
+
+/* --- Status Cards --- */
+.resident-status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.resident-status-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 15px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+}
+.resident-status-copy {
+    min-width: 0;
+    flex: 1;
+}
+.resident-status-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px;
+}
+.resident-status-card h3 {
+    margin: 0;
+    color: #f0e9df;
+    font-size: 0.96rem;
+}
+.resident-status-card p {
+    margin: 7px 0 0;
+    color: #b8ab98;
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+.resident-status-log-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 10px;
+}
+.resident-status-log-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 30px;
+    padding: 6px 10px;
+    border: 1px solid rgba(214, 168, 91, 0.10);
+    border-radius: 999px;
+    background: rgba(18, 19, 21, 0.28);
+}
+.resident-status-log-item small {
+    color: #8a7a66;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+.resident-status-log-item strong {
+    color: #d7c6ad;
+    font-size: 0.76rem;
+    font-weight: 650;
+    line-height: 1;
+}
+.resident-status-view-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 18px;
+    border: 1px solid rgba(214, 168, 91, 0.22);
+    border-radius: 999px;
+    background: rgba(214, 168, 91, 0.075);
+    color: #d7b07a;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+.resident-status-view-btn:hover {
+    border-color: rgba(214, 168, 91, 0.38);
+    background: rgba(214, 168, 91, 0.14);
+    color: #f0d7a0;
+}
+
+/* --- History Panel --- */
+.resident-page-panel-history.is-collapsed >:not(.resident-page-panel-head) {
+    display: none;
+}
+.resident-history-toggle {
+    border: 0;
+    background: transparent;
+    color: #D6A85B;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+/* --- History Cards --- */
+.resident-card-history {
+    padding: 16px 18px;
+    border-radius: 14px;
+    border-color: rgba(214, 168, 91, 0.08);
+    background: rgba(255, 255, 255, 0.022);
+    opacity: 0.82;
+}
+.resident-card-history:hover {
+    border-color: rgba(214, 168, 91, 0.13);
+}
+.resident-card-history .resident-card-top {
+    align-items: center;
+}
+.resident-card-history .resident-card-heading h3 {
+    color: rgba(240, 233, 223, 0.82);
+    font-size: 1rem;
+}
+.resident-card-history .resident-card-description {
+    margin-top: 9px;
+    color: rgba(184, 171, 152, 0.66);
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+.resident-history-view-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 16px;
+    border: 1px solid rgba(214, 168, 91, 0.16);
+    border-radius: 999px;
+    background: rgba(214, 168, 91, 0.045);
+    color: rgba(215, 176, 122, 0.78);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+.resident-history-view-btn:hover {
+    border-color: rgba(214, 168, 91, 0.26);
+    background: rgba(214, 168, 91, 0.075);
+    color: rgba(240, 215, 160, 0.9);
+}
+
+/* --- Filters --- */
+.resident-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.resident-filter-select {
+    padding: 9px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #EDE6D8;
+    font-size: 0.8rem;
+}
+.resident-filter-empty {
+    padding: 22px;
+    color: #8A7F6E;
+    font-size: 0.86rem;
+    text-align: center;
+}
+
+/* --- See More --- */
+.resident-more-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+.resident-see-more-btn {
+    margin-top: 16px;
+    margin-left: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #D6A85B;
+    font-weight: 700;
+    cursor: pointer;
+    display: block;
+    text-align: right;
+}
+
+/* --- Empty State --- */
+.resident-empty-state {
+    padding: 34px 20px;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
+}
+.resident-empty-state h3 {
+    margin: 0;
+    color: #f0e9df;
+    font-size: 1.3rem;
+    font-family: 'Playfair Display', serif;
+}
+.resident-empty-state p {
+    margin: 10px 0 18px;
+    color: #B8AB98;
+    font-size: 0.92rem;
+}
+.resident-empty-state a {
+    display: inline-flex;
+    margin-top: 16px;
+    color: #D6A85B;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+/* --- Back Link --- */
+.resident-back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(214, 168, 91, 0.18);
+    background: rgba(214, 168, 91, 0.10);
+    color: #D6A85B;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+}
+
+/* --- Responsive --- */
+@media (max-width:768px) {
+    .resident-page {
+        padding: 18px 0 28px;
+    }
+    .resident-page-hero, .resident-page-panel {
+        padding: 22px;
+    }
+    .resident-page-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .resident-card-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .resident-card-meta-grid {
+        grid-template-columns: 1fr;
+    }
+    .resident-card-active {
+        display: block;
+        padding: 16px;
+    }
+    .resident-card-active .resident-card-top {
+        display: flex;
+        min-height: 0;
+        align-items: stretch;
+    }
+    .resident-card-active .resident-card-top > div:first-child,
+    .resident-card-active .resident-card-action-bar,
+    .resident-card-active .resident-media-row,
+    .resident-card-active .resident-card-meta-grid {
+        grid-column: auto;
+        grid-row: auto;
+    }
+    .resident-card-action-bar {
+        align-self: stretch;
+        width: 100%;
+    }
+    .resident-card-action-bar a {
+        flex: 1 1 0;
+    }
+    .resident-status-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .resident-status-view-btn {
+        width: 100%;
+    }
+    .resident-card-history .resident-card-top {
+        align-items: stretch;
+    }
+    .resident-history-view-btn {
+        width: 100%;
+    }
+    .resident-card-active .resident-media-row {
+        margin-top: 12px;
+    }
+    .resident-card-active .resident-card-meta-grid {
+        max-width: none;
+        margin-top: 12px;
+    }
+}
+@media (max-width:560px) {
+    .resident-page-title {
+        font-size: 2.15rem;
+    }
+    .resident-page-subtitle {
+        font-size: 0.95rem;
+    }
+    .resident-page-panel-head h2,
+    .resident-ticket-section-head h3 {
+        font-size: 1.2rem;
+    }
+    .resident-ticket-section-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .resident-card, .resident-page-panel, .resident-page-hero {
+        border-radius: 22px;
+    }
+    .resident-card-links, .resident-page-actions, .resident-page-btn {
+        width: 100%;
+    }
+    .resident-card-links a, .resident-page-btn {
+        width: 100%;
+        text-align: center;
+    }
+    .resident-card-action-bar {
+        width: 100%;
+    }
+    .resident-card-action-bar a {
+        flex: 1 1 0;
+        width: auto;
+        padding: 0 10px;
+    }
+}
